@@ -202,19 +202,19 @@ export default function Profilo() {
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/impostazioni')}>
               <Ionicons name="settings-outline" size={24} color="#64748b" />
               <Text style={styles.actionText}>Impostazioni</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/aiuto')}>
               <Ionicons name="help-circle-outline" size={24} color="#64748b" />
               <Text style={styles.actionText}>Aiuto & Supporto</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/info')}>
               <Ionicons name="information-circle-outline" size={24} color="#64748b" />
               <Text style={styles.actionText}>Info App</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
