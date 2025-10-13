@@ -194,9 +194,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatar: {
-    fontSize: 28,
-  },
   chatContainer: {
     flex: 1,
     backgroundColor: '#f8fafc',
