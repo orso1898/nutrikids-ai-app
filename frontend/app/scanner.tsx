@@ -82,7 +82,7 @@ export default function Scanner() {
           <View style={styles.centerContent}>
             <Ionicons name="camera" size={80} color="#fff" />
             <Text style={styles.permissionText}>Richiesta permesso fotocamera...</Text>
-            <TouchableOpacity style={styles.button} onPress={requestPermission}>
+            <TouchableOpacity style={styles.button} onPress={checkCameraSupport}>
               <Text style={styles.buttonText}>Concedi Permesso</Text>
             </TouchableOpacity>
           </View>
