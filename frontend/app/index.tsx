@@ -78,9 +78,7 @@ export default function Onboarding() {
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
-      const nextIndex = currentIndex + 1;
-      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-      setCurrentIndex(nextIndex);
+      setCurrentIndex(currentIndex + 1);
     } else {
       handleFinish();
     }
