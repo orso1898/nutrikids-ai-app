@@ -48,7 +48,9 @@ export default function Login() {
         >
           <View style={styles.content}>
             <View style={styles.header}>
-              <Text style={styles.emoji}>🍽️</Text>
+              <View style={styles.logoContainer}>
+                <Ionicons name="restaurant" size={64} color="#fff" />
+              </View>
               <Text style={styles.title}>NutriKids AI</Text>
               <Text style={styles.subtitle}>Benvenuto! Inizia il tuo percorso verso una nutrizione sana</Text>
             </View>
