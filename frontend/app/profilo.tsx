@@ -105,12 +105,10 @@ export default function Profilo() {
           onPress: async () => {
             try {
               await logout();
-              // Force complete reload on web, navigation on native
-              if (typeof window !== 'undefined' && window.location) {
-                window.location.href = '/';
-              } else {
-                router.replace('/');
-              }
+              // Wait 200ms for AsyncStorage to complete
+              await new Promise(resolve => setTimeout(resolve, 200));
+              // Navigate to onboarding
+              router.replace('/');
             } catch (error) {
               console.error('Logout error:', error);
               Alert.alert('Errore', 'Errore durante il logout');
