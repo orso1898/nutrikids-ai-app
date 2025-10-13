@@ -89,7 +89,7 @@ export default function Home() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Ciao! 👋</Text>
+            <Text style={styles.greeting}>Ciao!</Text>
             <Text style={styles.email}>{userEmail}</Text>
             {isAdmin && (
               <View style={styles.adminBadge}>
