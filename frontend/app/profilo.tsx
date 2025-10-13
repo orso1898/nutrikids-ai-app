@@ -105,10 +105,23 @@ export default function Profilo() {
           onPress: async () => {
             try {
               await logout();
-              // Wait 200ms for AsyncStorage to complete
-              await new Promise(resolve => setTimeout(resolve, 200));
-              // Navigate to onboarding
-              router.replace('/');
+              
+              // Verifica che sia stato cancellato
+              const check1 = await AsyncStorage.getItem('userEmail');
+              const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
+              
+              Alert.alert(
+                'Logout Completato!',
+                `Dati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`,
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      router.replace('/');
+                    }
+                  }
+                ]
+              );
             } catch (error) {
               console.error('Logout error:', error);
               Alert.alert('Errore', 'Errore durante il logout');
