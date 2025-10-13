@@ -105,6 +105,72 @@ async def coach_maya(chat_msg: ChatMessage):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Photo Analysis with GPT-4o Vision
+@api_router.post("/analyze-photo", response_model=PhotoAnalysisResponse)
+async def analyze_photo(request: PhotoAnalysisRequest):
+    try:
+        system_message = """Sei un esperto nutrizionista specializzato nell'analisi visiva dei piatti. 
+        Analizza l'immagine del piatto e fornisci:
+        1. Lista degli alimenti riconosciuti
+        2. Stima dei valori nutrizionali (calorie, proteine, carboidrati, grassi, fibre)
+        3. Suggerimenti nutrizionali per bambini
+        4. Un punteggio di salute da 1 a 10
+        
+        Rispondi in italiano in formato JSON con questa struttura:
+        {
+            "foods": ["alimento1", "alimento2"],
+            "nutrition": {
+                "calories": 450,
+                "proteins": 20,
+                "carbs": 50,
+                "fats": 15,
+                "fiber": 8
+            },
+            "suggestions": "suggerimenti dettagliati",
+            "health_score": 8
+        }"""
+        
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"photo_{request.user_email}",
+            system_message=system_message
+        ).with_model("openai", "gpt-4o")
+        
+        user_message = UserMessage(
+            text="Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON.",
+            images=[request.image_base64]
+        )
+        
+        response = await chat.send_message(user_message)
+        
+        # Parse JSON response
+        import json
+        try:
+            result = json.loads(response)
+        except:
+            # Fallback if response is not valid JSON
+            result = {
+                "foods": ["Alimenti vari"],
+                "nutrition": {
+                    "calories": 0,
+                    "proteins": 0,
+                    "carbs": 0,
+                    "fats": 0,
+                    "fiber": 0
+                },
+                "suggestions": response,
+                "health_score": 5
+            }
+        
+        return PhotoAnalysisResponse(
+            foods_detected=result.get("foods", []),
+            nutritional_info=result.get("nutrition", {}),
+            suggestions=result.get("suggestions", ""),
+            health_score=result.get("health_score", 5)
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Diario - Diary Entries
 @api_router.post("/diary", response_model=DiaryEntry)
 async def create_diary_entry(entry: DiaryEntryCreate):
