@@ -152,8 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  slide: {
-    width,
+  slideContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
