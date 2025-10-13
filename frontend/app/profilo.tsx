@@ -179,23 +179,44 @@ export default function Profilo() {
 
           <View style={styles.actionsSection}>
             <TouchableOpacity style={styles.actionButton} onPress={async () => {
+              // Mostra lo stato corrente
+              const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+              const userEmail = await AsyncStorage.getItem('userEmail');
+              
               Alert.alert(
                 'Reset App',
-                'Vuoi resettare l\'app per testare l\'onboarding?',
+                `Stato attuale:\n• Email: ${userEmail || 'Nessuna'}\n• Onboarding visto: ${hasSeenOnboarding || 'No'}\n\nVuoi resettare tutto?`,
                 [
                   { text: 'Annulla', style: 'cancel' },
                   {
-                    text: 'Reset',
+                    text: 'Reset Ora',
                     style: 'destructive',
                     onPress: async () => {
-                      console.log('🔄 Starting reset...');
-                      await AsyncStorage.clear();
-                      console.log('✅ AsyncStorage cleared');
-                      // Wait 200ms for AsyncStorage to complete
-                      await new Promise(resolve => setTimeout(resolve, 200));
-                      console.log('🚀 Navigating to /');
-                      // Navigate to onboarding
-                      router.replace('/');
+                      try {
+                        // Reset completo
+                        await AsyncStorage.removeItem('userEmail');
+                        await AsyncStorage.removeItem('hasSeenOnboarding');
+                        
+                        // Verifica che sia stato cancellato
+                        const check1 = await AsyncStorage.getItem('userEmail');
+                        const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
+                        
+                        Alert.alert(
+                          'Reset Completato!',
+                          `Dati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`,
+                          [
+                            {
+                              text: 'OK',
+                              onPress: () => {
+                                // Forzare reload completo
+                                router.replace('/');
+                              }
+                            }
+                          ]
+                        );
+                      } catch (error) {
+                        Alert.alert('Errore', `Errore durante il reset: ${error}`);
+                      }
                     }
                   }
                 ]
