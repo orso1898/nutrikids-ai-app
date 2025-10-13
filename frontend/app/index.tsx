@@ -47,6 +47,7 @@ const slides: Slide[] = [
 
 export default function Onboarding() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,19 +61,19 @@ export default function Onboarding() {
       
       // Se ha visto l'onboarding E ha fatto login, vai alla home
       if (hasSeenOnboarding === 'true' && userEmail) {
-        setTimeout(() => {
-          router.replace('/home');
-        }, 100);
+        router.replace('/home');
+        return;
       } 
       // Se ha visto l'onboarding ma non ha fatto login, vai al login
       else if (hasSeenOnboarding === 'true' && !userEmail) {
-        setTimeout(() => {
-          router.replace('/login');
-        }, 100);
+        router.replace('/login');
+        return;
       }
       // Altrimenti mostra l'onboarding
+      setIsChecking(false);
     } catch (error) {
       console.error('Error checking onboarding status:', error);
+      setIsChecking(false);
     }
   };
 
