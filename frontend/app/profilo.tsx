@@ -104,8 +104,12 @@ export default function Profilo() {
           onPress: async () => {
             try {
               await logout();
-              // Force navigation to login
-              router.replace('/');
+              // Force complete reload on web, navigation on native
+              if (typeof window !== 'undefined' && window.location) {
+                window.location.href = '/';
+              } else {
+                router.replace('/');
+              }
             } catch (error) {
               console.error('Logout error:', error);
               Alert.alert('Errore', 'Errore durante il logout');
