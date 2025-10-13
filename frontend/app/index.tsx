@@ -100,6 +100,15 @@ export default function Onboarding() {
 
   const currentSlide = slides[currentIndex];
 
+  // Non mostrare nulla mentre controlla lo stato
+  if (isChecking) {
+    return (
+      <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
+        <SafeAreaView style={styles.safeArea} />
+      </LinearGradient>
+    );
+  }
+
   return (
     <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
