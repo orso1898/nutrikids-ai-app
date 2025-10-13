@@ -171,6 +171,32 @@ export default function Profilo() {
             ))
           )}
 
+          {/* Admin Section - Only visible for admin */}
+          {isAdmin && (
+            <View style={styles.adminSection}>
+              <View style={styles.adminSectionHeader}>
+                <Ionicons name="shield-checkmark" size={20} color="#fff" />
+                <Text style={styles.adminSectionTitle}>Amministrazione</Text>
+              </View>
+              
+              <TouchableOpacity 
+                style={styles.adminDashboardButton}
+                onPress={() => router.push('/admin-dashboard')}
+              >
+                <LinearGradient
+                  colors={['#7c3aed', '#6d28d9']}
+                  style={styles.adminGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="speedometer" size={32} color="#fff" />
+                  <Text style={styles.adminDashboardText}>Dashboard Admin</Text>
+                  <Text style={styles.adminDashboardSubtext}>Statistiche e gestione</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
+
           <View style={styles.actionsSection}>
             <TouchableOpacity style={styles.actionButton} onPress={async () => {
               // Mostra lo stato corrente
