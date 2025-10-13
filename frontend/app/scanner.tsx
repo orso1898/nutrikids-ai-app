@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,18 +11,30 @@ export default function Scanner() {
   const [scanned, setScanned] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   const requestPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === 'granted');
+    try {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    } catch (error) {
+      console.error('Error requesting camera permission:', error);
+      setHasPermission(false);
+    }
   };
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     setScanned(true);
     Alert.alert(
-      'Codice Scansionato!',
+      'Codice Scansionato! 📱',
       `Tipo: ${type}\nDati: ${data}\n\nFunzionalità completa disponibile nella versione Premium!`,
       [
-        { text: 'OK', onPress: () => setScanned(false) }
+        { 
+          text: 'OK', 
+          onPress: () => setScanned(false) 
+        }
       ]
     );
   };
