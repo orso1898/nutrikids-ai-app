@@ -95,7 +95,7 @@ export default function CoachMaya() {
             <Text style={styles.headerSubtitle}>Assistente Nutrizionale AI</Text>
           </View>
           <View style={styles.avatarContainer}>
-            <Text style={styles.avatar}>👩‍⚕️</Text>
+            <Ionicons name="medical" size={32} color="#fff" />
           </View>
         </View>
 
