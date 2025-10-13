@@ -175,6 +175,28 @@ export default function Profilo() {
           )}
 
           <View style={styles.actionsSection}>
+            <TouchableOpacity style={styles.actionButton} onPress={async () => {
+              Alert.alert(
+                'Reset App',
+                'Vuoi resettare l\'app per testare l\'onboarding?',
+                [
+                  { text: 'Annulla', style: 'cancel' },
+                  {
+                    text: 'Reset',
+                    style: 'destructive',
+                    onPress: async () => {
+                      await AsyncStorage.clear();
+                      router.replace('/');
+                    }
+                  }
+                ]
+              );
+            }}>
+              <Ionicons name="refresh-outline" size={24} color="#64748b" />
+              <Text style={styles.actionText}>Reset App (Test)</Text>
+              <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.actionButton}>
               <Ionicons name="settings-outline" size={24} color="#64748b" />
               <Text style={styles.actionText}>Impostazioni</Text>
