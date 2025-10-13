@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,10 +9,17 @@ import { Camera, CameraView } from 'expo-camera';
 export default function Scanner() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
+  const [isWebPlatform, setIsWebPlatform] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    requestPermission();
+    // Controlla se siamo su web
+    if (Platform.OS === 'web') {
+      setIsWebPlatform(true);
+      setHasPermission(false);
+    } else {
+      requestPermission();
+    }
   }, []);
 
   const requestPermission = async () => {
@@ -38,6 +45,32 @@ export default function Scanner() {
       ]
     );
   };
+
+  // Web non supporta fotocamera
+  if (isWebPlatform) {
+    return (
+      <LinearGradient colors={['#10b981', '#059669']} style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Scanner Alimenti</Text>
+          </View>
+          <View style={styles.centerContent}>
+            <Ionicons name="phone-portrait" size={80} color="#fff" />
+            <Text style={styles.permissionText}>Scanner disponibile su mobile</Text>
+            <Text style={styles.permissionSubtext}>
+              Usa l'app su iPhone o Android per scansionare codici a barre e QR code
+            </Text>
+            <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+              <Text style={styles.buttonText}>Torna Indietro</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    );
+  }
 
   if (hasPermission === null) {
     return (
