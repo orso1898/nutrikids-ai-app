@@ -188,9 +188,12 @@ export default function Profilo() {
                     text: 'Reset',
                     style: 'destructive',
                     onPress: async () => {
+                      console.log('🔄 Starting reset...');
                       await AsyncStorage.clear();
+                      console.log('✅ AsyncStorage cleared');
                       // Wait 200ms for AsyncStorage to complete
                       await new Promise(resolve => setTimeout(resolve, 200));
+                      console.log('🚀 Navigating to /');
                       // Navigate to onboarding
                       router.replace('/');
                     }
