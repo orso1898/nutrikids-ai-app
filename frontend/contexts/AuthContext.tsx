@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('hasSeenOnboarding');
       setIsAuthenticated(false);
       setUserEmail(null);
       setIsAdmin(false);
