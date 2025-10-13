@@ -10,7 +10,8 @@ const { width } = Dimensions.get('window');
 
 interface Slide {
   id: number;
-  emoji: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  iconColor: string;
   title: string;
   description: string;
 }
@@ -18,25 +19,29 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    emoji: '🍽️',
+    icon: 'restaurant',
+    iconColor: '#fff',
     title: 'Nutrizione Intelligente',
     description: 'Scopri l\'alimentazione perfetta per i tuoi bambini con l\'aiuto dell\'AI'
   },
   {
     id: 2,
-    emoji: '🔍',
+    icon: 'search',
+    iconColor: '#fff',
     title: 'Scanner Alimentare',
     description: 'Scansiona etichette e scopri istantamente i valori nutrizionali'
   },
   {
     id: 3,
-    emoji: '👩‍⚕️',
+    icon: 'medical',
+    iconColor: '#fff',
     title: 'Coach Maya',
     description: 'Il tuo assistente personale per consigli nutrizionali esperti'
   },
   {
     id: 4,
-    emoji: '🌱',
+    icon: 'leaf',
+    iconColor: '#fff',
     title: 'Crescita Sana',
     description: 'Monitora la crescita e lo sviluppo dei tuoi bambini'
   }
