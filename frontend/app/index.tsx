@@ -47,7 +47,6 @@ const slides: Slide[] = [
 
 export default function Onboarding() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef<FlatList>(null);
   const router = useRouter();
 
   useEffect(() => {
