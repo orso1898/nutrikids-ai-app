@@ -94,15 +94,7 @@ export default function Onboarding() {
     }
   };
 
-  const renderSlide = ({ item }: { item: Slide }) => (
-    <View style={styles.slide}>
-      <View style={styles.iconContainer}>
-        <Ionicons name={item.icon} size={100} color={item.iconColor} />
-      </View>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-    </View>
-  );
+  const currentSlide = slides[currentIndex];
 
   return (
     <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
@@ -111,19 +103,13 @@ export default function Onboarding() {
           <Text style={styles.skipText}>Salta</Text>
         </TouchableOpacity>
 
-        <FlatList
-          ref={flatListRef}
-          data={slides}
-          renderItem={renderSlide}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={(event) => {
-            const index = Math.round(event.nativeEvent.contentOffset.x / width);
-            setCurrentIndex(index);
-          }}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        <View style={styles.slideContainer}>
+          <View style={styles.iconContainer}>
+            <Ionicons name={currentSlide.icon} size={100} color={currentSlide.iconColor} />
+          </View>
+          <Text style={styles.title}>{currentSlide.title}</Text>
+          <Text style={styles.description}>{currentSlide.description}</Text>
+        </View>
 
         <View style={styles.bottomContainer}>
           <View style={styles.pagination}>
