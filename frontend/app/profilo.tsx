@@ -102,8 +102,14 @@ export default function Profilo() {
           text: 'Esci',
           style: 'destructive',
           onPress: async () => {
-            await logout();
-            router.replace('/login');
+            try {
+              await logout();
+              // Force navigation to login
+              router.replace('/');
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Errore', 'Errore durante il logout');
+            }
           }
         }
       ]
