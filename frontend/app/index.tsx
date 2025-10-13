@@ -59,17 +59,22 @@ export default function Onboarding() {
       const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
       const userEmail = await AsyncStorage.getItem('userEmail');
       
+      console.log('🔍 Checking onboarding:', { hasSeenOnboarding, userEmail });
+      
       // Se ha visto l'onboarding E ha fatto login, vai alla home
       if (hasSeenOnboarding === 'true' && userEmail) {
+        console.log('✅ Has login data - Going to home');
         router.replace('/home');
         return;
       } 
       // Se ha visto l'onboarding ma non ha fatto login, vai al login
       else if (hasSeenOnboarding === 'true' && !userEmail) {
+        console.log('✅ Has seen onboarding - Going to login');
         router.replace('/login');
         return;
       }
       // Altrimenti mostra l'onboarding
+      console.log('✅ First time - Showing onboarding');
       setIsChecking(false);
     } catch (error) {
       console.error('Error checking onboarding status:', error);
