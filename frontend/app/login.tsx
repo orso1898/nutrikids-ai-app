@@ -76,6 +76,20 @@ export default function Login() {
                 />
               </View>
 
+              <View style={styles.inputContainer}>
+                <Ionicons name="lock-closed-outline" size={20} color="#10b981" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor="#94a3b8"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+
               <TouchableOpacity 
                 style={[styles.loginButton, loading && styles.loginButtonDisabled]} 
                 onPress={handleLogin}
