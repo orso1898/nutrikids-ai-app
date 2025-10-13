@@ -136,11 +136,21 @@ async def analyze_photo(request: PhotoAnalysisRequest):
             system_message=system_message
         ).with_model("openai", "gpt-4o")
         
-        # Create message with image - correct syntax for emergentintegrations
-        user_message = UserMessage(
-            text="Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON.",
-            image_url=f"data:image/jpeg;base64,{request.image_base64}"
-        )
+        # Create message with image - use content list format
+        message_content = [
+            {
+                "type": "text",
+                "text": "Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON."
+            },
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{request.image_base64}"
+                }
+            }
+        ]
+        
+        user_message = UserMessage(content=message_content)
         
         response = await chat.send_message(user_message)
         
