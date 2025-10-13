@@ -35,12 +35,24 @@ class ChatResponse(BaseModel):
     response: str
     session_id: str
 
+class PhotoAnalysisRequest(BaseModel):
+    image_base64: str
+    user_email: str
+
+class PhotoAnalysisResponse(BaseModel):
+    foods_detected: List[str]
+    nutritional_info: dict
+    suggestions: str
+    health_score: int
+
 class DiaryEntry(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_email: str
     meal_type: str  # colazione, pranzo, cena, snack
     description: str
     date: str
+    photo_base64: Optional[str] = None
+    nutritional_info: Optional[dict] = None
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class DiaryEntryCreate(BaseModel):
@@ -48,6 +60,8 @@ class DiaryEntryCreate(BaseModel):
     meal_type: str
     description: str
     date: str
+    photo_base64: Optional[str] = None
+    nutritional_info: Optional[dict] = None
 
 class Child(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
