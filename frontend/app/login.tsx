@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
@@ -25,6 +26,11 @@ export default function Login() {
 
     if (!validateEmail(email)) {
       Alert.alert('Errore', 'Per favore inserisci un indirizzo email valido');
+      return;
+    }
+
+    if (!password.trim() || password.length < 4) {
+      Alert.alert('Errore', 'Per favore inserisci una password (minimo 4 caratteri)');
       return;
     }
 
