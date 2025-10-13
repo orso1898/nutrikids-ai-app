@@ -190,7 +190,12 @@ export default function Profilo() {
                     style: 'destructive',
                     onPress: async () => {
                       await AsyncStorage.clear();
-                      router.replace('/');
+                      // Force complete reload on web, navigation on native
+                      if (typeof window !== 'undefined' && window.location) {
+                        window.location.href = '/';
+                      } else {
+                        router.replace('/');
+                      }
                     }
                   }
                 ]
