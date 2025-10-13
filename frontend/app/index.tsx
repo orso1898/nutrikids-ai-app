@@ -96,7 +96,9 @@ export default function Onboarding() {
 
   const renderSlide = ({ item }: { item: Slide }) => (
     <View style={styles.slide}>
-      <Text style={styles.emoji}>{item.emoji}</Text>
+      <View style={styles.iconContainer}>
+        <Ionicons name={item.icon} size={100} color={item.iconColor} />
+      </View>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.description}>{item.description}</Text>
     </View>
