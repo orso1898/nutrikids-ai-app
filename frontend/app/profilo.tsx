@@ -94,42 +94,23 @@ export default function Profilo() {
   };
 
   const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Sei sicuro di voler uscire?',
-      [
-        { text: 'Annulla', style: 'cancel' },
-        {
-          text: 'Esci',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await logout();
-              
-              // Verifica che sia stato cancellato
-              const check1 = await AsyncStorage.getItem('userEmail');
-              const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
-              
-              Alert.alert(
-                'Logout Completato!',
-                `Dati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`,
-                [
-                  {
-                    text: 'OK',
-                    onPress: () => {
-                      router.replace('/');
-                    }
-                  }
-                ]
-              );
-            } catch (error) {
-              console.error('Logout error:', error);
-              Alert.alert('Errore', 'Errore durante il logout');
-            }
-          }
-        }
-      ]
-    );
+    const confirmed = window.confirm('Sei sicuro di voler uscire?');
+    if (!confirmed) return;
+    
+    try {
+      await logout();
+      
+      // Verifica che sia stato cancellato
+      const check1 = await AsyncStorage.getItem('userEmail');
+      const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
+      
+      window.alert(`Logout Completato!\n\nDati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`);
+      
+      router.replace('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      window.alert('Errore durante il logout');
+    }
   };
 
   return (
