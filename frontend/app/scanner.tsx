@@ -9,25 +9,22 @@ import { Camera, CameraView } from 'expo-camera';
 export default function Scanner() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-  const [isWebPlatform, setIsWebPlatform] = useState(false);
+  const [cameraSupported, setCameraSupported] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // Controlla se siamo su web
-    if (Platform.OS === 'web') {
-      setIsWebPlatform(true);
-      setHasPermission(false);
-    } else {
-      requestPermission();
-    }
+    checkCameraSupport();
   }, []);
 
-  const requestPermission = async () => {
+  const checkCameraSupport = async () => {
     try {
+      // Prova a richiedere i permessi - se fallisce, la fotocamera non è supportata
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
+      setCameraSupported(true);
     } catch (error) {
-      console.error('Error requesting camera permission:', error);
+      console.error('Camera not supported:', error);
+      setCameraSupported(false);
       setHasPermission(false);
     }
   };
@@ -46,8 +43,8 @@ export default function Scanner() {
     );
   };
 
-  // Web non supporta fotocamera
-  if (isWebPlatform) {
+  // Fotocamera non supportata (web browser)
+  if (!cameraSupported || hasPermission === false) {
     return (
       <LinearGradient colors={['#10b981', '#059669']} style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
