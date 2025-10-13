@@ -177,44 +177,25 @@ export default function Profilo() {
               const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
               const userEmail = await AsyncStorage.getItem('userEmail');
               
-              Alert.alert(
-                'Reset App',
-                `Stato attuale:\n• Email: ${userEmail || 'Nessuna'}\n• Onboarding visto: ${hasSeenOnboarding || 'No'}\n\nVuoi resettare tutto?`,
-                [
-                  { text: 'Annulla', style: 'cancel' },
-                  {
-                    text: 'Reset Ora',
-                    style: 'destructive',
-                    onPress: async () => {
-                      try {
-                        // Reset completo
-                        await AsyncStorage.removeItem('userEmail');
-                        await AsyncStorage.removeItem('hasSeenOnboarding');
-                        
-                        // Verifica che sia stato cancellato
-                        const check1 = await AsyncStorage.getItem('userEmail');
-                        const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
-                        
-                        Alert.alert(
-                          'Reset Completato!',
-                          `Dati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`,
-                          [
-                            {
-                              text: 'OK',
-                              onPress: () => {
-                                // Forzare reload completo
-                                router.replace('/');
-                              }
-                            }
-                          ]
-                        );
-                      } catch (error) {
-                        Alert.alert('Errore', `Errore durante il reset: ${error}`);
-                      }
-                    }
-                  }
-                ]
-              );
+              const confirmed = window.confirm(`Stato attuale:\n• Email: ${userEmail || 'Nessuna'}\n• Onboarding visto: ${hasSeenOnboarding || 'No'}\n\nVuoi resettare tutto?`);
+              
+              if (confirmed) {
+                try {
+                  // Reset completo
+                  await AsyncStorage.removeItem('userEmail');
+                  await AsyncStorage.removeItem('hasSeenOnboarding');
+                  
+                  // Verifica che sia stato cancellato
+                  const check1 = await AsyncStorage.getItem('userEmail');
+                  const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
+                  
+                  window.alert(`Reset Completato!\n\nDati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`);
+                  
+                  router.replace('/');
+                } catch (error) {
+                  window.alert(`Errore durante il reset: ${error}`);
+                }
+              }
             }}>
               <Ionicons name="refresh-outline" size={24} color="#64748b" />
               <Text style={styles.actionText}>Reset App (Test)</Text>
