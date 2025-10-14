@@ -61,10 +61,18 @@ export default function Onboarding() {
 
   const checkOnboardingStatus = async () => {
     try {
+      const hasSelectedLanguage = await AsyncStorage.getItem('hasSelectedLanguage');
       const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
       const userEmail = await AsyncStorage.getItem('userEmail');
       
-      console.log('🔍 Checking onboarding:', { hasSeenOnboarding, userEmail });
+      console.log('🔍 Checking status:', { hasSelectedLanguage, hasSeenOnboarding, userEmail });
+      
+      // Se non ha scelto la lingua, vai alla selezione lingua
+      if (!hasSelectedLanguage) {
+        console.log('✅ No language selected - Going to language selection');
+        router.replace('/language-selection');
+        return;
+      }
       
       // Se ha visto l'onboarding E ha fatto login, vai alla home
       if (hasSeenOnboarding === 'true' && userEmail) {
