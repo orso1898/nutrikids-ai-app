@@ -227,6 +227,50 @@ export const translations = {
       restorePurchases: 'Restore Purchases'
     },
 
+    // Scanner
+    scanner: {
+      title: 'AI Dish Scanner',
+      subtitle: 'Take a photo of the dish',
+      description: 'AI will analyze the food and provide nutritional advice',
+      takePhoto: 'Take Photo',
+      fromGallery: 'Gallery',
+      analyzing: 'Analyzing...',
+      foodsDetected: 'Foods Detected',
+      nutritionalInfo: 'Nutritional Information',
+      calories: 'Calories',
+      proteins: 'Proteins',
+      carbs: 'Carbs',
+      fats: 'Fats',
+      fiber: 'Fiber',
+      suggestions: 'Suggestions',
+      healthScore: 'Health Score'
+    },
+
+    // Coach Maya
+    coachMaya: {
+      title: 'Coach Maya',
+      subtitle: 'AI Nutritional Advice',
+      placeholder: 'Type your message...',
+      send: 'Send',
+      typing: 'Maya is typing...',
+      freeLimitReached: 'Free message limit reached',
+      upgradePrompt: 'Upgrade to Premium for unlimited messages'
+    },
+
+    // Profile
+    profile: {
+      title: 'Profile',
+      yourFunctions: 'Your Features',
+      children: 'Your Children',
+      addChild: 'Add Child',
+      settings: 'Settings',
+      helpSupport: 'Help & Support',
+      appInfo: 'App Info',
+      logout: 'Logout',
+      reset: 'Reset App',
+      adminDashboard: 'Admin Dashboard'
+    },
+
     // Common
     back: 'Back',
     save: 'Save',
