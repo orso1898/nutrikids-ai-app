@@ -75,6 +75,24 @@ class ChildCreate(BaseModel):
     name: str
     age: int
 
+class AppConfig(BaseModel):
+    id: str = "app_config"
+    emergent_llm_key: str
+    premium_monthly_price: float = 9.99
+    premium_yearly_price: float = 71.88
+    openai_model: str = "gpt-4o-mini"
+    vision_model: str = "gpt-4o"
+    max_free_scans: int = 5
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class AppConfigUpdate(BaseModel):
+    emergent_llm_key: Optional[str] = None
+    premium_monthly_price: Optional[float] = None
+    premium_yearly_price: Optional[float] = None
+    openai_model: Optional[str] = None
+    vision_model: Optional[str] = None
+    max_free_scans: Optional[int] = None
+
 # Routes
 @api_router.get("/")
 async def root():
