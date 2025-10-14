@@ -253,6 +253,140 @@ class NutriKidsBackendTester:
             self.log_result("Delete Child", False, f"Request error: {str(e)}")
             return False
     
+    def test_admin_config_get(self):
+        """Test GET /api/admin/config - Get all configurations"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/admin/config")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "emergent_llm_key", "premium_monthly_price", "premium_yearly_price", 
+                                 "openai_model", "vision_model", "max_free_scans", "updated_at"]
+                
+                if all(field in data for field in required_fields):
+                    # Check default values
+                    defaults_correct = (
+                        data.get("premium_monthly_price") == 9.99 and
+                        data.get("premium_yearly_price") == 71.88 and
+                        data.get("openai_model") == "gpt-4o-mini" and
+                        data.get("vision_model") == "gpt-4o" and
+                        data.get("max_free_scans") == 5
+                    )
+                    
+                    if defaults_correct:
+                        self.log_result("Admin Config - GET All", True, "Retrieved config with correct default values")
+                        return True
+                    else:
+                        self.log_result("Admin Config - GET All", False, "Config retrieved but default values incorrect", {"config": data})
+                        return False
+                else:
+                    self.log_result("Admin Config - GET All", False, "Missing required fields", {"response": data})
+                    return False
+            else:
+                self.log_result("Admin Config - GET All", False, f"HTTP {response.status_code}", {"response": response.text})
+                return False
+        except Exception as e:
+            self.log_result("Admin Config - GET All", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_admin_config_update_single(self):
+        """Test PUT /api/admin/config - Update single field"""
+        try:
+            payload = {"premium_monthly_price": 11.99}
+            response = self.session.put(f"{BACKEND_URL}/admin/config", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("premium_monthly_price") == 11.99:
+                    self.log_result("Admin Config - UPDATE Single", True, "Single field updated successfully")
+                    return True
+                else:
+                    self.log_result("Admin Config - UPDATE Single", False, f"Update failed, got {data.get('premium_monthly_price')}", {"response": data})
+                    return False
+            else:
+                self.log_result("Admin Config - UPDATE Single", False, f"HTTP {response.status_code}", {"response": response.text})
+                return False
+        except Exception as e:
+            self.log_result("Admin Config - UPDATE Single", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_admin_config_update_multiple(self):
+        """Test PUT /api/admin/config - Update multiple fields"""
+        try:
+            payload = {
+                "premium_monthly_price": 14.99,
+                "max_free_scans": 10
+            }
+            response = self.session.put(f"{BACKEND_URL}/admin/config", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("premium_monthly_price") == 14.99 and 
+                    data.get("max_free_scans") == 10):
+                    self.log_result("Admin Config - UPDATE Multiple", True, "Multiple fields updated successfully")
+                    return True
+                else:
+                    self.log_result("Admin Config - UPDATE Multiple", False, "Multiple field update failed", {"response": data})
+                    return False
+            else:
+                self.log_result("Admin Config - UPDATE Multiple", False, f"HTTP {response.status_code}", {"response": response.text})
+                return False
+        except Exception as e:
+            self.log_result("Admin Config - UPDATE Multiple", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_admin_config_get_single_value(self):
+        """Test GET /api/admin/config/{key} - Get single configuration value"""
+        try:
+            # Test existing key
+            response = self.session.get(f"{BACKEND_URL}/admin/config/premium_monthly_price")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("key") == "premium_monthly_price" and 
+                    "value" in data):
+                    self.log_result("Admin Config - GET Single Value", True, f"Retrieved single value: {data['value']}")
+                    
+                    # Test another key
+                    response2 = self.session.get(f"{BACKEND_URL}/admin/config/openai_model")
+                    if response2.status_code == 200:
+                        data2 = response2.json()
+                        if data2.get("key") == "openai_model" and data2.get("value") == "gpt-4o-mini":
+                            self.log_result("Admin Config - GET Single Value (openai_model)", True, "Retrieved openai_model correctly")
+                        else:
+                            self.log_result("Admin Config - GET Single Value (openai_model)", False, "openai_model retrieval failed", {"response": data2})
+                    
+                    return True
+                else:
+                    self.log_result("Admin Config - GET Single Value", False, "Invalid response format", {"response": data})
+                    return False
+            else:
+                self.log_result("Admin Config - GET Single Value", False, f"HTTP {response.status_code}", {"response": response.text})
+                return False
+        except Exception as e:
+            self.log_result("Admin Config - GET Single Value", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_admin_config_get_nonexistent_key(self):
+        """Test GET /api/admin/config/{key} - Non-existent key should return 404"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/admin/config/nonexistent_key")
+            
+            if response.status_code == 404:
+                data = response.json()
+                if "not found" in data.get("detail", "").lower():
+                    self.log_result("Admin Config - GET Nonexistent Key", True, "Correctly returns 404 for non-existent key")
+                    return True
+                else:
+                    self.log_result("Admin Config - GET Nonexistent Key", False, "404 returned but unexpected error message", {"response": data})
+                    return False
+            else:
+                self.log_result("Admin Config - GET Nonexistent Key", False, f"Expected 404, got {response.status_code}", {"response": response.text})
+                return False
+        except Exception as e:
+            self.log_result("Admin Config - GET Nonexistent Key", False, f"Request error: {str(e)}")
+            return False
+
     def test_error_cases(self):
         """Test error handling"""
         print("\n=== Testing Error Cases ===")
