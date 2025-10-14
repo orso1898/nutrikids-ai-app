@@ -25,16 +25,17 @@ interface DiaryEntry {
   };
 }
 
-const mealTypes = [
-  { value: 'colazione', label: 'Colazione', icon: 'sunny' as const },
-  { value: 'spuntino', label: 'Spuntino', icon: 'cafe' as const },
-  { value: 'pranzo', label: 'Pranzo', icon: 'restaurant' as const },
-  { value: 'merenda', label: 'Merenda', icon: 'ice-cream' as const },
-  { value: 'cena', label: 'Cena', icon: 'moon' as const },
-];
-
 export default function Diario() {
   const { t } = useLanguage();
+  
+  const mealTypes = [
+    { value: 'colazione', labelKey: 'diary.mealTypes.colazione', icon: 'sunny' as const },
+    { value: 'spuntino', labelKey: 'diary.mealTypes.spuntino', icon: 'cafe' as const },
+    { value: 'pranzo', labelKey: 'diary.mealTypes.pranzo', icon: 'restaurant' as const },
+    { value: 'merenda', labelKey: 'diary.mealTypes.merenda', icon: 'ice-cream' as const },
+    { value: 'cena', labelKey: 'diary.mealTypes.cena', icon: 'moon' as const },
+  ];
+  
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [photoModalVisible, setPhotoModalVisible] = useState(false);
