@@ -318,9 +318,16 @@ export const translations = {
     premium: {
       title: 'Go Premium',
       subtitle: 'Unlock all features',
+      heroTitle: 'NutriKids Premium',
+      heroSubtitle: 'Unlock all features for your child\'s healthy growth',
+      monthlyPlan: 'Monthly Plan',
       monthlyPrice: '€5.99/month',
+      cancelAnytime: 'Cancel anytime',
+      yearlyPlan: 'Yearly Plan',
       yearlyPrice: '€49.99/year',
-      yearlySavings: 'Save €22',
+      savePercent: 'Save 40%',
+      billedYearly: 'Billed €49.99 per year',
+      trialText: '7-day free trial, then €5.99/month. Cancel anytime.',
       features: {
         coachUnlimited: 'Unlimited Coach Maya',
         scannerUnlimited: 'Unlimited Scanner',
