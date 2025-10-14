@@ -174,7 +174,7 @@ export default function Diario() {
                 {/* Nutritional info if available */}
                 {entry.nutritional_info && (
                   <View style={styles.nutritionContainer}>
-                    <Text style={styles.nutritionTitle}>Valori Nutrizionali:</Text>
+                    <Text style={styles.nutritionTitle}>{t('diary.nutritionalValues')}:</Text>
                     <View style={styles.nutritionRow}>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{entry.nutritional_info.calories}</Text>
