@@ -391,7 +391,18 @@ export const translations = {
       noEntries: 'No meals recorded today',
       addMeal: 'Add Meal',
       viewPhoto: 'View Photo',
-      nutritionalDetails: 'Nutritional Details'
+      nutritionalDetails: 'Nutritional Details',
+      mealType: 'Meal Type',
+      description: 'Description',
+      descriptionPlaceholder: 'E.g.: Pasta with tomato and vegetables',
+      saving: 'Saving...',
+      mealTypes: {
+        colazione: 'Breakfast',
+        spuntino: 'Snack',
+        pranzo: 'Lunch',
+        merenda: 'Afternoon Snack',
+        cena: 'Dinner'
+      }
     },
 
     // Dashboard
