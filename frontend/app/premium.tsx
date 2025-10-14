@@ -78,9 +78,9 @@ export default function Premium() {
             <View style={styles.crownContainer}>
               <Ionicons name="diamond" size={48} color="#eab308" />
             </View>
-            <Text style={styles.heroTitle}>NutriKids Premium</Text>
+            <Text style={styles.heroTitle}>{t('premium.heroTitle')}</Text>
             <Text style={styles.heroSubtitle}>
-              Sblocca tutte le funzionalità per la crescita sana del tuo bambino
+              {t('premium.heroSubtitle')}
             </Text>
           </View>
 
