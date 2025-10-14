@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
@@ -30,6 +31,7 @@ export default function Scanner() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const router = useRouter();
   const { userEmail } = useAuth();
+  const { t } = useLanguage();
 
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
