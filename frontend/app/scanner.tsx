@@ -160,7 +160,7 @@ export default function Scanner() {
           {!photoUri ? (
             <View style={styles.emptyState}>
               <Ionicons name="camera" size={80} color="#fff" />
-              <Text style={styles.emptyTitle}>Scatta una foto del piatto</Text>
+              <Text style={styles.emptyTitle}>{t('scanner.subtitle')}</Text>
               <Text style={styles.emptySubtitle}>
                 L'AI analizzerà gli alimenti e fornirà suggerimenti nutrizionali
               </Text>
