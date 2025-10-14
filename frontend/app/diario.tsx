@@ -35,6 +35,8 @@ const mealTypes = [
 export default function Diario() {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [photoModalVisible, setPhotoModalVisible] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [selectedMealType, setSelectedMealType] = useState('colazione');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
