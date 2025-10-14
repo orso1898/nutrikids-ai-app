@@ -209,13 +209,13 @@ export default function Diario() {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Aggiungi Pasto</Text>
+                <Text style={styles.modalTitle}>{t('diary.addMeal')}</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                   <Ionicons name="close" size={24} color="#64748b" />
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>Tipo di pasto</Text>
+              <Text style={styles.label}>{t('diary.mealType')}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.mealTypeScroll}>
                 {mealTypes.map((meal) => (
                   <TouchableOpacity
@@ -235,16 +235,16 @@ export default function Diario() {
                       styles.mealTypeText,
                       selectedMealType === meal.value && styles.mealTypeTextActive
                     ]}>
-                      {meal.label}
+                      {t(meal.labelKey)}
                     </Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
 
-              <Text style={styles.label}>Descrizione</Text>
+              <Text style={styles.label}>{t('diary.description')}</Text>
               <TextInput
                 style={styles.textArea}
-                placeholder="Es: Pasta al pomodoro con verdure"
+                placeholder={t('diary.descriptionPlaceholder')}
                 placeholderTextColor="#94a3b8"
                 value={description}
                 onChangeText={setDescription}
@@ -258,7 +258,7 @@ export default function Diario() {
                 disabled={loading}
               >
                 <Text style={styles.saveButtonText}>
-                  {loading ? 'Salvataggio...' : 'Salva'}
+                  {loading ? t('diary.saving') : t('save')}
                 </Text>
               </TouchableOpacity>
             </View>
