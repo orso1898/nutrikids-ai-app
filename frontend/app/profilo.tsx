@@ -259,44 +259,9 @@ export default function Profilo() {
           )}
 
           <View style={styles.actionsSection}>
-            <TouchableOpacity style={styles.actionButton} onPress={async () => {
-              try {
-                // Mostra lo stato corrente
-                const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-                const savedUserEmail = await AsyncStorage.getItem('userEmail');
-                
-                const confirmReset = window.confirm(`Stato attuale:\n• Email: ${savedUserEmail || 'Nessuna'}\n• Onboarding visto: ${hasSeenOnboarding || 'No'}\n\nVuoi resettare tutto?`);
-                
-                if (confirmReset) {
-                  // Reset completo
-                  await AsyncStorage.removeItem('userEmail');
-                  await AsyncStorage.removeItem('hasSeenOnboarding');
-                  
-                  // Verifica che sia stato cancellato
-                  const check1 = await AsyncStorage.getItem('userEmail');
-                  const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
-                  
-                  const message = `Reset Completato!\n\nDati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app.`;
-                  
-                  try {
-                    window.alert(message);
-                  } catch (e) {
-                    console.log(message);
-                    Alert.alert('Reset Completato', 'Dati cancellati correttamente');
-                  }
-                  
-                  router.replace('/');
-                }
-              } catch (error) {
-                try {
-                  window.alert(`Errore durante il reset: ${error}`);
-                } catch (e) {
-                  Alert.alert('Errore', `Errore durante il reset: ${error}`);
-                }
-              }
-            }}>
+            <TouchableOpacity style={styles.actionButton} onPress={handleReset}>
               <Ionicons name="refresh-outline" size={24} color="#64748b" />
-              <Text style={styles.actionText}>Reset App (Test)</Text>
+              <Text style={styles.actionText}>Reset App</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
