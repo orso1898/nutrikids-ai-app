@@ -133,7 +133,7 @@ export default function Onboarding() {
     <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-          <Text style={styles.skipText}>Salta</Text>
+          <Text style={styles.skipText}>{t('skip')}</Text>
         </TouchableOpacity>
 
         <View style={styles.slideContainer}>
@@ -154,8 +154,8 @@ export default function Onboarding() {
           {/* Content with background */}
           <View style={styles.textContent}>
             <View style={styles.textBackground}>
-              <Text style={styles.title}>{currentSlide.title}</Text>
-              <Text style={styles.description}>{currentSlide.description}</Text>
+              <Text style={styles.title}>{t(currentSlide.titleKey)}</Text>
+              <Text style={styles.description}>{t(currentSlide.descriptionKey)}</Text>
             </View>
           </View>
         </View>
@@ -175,7 +175,7 @@ export default function Onboarding() {
 
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
             <Text style={styles.nextButtonText}>
-              {currentIndex === slides.length - 1 ? 'Inizia' : 'Avanti'}
+              {currentIndex === slides.length - 1 ? t('start') : t('next')}
             </Text>
             <Ionicons name="arrow-forward" size={20} color="#10b981" />
           </TouchableOpacity>
