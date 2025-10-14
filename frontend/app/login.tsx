@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
+  const { t } = useLanguage();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,17 +22,29 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!email.trim()) {
-      Alert.alert('Errore', 'Per favore inserisci un indirizzo email');
+      try {
+        window.alert(t('login.invalidEmail'));
+      } catch (e) {
+        Alert.alert(t('error'), t('login.invalidEmail'));
+      }
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert('Errore', 'Per favore inserisci un indirizzo email valido');
+      try {
+        window.alert(t('login.invalidEmail'));
+      } catch (e) {
+        Alert.alert(t('error'), t('login.invalidEmail'));
+      }
       return;
     }
 
     if (!password.trim() || password.length < 4) {
-      Alert.alert('Errore', 'Per favore inserisci una password (minimo 4 caratteri)');
+      try {
+        window.alert(t('login.invalidEmail'));
+      } catch (e) {
+        Alert.alert(t('error'), 'Password troppo corta');
+      }
       return;
     }
 
@@ -39,7 +53,11 @@ export default function Login() {
       await login(email);
       router.replace('/home');
     } catch (error) {
-      Alert.alert('Errore', 'Si è verificato un errore durante il login');
+      try {
+        window.alert(t('error'));
+      } catch (e) {
+        Alert.alert(t('error'), 'Errore durante il login');
+      }
     } finally {
       setLoading(false);
     }
@@ -53,21 +71,20 @@ export default function Login() {
           style={styles.keyboardView}
         >
           <View style={styles.content}>
-            <View style={styles.header}>
-              <View style={styles.logoContainer}>
-                <Ionicons name="restaurant" size={64} color="#fff" />
+            <View style={styles.logoContainer}>
+              <View style={styles.logoCircle}>
+                <Ionicons name="restaurant" size={48} color="#fff" />
               </View>
-              <Text style={styles.title}>NutriKids AI</Text>
-              <Text style={styles.subtitle}>Benvenuto! Inizia il tuo percorso verso una nutrizione sana</Text>
+              <Text style={styles.appName}>{t('home.title')}</Text>
+              <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
             </View>
 
             <View style={styles.formContainer}>
               <View style={styles.inputContainer}>
-                <Ionicons name="mail-outline" size={20} color="#10b981" style={styles.inputIcon} />
+                <Ionicons name="mail" size={20} color="#10b981" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Email"
-                  placeholderTextColor="#94a3b8"
+                  placeholder={t('login.emailPlaceholder')}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -77,35 +94,38 @@ export default function Login() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="lock-closed-outline" size={20} color="#10b981" style={styles.inputIcon} />
+                <Ionicons name="lock-closed" size={20} color="#10b981" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Password"
-                  placeholderTextColor="#94a3b8"
+                  placeholder={t('login.passwordPlaceholder')}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
                   autoCapitalize="none"
-                  autoCorrect={false}
                 />
               </View>
 
               <TouchableOpacity 
-                style={[styles.loginButton, loading && styles.loginButtonDisabled]} 
+                style={[styles.loginButton, loading && styles.loginButtonDisabled]}
                 onPress={handleLogin}
                 disabled={loading}
               >
-                <Text style={styles.loginButtonText}>
-                  {loading ? 'Accesso in corso...' : 'Accedi'}
-                </Text>
+                {loading ? (
+                  <Text style={styles.loginButtonText}>{t('loading')}</Text>
+                ) : (
+                  <>
+                    <Text style={styles.loginButtonText}>{t('login.loginButton')}</Text>
+                    <Ionicons name="arrow-forward" size={20} color="#fff" />
+                  </>
+                )}
               </TouchableOpacity>
 
-              <Text style={styles.infoText}>
-                Inserisci la tua email per accedere. {' '}
-                {email === 'admin@nutrikids.com' && (
-                  <Text style={styles.adminBadge}>🔐 Admin</Text>
-                )}
-              </Text>
+              <View style={styles.hintContainer}>
+                <Ionicons name="information-circle" size={16} color="rgba(255,255,255,0.7)" />
+                <Text style={styles.hintText}>
+                  {t('login.subtitle')}
+                </Text>
+              </View>
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -126,23 +146,23 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
     paddingHorizontal: 24,
+    justifyContent: 'center',
   },
-  header: {
+  logoContainer: {
     alignItems: 'center',
     marginBottom: 48,
   },
-  logoContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  logoCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
-  title: {
+  appName: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#fff',
@@ -152,25 +172,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
-    lineHeight: 22,
   },
   formContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 20,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#fff',
     borderRadius: 12,
-    paddingHorizontal: 16,
     marginBottom: 16,
+    paddingHorizontal: 16,
   },
   inputIcon: {
     marginRight: 12,
@@ -185,8 +201,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#10b981',
     paddingVertical: 16,
     borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    gap: 8,
+    marginTop: 8,
   },
   loginButtonDisabled: {
     opacity: 0.6,
@@ -196,14 +215,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  infoText: {
-    fontSize: 14,
-    color: '#64748b',
-    textAlign: 'center',
-    lineHeight: 20,
+  hintContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    gap: 8,
   },
-  adminBadge: {
-    fontWeight: 'bold',
-    color: '#10b981',
+  hintText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 13,
+    textAlign: 'center',
   },
 });

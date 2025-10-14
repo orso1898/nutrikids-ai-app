@@ -1,95 +1,85 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
-interface CardItem {
+interface CardData {
   id: string;
+  titleKey: string;
   icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  description: string;
-  route: string;
   gradient: string[];
+  route: string;
 }
 
-const cards: CardItem[] = [
+const cards: CardData[] = [
   {
     id: '1',
+    titleKey: 'home.cards.scanner',
     icon: 'scan',
-    title: 'Scanner',
-    description: 'Scansiona etichette alimentari',
+    gradient: ['#10b981', '#059669'],
     route: '/scanner',
-    gradient: ['#10b981', '#059669']
   },
   {
     id: '2',
-    icon: 'chatbubble-ellipses',
-    title: 'Coach Maya',
-    description: 'Consigli nutrizionali AI',
+    titleKey: 'home.cards.coachMaya',
+    icon: 'chatbubbles',
+    gradient: ['#3b82f6', '#2563eb'],
     route: '/coach-maya',
-    gradient: ['#3b82f6', '#2563eb']
   },
   {
     id: '3',
+    titleKey: 'home.cards.plans',
     icon: 'calendar',
-    title: 'Piani',
-    description: 'Piani nutrizionali settimanali',
+    gradient: ['#f59e0b', '#d97706'],
     route: '/piani',
-    gradient: ['#f59e0b', '#d97706']
   },
   {
     id: '4',
+    titleKey: 'home.cards.diary',
     icon: 'book',
-    title: 'Diario',
-    description: 'Traccia i pasti giornalieri',
+    gradient: ['#8b5cf6', '#7c3aed'],
     route: '/diario',
-    gradient: ['#8b5cf6', '#7c3aed']
   },
   {
     id: '5',
-    icon: 'bar-chart',
-    title: 'Dashboard',
-    description: 'Statistiche nutrizionali',
+    titleKey: 'home.cards.dashboard',
+    icon: 'stats-chart',
+    gradient: ['#06b6d4', '#0891b2'],
     route: '/dashboard',
-    gradient: ['#ec4899', '#db2777']
   },
   {
     id: '6',
+    titleKey: 'home.cards.premium',
     icon: 'star',
-    title: 'Premium',
-    description: 'Sblocca tutte le funzionalità',
+    gradient: ['#ec4899', '#db2777'],
     route: '/premium',
-    gradient: ['#eab308', '#ca8a04']
-  }
+  },
 ];
 
 export default function Home() {
   const router = useRouter();
-  const { userEmail, isAdmin, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace('/login');
-    }
-  }, [isAuthenticated]);
+  const { userEmail, isAdmin } = useAuth();
+  const { t } = useLanguage();
 
   const handleCardPress = (route: string) => {
     router.push(route as any);
-  };
-
-  const handleProfilePress = () => {
-    router.push('/profilo');
   };
 
   return (
     <LinearGradient colors={['#f0fdf4', '#dcfce7']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Ciao!</Text>
+          <View style={styles.headerContent}>
+            <Text style={styles.greeting}>
+              {userEmail?.split('@')[0] ? 
+                `${t('greetings.hello')}!` : 
+                t('greetings.hello')
+              }
+            </Text>
             <Text style={styles.email}>{userEmail}</Text>
             {isAdmin && (
               <View style={styles.adminBadge}>
@@ -98,43 +88,42 @@ export default function Home() {
               </View>
             )}
           </View>
-          <TouchableOpacity style={styles.profileButton} onPress={handleProfilePress}>
+          <TouchableOpacity 
+            style={styles.profileButton}
+            onPress={() => router.push('/profilo')}
+          >
             <Ionicons name="person-circle" size={40} color="#10b981" />
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{t('home.title')}</Text>
+          <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
         </View>
 
         <ScrollView 
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={styles.cardsContainer}
         >
-          <Text style={styles.sectionTitle}>Le tue funzionalità</Text>
-          
-          <View style={styles.cardsGrid}>
-            {cards.map((card) => (
-              <TouchableOpacity
-                key={card.id}
-                style={styles.card}
-                onPress={() => handleCardPress(card.route)}
-                activeOpacity={0.8}
+          {cards.map((card) => (
+            <TouchableOpacity
+              key={card.id}
+              style={styles.card}
+              onPress={() => handleCardPress(card.route)}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={card.gradient}
+                style={styles.cardGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
               >
-                <LinearGradient
-                  colors={card.gradient}
-                  style={styles.cardGradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                >
-                  <View style={styles.cardIconContainer}>
-                    <Ionicons name={card.icon} size={32} color="#fff" />
-                  </View>
-                </LinearGradient>
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{card.title}</Text>
-                  <Text style={styles.cardDescription}>{card.description}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+                <Ionicons name={card.icon} size={48} color="#fff" />
+                <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
@@ -155,15 +144,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
+  headerContent: {
+    flex: 1,
+  },
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#1e293b',
+    marginBottom: 4,
   },
   email: {
     fontSize: 14,
     color: '#64748b',
-    marginTop: 4,
   },
   adminBadge: {
     flexDirection: 'row',
@@ -172,68 +164,65 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    marginTop: 8,
     alignSelf: 'flex-start',
+    marginTop: 6,
     gap: 4,
   },
   adminText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
   },
   profileButton: {
     padding: 4,
   },
+  titleContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#10b981',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#64748b',
+  },
   scrollView: {
     flex: 1,
   },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 16,
-  },
-  cardsGrid: {
-    gap: 16,
+  cardsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 12,
+    paddingBottom: 20,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
+    width: '47%',
+    marginHorizontal: '1.5%',
+    marginBottom: 16,
+    borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 3,
+    elevation: 5,
   },
   cardGradient: {
-    padding: 20,
+    padding: 24,
     alignItems: 'center',
-  },
-  cardIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardContent: {
-    padding: 16,
+    minHeight: 140,
   },
   cardTitle: {
+    marginTop: 12,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 4,
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: '#64748b',
-    lineHeight: 20,
+    color: '#fff',
+    textAlign: 'center',
   },
 });
