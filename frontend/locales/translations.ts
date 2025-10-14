@@ -65,9 +65,16 @@ export const translations = {
     premium: {
       title: 'Diventa Premium',
       subtitle: 'Sblocca tutte le funzionalità',
+      heroTitle: 'NutriKids Premium',
+      heroSubtitle: 'Sblocca tutte le funzionalità per la crescita sana del tuo bambino',
+      monthlyPlan: 'Piano Mensile',
       monthlyPrice: '€5,99/mese',
+      cancelAnytime: 'Cancella in qualsiasi momento',
+      yearlyPlan: 'Piano Annuale',
       yearlyPrice: '€49,99/anno',
-      yearlySavings: 'Risparmia €22',
+      savePercent: 'Risparmia 40%',
+      billedYearly: 'Fatturato €49,99 all\'anno',
+      trialText: '7 giorni di prova gratuita, poi €5,99/mese. Cancella in qualsiasi momento.',
       features: {
         coachUnlimited: 'Coach Maya Illimitato',
         scannerUnlimited: 'Scanner Illimitato',
