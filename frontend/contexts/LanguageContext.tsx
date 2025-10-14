@@ -20,8 +20,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const loadLanguage = async () => {
     try {
       const savedLanguage = await AsyncStorage.getItem('appLanguage');
+      console.log('🌍 Loading saved language:', savedLanguage);
       if (savedLanguage && (savedLanguage === 'it' || savedLanguage === 'en' || savedLanguage === 'es')) {
+        console.log('✅ Setting language to:', savedLanguage);
         setLanguageState(savedLanguage as Language);
+      } else {
+        console.log('⚠️ No valid language found, using default: it');
       }
     } catch (error) {
       console.error('Error loading language:', error);
@@ -30,8 +34,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const setLanguage = async (lang: Language) => {
     try {
+      console.log('💾 Saving language:', lang);
       await AsyncStorage.setItem('appLanguage', lang);
       setLanguageState(lang);
+      console.log('✅ Language saved and state updated:', lang);
     } catch (error) {
       console.error('Error saving language:', error);
     }
