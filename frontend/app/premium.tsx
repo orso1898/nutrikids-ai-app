@@ -134,7 +134,7 @@ export default function Premium() {
           </TouchableOpacity>
 
           <Text style={styles.disclaimer}>
-            7 giorni di prova gratuita, poi €9.99/mese. Cancella in qualsiasi momento.
+            {t('premium.disclaimer')}
           </Text>
         </ScrollView>
       </SafeAreaView>
