@@ -263,32 +263,32 @@ export default function Profilo() {
           <View style={styles.actionsSection}>
             <TouchableOpacity style={styles.actionButton} onPress={handleReset}>
               <Ionicons name="refresh-outline" size={24} color="#64748b" />
-              <Text style={styles.actionText}>Reset App</Text>
+              <Text style={styles.actionText}>{t('profile.reset')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/impostazioni')}>
               <Ionicons name="settings-outline" size={24} color="#64748b" />
-              <Text style={styles.actionText}>Impostazioni</Text>
+              <Text style={styles.actionText}>{t('profile.settings')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/aiuto')}>
               <Ionicons name="help-circle-outline" size={24} color="#64748b" />
-              <Text style={styles.actionText}>Aiuto & Supporto</Text>
+              <Text style={styles.actionText}>{t('profile.helpSupport')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/info')}>
               <Ionicons name="information-circle-outline" size={24} color="#64748b" />
-              <Text style={styles.actionText}>Info App</Text>
+              <Text style={styles.actionText}>{t('profile.appInfo')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={24} color="#fff" />
-            <Text style={styles.logoutText}>Esci</Text>
+            <Text style={styles.logoutText}>{t('profile.logout')}</Text>
           </TouchableOpacity>
         </ScrollView>
 
@@ -301,13 +301,13 @@ export default function Profilo() {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Aggiungi Bambino</Text>
+                <Text style={styles.modalTitle}>{t('profile.addChild')}</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                   <Ionicons name="close" size={24} color="#64748b" />
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>Nome</Text>
+              <Text style={styles.label}>{t('profile.childName')}</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Es: Marco"
@@ -316,7 +316,7 @@ export default function Profilo() {
                 onChangeText={setChildName}
               />
 
-              <Text style={styles.label}>Età</Text>
+              <Text style={styles.label}>{t('profile.childAge')}</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Es: 5"
