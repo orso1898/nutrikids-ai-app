@@ -127,28 +127,26 @@ export default function Onboarding() {
         </TouchableOpacity>
 
         <View style={styles.slideContainer}>
-          {/* Image with overlay */}
-          <View style={styles.imageWrapper}>
+          {/* Image card with rounded corners */}
+          <View style={styles.imageCard}>
             <Image 
               source={{ uri: currentSlide.imageUrl }} 
               style={styles.slideImage}
               resizeMode="cover"
             />
-            <LinearGradient
-              colors={['rgba(16, 185, 129, 0.7)', 'rgba(16, 185, 129, 0.9)']}
-              style={styles.imageOverlay}
-            />
           </View>
 
-          {/* Icon container */}
+          {/* Icon container overlapping image */}
           <View style={styles.iconContainer}>
-            <Ionicons name={currentSlide.icon} size={80} color={currentSlide.iconColor} />
+            <Ionicons name={currentSlide.icon} size={60} color="#fff" />
           </View>
 
-          {/* Content */}
+          {/* Content with background */}
           <View style={styles.textContent}>
-            <Text style={styles.title}>{currentSlide.title}</Text>
-            <Text style={styles.description}>{currentSlide.description}</Text>
+            <View style={styles.textBackground}>
+              <Text style={styles.title}>{currentSlide.title}</Text>
+              <Text style={styles.description}>{currentSlide.description}</Text>
+            </View>
           </View>
         </View>
 
