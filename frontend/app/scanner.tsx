@@ -173,7 +173,7 @@ export default function Scanner() {
 
                 <TouchableOpacity style={styles.secondaryButton} onPress={pickFromGallery}>
                   <Ionicons name="images" size={24} color="#10b981" />
-                  <Text style={styles.secondaryButtonText}>Galleria</Text>
+                  <Text style={styles.secondaryButtonText}>{t('scanner.fromGallery')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
