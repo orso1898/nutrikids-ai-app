@@ -262,6 +262,18 @@ async def update_app_config(config_update: AppConfigUpdate):
     updated_config = await db.app_config.find_one({"id": "app_config"})
     return AppConfig(**updated_config)
 
+@api_router.get("/admin/config/{key}")
+async def get_config_value(key: str):
+    """Get a specific configuration value"""
+    config = await db.app_config.find_one({"id": "app_config"})
+    if not config:
+        raise HTTPException(status_code=404, detail="Config not found")
+    
+    if key not in config:
+        raise HTTPException(status_code=404, detail=f"Key '{key}' not found in config")
+    
+    return {"key": key, "value": config[key]}
+
 # Include router
 app.include_router(api_router)
 
