@@ -369,6 +369,50 @@ export const translations = {
       restorePurchases: 'Restaurar Compras'
     },
 
+    // Scanner
+    scanner: {
+      title: 'Escáner AI de Platos',
+      subtitle: 'Toma una foto del plato',
+      description: 'La IA analizará los alimentos y dará consejos nutricionales',
+      takePhoto: 'Tomar Foto',
+      fromGallery: 'Galería',
+      analyzing: 'Analizando...',
+      foodsDetected: 'Alimentos Detectados',
+      nutritionalInfo: 'Información Nutricional',
+      calories: 'Calorías',
+      proteins: 'Proteínas',
+      carbs: 'Carbohidratos',
+      fats: 'Grasas',
+      fiber: 'Fibra',
+      suggestions: 'Sugerencias',
+      healthScore: 'Puntuación de Salud'
+    },
+
+    // Coach Maya
+    coachMaya: {
+      title: 'Coach Maya',
+      subtitle: 'Consejos Nutricionales IA',
+      placeholder: 'Escribe tu mensaje...',
+      send: 'Enviar',
+      typing: 'Maya está escribiendo...',
+      freeLimitReached: 'Límite de mensajes gratuitos alcanzado',
+      upgradePrompt: 'Pasa a Premium para mensajes ilimitados'
+    },
+
+    // Profile
+    profile: {
+      title: 'Perfil',
+      yourFunctions: 'Tus Funciones',
+      children: 'Tus Niños',
+      addChild: 'Agregar Niño',
+      settings: 'Configuración',
+      helpSupport: 'Ayuda y Soporte',
+      appInfo: 'Info de la App',
+      logout: 'Cerrar Sesión',
+      reset: 'Resetear App',
+      adminDashboard: 'Panel de Administración'
+    },
+
     // Common
     back: 'Atrás',
     save: 'Guardar',
