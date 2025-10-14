@@ -463,4 +463,68 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  photoContainer: {
+    position: 'relative',
+    marginVertical: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  thumbnail: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+  },
+  photoOverlay: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    backgroundColor: 'rgba(139, 92, 246, 0.8)',
+    padding: 8,
+    borderRadius: 8,
+  },
+  nutritionContainer: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: '#f8f4ff',
+    borderRadius: 8,
+  },
+  nutritionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#8b5cf6',
+    marginBottom: 8,
+  },
+  nutritionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  nutritionItem: {
+    alignItems: 'center',
+  },
+  nutritionValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1e293b',
+  },
+  nutritionLabel: {
+    fontSize: 11,
+    color: '#64748b',
+    marginTop: 2,
+  },
+  photoModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  photoModalClose: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  enlargedPhoto: {
+    width: '90%',
+    height: '70%',
+  },
 });
