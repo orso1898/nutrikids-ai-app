@@ -30,6 +30,7 @@ api_router = APIRouter(prefix="/api")
 class ChatMessage(BaseModel):
     message: str
     session_id: str = "default"
+    language: str = "it"  # Default italiano
 
 class ChatResponse(BaseModel):
     response: str
