@@ -337,6 +337,9 @@ export const translations = {
       savePercent: 'Save 40%',
       billedYearly: 'Billed €49.99 per year',
       trialText: '7-day free trial, then €5.99/month. Cancel anytime.',
+      featuresTitle: 'Everything you get:',
+      startFreeTrial: 'Start Free Trial',
+      disclaimer: '7-day free trial, then €5.99/month. Cancel anytime.',
       features: {
         coachUnlimited: 'Unlimited Coach Maya',
         scannerUnlimited: 'Unlimited Scanner',
