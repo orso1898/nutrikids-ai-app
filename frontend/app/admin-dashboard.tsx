@@ -159,7 +159,7 @@ export default function AdminDashboard() {
               <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity style={styles.actionCard} onPress={() => router.push('/admin-config')}>
               <View style={styles.actionIcon}>
                 <Ionicons name="settings-outline" size={24} color="#f59e0b" />
               </View>
