@@ -162,7 +162,7 @@ export default function Scanner() {
               <Ionicons name="camera" size={80} color="#fff" />
               <Text style={styles.emptyTitle}>{t('scanner.subtitle')}</Text>
               <Text style={styles.emptySubtitle}>
-                L'AI analizzerà gli alimenti e fornirà suggerimenti nutrizionali
+                {t('scanner.description')}
               </Text>
 
               <View style={styles.buttonsContainer}>
