@@ -36,10 +36,15 @@ export default function AdminConfig() {
   const loadConfig = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/admin/config`);
+      console.log('Config loaded:', response.data);
       setConfig(response.data);
     } catch (error) {
       console.error('Error loading config:', error);
-      Alert.alert('Errore', 'Impossibile caricare le configurazioni');
+      try {
+        window.alert('Errore nel caricamento delle configurazioni');
+      } catch (e) {
+        Alert.alert('Errore', 'Impossibile caricare le configurazioni');
+      }
     } finally {
       setLoading(false);
     }
