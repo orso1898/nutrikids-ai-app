@@ -232,6 +232,20 @@ test_plan:
   test_all: true
   test_priority: "high_first"
 
+  - task: "Admin Configuration Panel"
+    implemented: true
+    working: false
+    file: "backend/server.py, frontend/app/admin-config.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented admin configuration endpoints (GET /api/admin/config, PUT /api/admin/config) with AppConfig model for managing API keys, pricing, and limits. Frontend screen admin-config.tsx created with form inputs for all configuration fields. Navigation button added to admin-dashboard.tsx."
+
 agent_communication:
     - agent: "testing"
       message: "Completed comprehensive backend testing for NutriKids AI. All 8 core endpoints plus error handling tested successfully. Fixed MongoDB connection issue during testing. All CRUD operations working correctly with proper UUID generation and data persistence. Coach Maya AI integration with Emergent LLM working perfectly in Italian. Ready for production use."
+    - agent: "main"
+      message: "Implemented Admin Configuration Panel. Backend endpoints for GET and PUT config are ready. Frontend screen with all input fields for API keys, pricing, and limits has been created. Added navigation from admin-dashboard to admin-config. Ready for backend testing of new admin endpoints."
