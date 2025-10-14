@@ -150,26 +150,43 @@ export default function Profilo() {
       };
 
       const confirmed = await confirmReset();
-      if (!confirmed) return;
+      if (!confirmed) {
+        console.log('❌ Reset cancelled by user');
+        return;
+      }
 
+      console.log('💥 Clearing AsyncStorage...');
+      
       // Cancella TUTTO da AsyncStorage
       await AsyncStorage.clear();
       
-      console.log('✅ AsyncStorage cleared');
+      console.log('✅ AsyncStorage cleared successfully');
+      
+      // Verifica che sia stato cancellato
+      const check = await AsyncStorage.getAllKeys();
+      console.log('📋 Remaining keys after clear:', check);
       
       // Messaggio di conferma
       try {
-        window.alert('App resettata! Riavvio in corso...');
+        window.alert('App resettata! La pagina verrà ricaricata...');
       } catch (e) {
         Alert.alert('Successo', 'App resettata completamente');
       }
       
-      // Vai alla selezione lingua
-      router.replace('/language-selection');
+      // Su web, facciamo un reload della pagina
+      if (typeof window !== 'undefined' && window.location) {
+        console.log('🔄 Reloading page...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
+      } else {
+        // Su mobile, usa router
+        router.replace('/language-selection');
+      }
     } catch (error) {
-      console.error('Reset error:', error);
+      console.error('❌ Reset error:', error);
       try {
-        window.alert('Errore durante il reset');
+        window.alert('Errore durante il reset: ' + error);
       } catch (e) {
         Alert.alert('Errore', 'Errore durante il reset');
       }
