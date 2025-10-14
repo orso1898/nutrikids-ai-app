@@ -470,6 +470,9 @@ export const translations = {
   },
 
   es: {
+    // Language code
+    language: 'es',
+    
     // Language Selection
     selectLanguage: 'Selecciona tu idioma',
     continue: 'Continuar',
