@@ -126,7 +126,7 @@ export default function Diario() {
         >
           <View style={styles.dateCard}>
             <Ionicons name="calendar" size={20} color="#8b5cf6" />
-            <Text style={styles.dateText}>Oggi - {new Date().toLocaleDateString('it-IT')}</Text>
+            <Text style={styles.dateText}>{t('diary.today')} - {new Date().toLocaleDateString('it-IT')}</Text>
           </View>
 
           {entries.length === 0 ? (
