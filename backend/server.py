@@ -78,11 +78,13 @@ class ChildCreate(BaseModel):
 class AppConfig(BaseModel):
     id: str = "app_config"
     emergent_llm_key: str
-    premium_monthly_price: float = 9.99
-    premium_yearly_price: float = 71.88
+    premium_monthly_price: float = 5.99
+    premium_yearly_price: float = 49.99
     openai_model: str = "gpt-4o-mini"
     vision_model: str = "gpt-4o"
     max_free_scans: int = 5
+    max_free_coach_messages_daily: int = 8
+    max_free_children: int = 2
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AppConfigUpdate(BaseModel):
