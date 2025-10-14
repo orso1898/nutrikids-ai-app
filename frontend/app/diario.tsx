@@ -145,7 +145,53 @@ export default function Diario() {
                     <Ionicons name="trash-outline" size={20} color="#ef4444" />
                   </TouchableOpacity>
                 </View>
+                
+                {/* Photo thumbnail if available */}
+                {entry.photo_base64 && (
+                  <TouchableOpacity 
+                    style={styles.photoContainer}
+                    onPress={() => {
+                      setSelectedPhoto(entry.photo_base64 || null);
+                      setPhotoModalVisible(true);
+                    }}
+                  >
+                    <Image
+                      source={{ uri: `data:image/jpeg;base64,${entry.photo_base64}` }}
+                      style={styles.thumbnail}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.photoOverlay}>
+                      <Ionicons name="expand" size={20} color="#fff" />
+                    </View>
+                  </TouchableOpacity>
+                )}
+                
                 <Text style={styles.entryDescription}>{entry.description}</Text>
+                
+                {/* Nutritional info if available */}
+                {entry.nutritional_info && (
+                  <View style={styles.nutritionContainer}>
+                    <Text style={styles.nutritionTitle}>Valori Nutrizionali:</Text>
+                    <View style={styles.nutritionRow}>
+                      <View style={styles.nutritionItem}>
+                        <Text style={styles.nutritionValue}>{entry.nutritional_info.calories}</Text>
+                        <Text style={styles.nutritionLabel}>kcal</Text>
+                      </View>
+                      <View style={styles.nutritionItem}>
+                        <Text style={styles.nutritionValue}>{entry.nutritional_info.proteins}g</Text>
+                        <Text style={styles.nutritionLabel}>proteine</Text>
+                      </View>
+                      <View style={styles.nutritionItem}>
+                        <Text style={styles.nutritionValue}>{entry.nutritional_info.carbs}g</Text>
+                        <Text style={styles.nutritionLabel}>carb</Text>
+                      </View>
+                      <View style={styles.nutritionItem}>
+                        <Text style={styles.nutritionValue}>{entry.nutritional_info.fats}g</Text>
+                        <Text style={styles.nutritionLabel}>grassi</Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
               </View>
             ))
           )}
