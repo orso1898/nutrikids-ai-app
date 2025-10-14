@@ -168,7 +168,7 @@ export default function Scanner() {
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity style={styles.primaryButton} onPress={takePicture}>
                   <Ionicons name="camera" size={24} color="#fff" />
-                  <Text style={styles.buttonText}>Scatta Foto</Text>
+                  <Text style={styles.buttonText}>{t('scanner.takePhoto')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.secondaryButton} onPress={pickFromGallery}>
