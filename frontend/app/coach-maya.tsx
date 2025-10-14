@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,10 +18,17 @@ interface Message {
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 export default function CoachMaya() {
+  const { t } = useLanguage();
+  const welcomeMessage = {
+    it: 'Ciao! Sono Coach Maya, la tua assistente personale per la nutrizione infantile. Come posso aiutarti oggi? 🌱',
+    en: 'Hello! I\'m Coach Maya, your personal assistant for children\'s nutrition. How can I help you today? 🌱',
+    es: '¡Hola! Soy Coach Maya, tu asistente personal para la nutrición infantil. ¿Cómo puedo ayudarte hoy? 🌱'
+  };
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Ciao! Sono Coach Maya, la tua assistente personale per la nutrizione infantile. Come posso aiutarti oggi? 🌱',
+      text: welcomeMessage[t('language') as keyof typeof welcomeMessage] || welcomeMessage.it,
       isUser: false,
       timestamp: new Date()
     }
@@ -33,21 +40,15 @@ export default function CoachMaya() {
   const { userEmail } = useAuth();
 
   useEffect(() => {
-    scrollToBottom();
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
-  };
 
   const sendMessage = async () => {
     if (!inputText.trim() || loading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputText.trim(),
+      text: inputText,
       isUser: true,
       timestamp: new Date()
     };
@@ -58,23 +59,23 @@ export default function CoachMaya() {
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/coach-maya`, {
-        message: userMessage.text,
-        session_id: userEmail || 'guest'
+        user_email: userEmail,
+        message: inputText
       });
 
-      const aiMessage: Message = {
+      const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: response.data.response,
         isUser: false,
         timestamp: new Date()
       };
 
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Mi dispiace, si è verificato un errore. Riprova per favore.',
+        text: t('error'),
         isUser: false,
         timestamp: new Date()
       };
@@ -92,20 +93,17 @@ export default function CoachMaya() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>Coach Maya</Text>
-            <Text style={styles.headerSubtitle}>Assistente Nutrizionale AI</Text>
-          </View>
-          <View style={styles.avatarContainer}>
-            <Ionicons name="medical" size={32} color="#fff" />
+            <Text style={styles.headerTitle}>{t('coachMaya.title')}</Text>
+            <Text style={styles.headerSubtitle}>{t('coachMaya.subtitle')}</Text>
           </View>
         </View>
 
-        <KeyboardAvoidingView
+        <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.chatContainer}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+          keyboardVerticalOffset={90}
         >
-          <ScrollView
+          <ScrollView 
             ref={scrollViewRef}
             style={styles.messagesContainer}
             contentContainerStyle={styles.messagesContent}
@@ -116,20 +114,20 @@ export default function CoachMaya() {
                 key={message.id}
                 style={[
                   styles.messageBubble,
-                  message.isUser ? styles.userBubble : styles.aiBubble
+                  message.isUser ? styles.userBubble : styles.botBubble
                 ]}
               >
                 <Text style={[
                   styles.messageText,
-                  message.isUser ? styles.userText : styles.aiText
+                  message.isUser ? styles.userText : styles.botText
                 ]}>
                   {message.text}
                 </Text>
               </View>
             ))}
             {loading && (
-              <View style={[styles.messageBubble, styles.aiBubble]}>
-                <ActivityIndicator color="#64748b" />
+              <View style={[styles.messageBubble, styles.botBubble]}>
+                <Text style={styles.botText}>{t('coachMaya.typing')}</Text>
               </View>
             )}
           </ScrollView>
@@ -137,19 +135,19 @@ export default function CoachMaya() {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Scrivi un messaggio..."
-              placeholderTextColor="#94a3b8"
               value={inputText}
               onChangeText={setInputText}
+              placeholder={t('coachMaya.placeholder')}
+              placeholderTextColor="#94a3b8"
               multiline
               maxLength={500}
             />
-            <TouchableOpacity
+            <TouchableOpacity 
               style={[styles.sendButton, (!inputText.trim() || loading) && styles.sendButtonDisabled]}
               onPress={sendMessage}
               disabled={!inputText.trim() || loading}
             >
-              <Ionicons name="send" size={20} color="#fff" />
+              <Ionicons name="send" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -159,93 +157,45 @@ export default function CoachMaya() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  safeArea: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    gap: 12,
   },
-  backButton: {
-    padding: 4,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  avatarContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  chatContainer: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-  },
-  messagesContainer: {
-    flex: 1,
-  },
-  messagesContent: {
-    padding: 16,
-    gap: 12,
-  },
+  backButton: { padding: 8 },
+  headerContent: { flex: 1, marginLeft: 12 },
+  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
+  headerSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 2 },
+  chatContainer: { flex: 1 },
+  messagesContainer: { flex: 1 },
+  messagesContent: { padding: 16, paddingBottom: 80 },
   messageBubble: {
     maxWidth: '80%',
     padding: 12,
     borderRadius: 16,
+    marginBottom: 12,
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#3b82f6',
-    borderBottomRightRadius: 4,
-  },
-  aiBubble: {
-    alignSelf: 'flex-start',
     backgroundColor: '#fff',
-    borderBottomLeftRadius: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
   },
-  messageText: {
-    fontSize: 15,
-    lineHeight: 20,
+  botBubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
-  userText: {
-    color: '#fff',
-  },
-  aiText: {
-    color: '#1e293b',
-  },
+  messageText: { fontSize: 16, lineHeight: 22 },
+  userText: { color: '#1e293b' },
+  botText: { color: '#fff' },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
     padding: 16,
-    gap: 12,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
+    alignItems: 'flex-end',
   },
   input: {
     flex: 1,
@@ -253,18 +203,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    fontSize: 15,
+    fontSize: 16,
     maxHeight: 100,
+    marginRight: 12,
   },
   sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#3b82f6',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  sendButtonDisabled: {
-    opacity: 0.5,
-  },
+  sendButtonDisabled: { opacity: 0.5 },
 });
