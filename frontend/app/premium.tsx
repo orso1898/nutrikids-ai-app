@@ -129,7 +129,7 @@ export default function Premium() {
           </View>
 
           <TouchableOpacity style={styles.ctaButton}>
-            <Text style={styles.ctaButtonText}>Inizia Prova Gratuita</Text>
+            <Text style={styles.ctaButtonText}>{t('premium.startFreeTrial')}</Text>
             <Ionicons name="arrow-forward" size={20} color="#fff" />
           </TouchableOpacity>
 
