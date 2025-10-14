@@ -183,7 +183,7 @@ export default function Profilo() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Profilo</Text>
+          <Text style={styles.headerTitle}>{t('profile.title')}</Text>
         </View>
 
         <ScrollView
@@ -199,13 +199,13 @@ export default function Profilo() {
             {isAdmin && (
               <View style={styles.adminBadge}>
                 <Ionicons name="shield-checkmark" size={16} color="#fff" />
-                <Text style={styles.adminText}>Amministratore</Text>
+                <Text style={styles.adminText}>{t('profile.administration')}</Text>
               </View>
             )}
           </View>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>I Miei Bambini</Text>
+            <Text style={styles.sectionTitle}>{t('profile.children')}</Text>
             <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addChildButton}>
               <Ionicons name="add-circle" size={28} color="#fff" />
             </TouchableOpacity>
@@ -214,8 +214,8 @@ export default function Profilo() {
           {children.length === 0 ? (
             <View style={styles.emptyState}>
               <Ionicons name="people-outline" size={64} color="#cbd5e1" />
-              <Text style={styles.emptyText}>Nessun bambino aggiunto</Text>
-              <Text style={styles.emptySubtext}>Aggiungi un profilo per iniziare</Text>
+              <Text style={styles.emptyText}>{t('profile.noChildren')}</Text>
+              <Text style={styles.emptySubtext}>{t('profile.addChild')}</Text>
             </View>
           ) : (
             children.map((child) => (
