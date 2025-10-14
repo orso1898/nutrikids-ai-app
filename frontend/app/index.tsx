@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +12,7 @@ interface Slide {
   iconColor: string;
   title: string;
   description: string;
+  imageUrl: string;
 }
 
 const slides: Slide[] = [
@@ -20,28 +21,32 @@ const slides: Slide[] = [
     icon: 'restaurant',
     iconColor: '#fff',
     title: 'Nutrizione Intelligente',
-    description: 'Scopri l\'alimentazione perfetta per i tuoi bambini con l\'aiuto dell\'AI'
+    description: 'Scopri l\'alimentazione perfetta per i tuoi bambini con l\'aiuto dell\'AI',
+    imageUrl: 'https://images.unsplash.com/photo-1576089073624-b5751a8f4de9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxmYW1pbHklMjBlYXRpbmclMjBoZWFsdGh5fGVufDB8fHx8MTc2MDQzMDAwMXww&ixlib=rb-4.1.0&q=85'
   },
   {
     id: 2,
     icon: 'search',
     iconColor: '#fff',
     title: 'Scanner Alimentare',
-    description: 'Scansiona etichette e scopri istantamente i valori nutrizionali'
+    description: 'Scansiona etichette e scopri istantamente i valori nutrizionali',
+    imageUrl: 'https://images.unsplash.com/photo-1596776572010-93e181f9fc07?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxjb2xvcmZ1bCUyMHZlZ2V0YWJsZXMlMjBoZWFsdGh5fGVufDB8fHx8MTc2MDQzMDAwN3ww&ixlib=rb-4.1.0&q=85'
   },
   {
     id: 3,
     icon: 'medical',
     iconColor: '#fff',
     title: 'Coach Maya',
-    description: 'Il tuo assistente personale per consigli nutrizionali esperti'
+    description: 'Il tuo assistente personale per consigli nutrizionali esperti',
+    imageUrl: 'https://images.pexels.com/photos/8844379/pexels-photo-8844379.jpeg'
   },
   {
     id: 4,
     icon: 'leaf',
     iconColor: '#fff',
     title: 'Crescita Sana',
-    description: 'Monitora la crescita e lo sviluppo dei tuoi bambini'
+    description: 'Monitora la crescita e lo sviluppo dei tuoi bambini',
+    imageUrl: 'https://images.unsplash.com/photo-1758743871361-bd24138a0cb7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwZWF0aW5nfGVufDB8fHx8MTc2MDQzMDAxOHww&ixlib=rb-4.1.0&q=85'
   }
 ];
 
