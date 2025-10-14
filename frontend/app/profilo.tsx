@@ -94,22 +94,34 @@ export default function Profilo() {
   };
 
   const handleLogout = async () => {
-    const confirmed = window.confirm('Sei sicuro di voler uscire?');
-    if (!confirmed) return;
-    
     try {
+      const confirmLogout = window.confirm('Sei sicuro di voler uscire?');
+      if (!confirmLogout) return;
+      
       await logout();
       
       // Verifica che sia stato cancellato
       const check1 = await AsyncStorage.getItem('userEmail');
       const check2 = await AsyncStorage.getItem('hasSeenOnboarding');
       
-      window.alert(`Logout Completato!\n\nDati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app per vedere l'onboarding.`);
+      const message = `Logout Completato!\n\nDati cancellati:\n• Email: ${check1 || 'Cancellata ✅'}\n• Onboarding: ${check2 || 'Cancellato ✅'}\n\nChiudi e riapri l'app.`;
+      
+      // Try window.alert first, fallback to console
+      try {
+        window.alert(message);
+      } catch (e) {
+        console.log(message);
+        Alert.alert('Logout Completato', 'Dati cancellati correttamente');
+      }
       
       router.replace('/');
     } catch (error) {
       console.error('Logout error:', error);
-      window.alert('Errore durante il logout');
+      try {
+        window.alert('Errore durante il logout');
+      } catch (e) {
+        Alert.alert('Errore', 'Errore durante il logout');
+      }
     }
   };
 
