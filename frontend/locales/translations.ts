@@ -353,12 +353,101 @@ export const translations = {
       yourFunctions: 'Your Features',
       children: 'Your Children',
       addChild: 'Add Child',
+      childName: 'Child name',
+      childAge: 'Age',
       settings: 'Settings',
       helpSupport: 'Help & Support',
       appInfo: 'App Info',
       logout: 'Logout',
       reset: 'Reset App',
-      adminDashboard: 'Admin Dashboard'
+      adminDashboard: 'Admin Dashboard',
+      noChildren: 'No children yet. Add the first one!',
+      administration: 'Administration',
+      adminDashboardSubtitle: 'Statistics and management'
+    },
+
+    // Diary
+    diary: {
+      title: 'Food Diary',
+      subtitle: 'Track your children\'s meals',
+      today: 'Today',
+      noEntries: 'No meals recorded today',
+      addMeal: 'Add Meal',
+      viewPhoto: 'View Photo',
+      nutritionalDetails: 'Nutritional Details'
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Dashboard',
+      subtitle: 'Statistics and trends',
+      comingSoon: 'Coming Soon',
+      description: 'Here you\'ll find charts and nutrition statistics'
+    },
+
+    // Plans
+    plans: {
+      title: 'Nutrition Plans',
+      subtitle: 'Personalized weekly plans',
+      comingSoon: 'Coming Soon',
+      description: 'Personalized nutrition plans for your children'
+    },
+
+    // Settings
+    settings: {
+      title: 'Settings',
+      subtitle: 'Configure your app',
+      language: 'Language',
+      notifications: 'Notifications',
+      privacy: 'Privacy',
+      comingSoon: 'Coming Soon'
+    },
+
+    // Help & Support
+    helpSupport: {
+      title: 'Help & Support',
+      subtitle: 'We help you use the app',
+      faq: 'Frequently Asked Questions',
+      contact: 'Contact Us',
+      comingSoon: 'Coming Soon'
+    },
+
+    // App Info
+    appInfo: {
+      title: 'App Info',
+      subtitle: 'About NutriKids AI',
+      version: 'Version',
+      developer: 'Developed by',
+      description: 'NutriKids AI is your go-to app for children\'s nutrition'
+    },
+
+    // Admin Dashboard
+    adminDashboard: {
+      title: 'Admin Dashboard',
+      subtitle: 'Administration panel',
+      configurations: 'Configurations',
+      stats: 'Statistics',
+      users: 'Users'
+    },
+
+    // Admin Config
+    adminConfig: {
+      title: 'Admin Configurations',
+      subtitle: 'Manage app settings',
+      apiKeys: 'API Keys',
+      pricing: 'Premium Pricing',
+      limits: 'Limits',
+      emergentKey: 'Emergent LLM Key',
+      monthlyPrice: 'Monthly Price',
+      yearlyPrice: 'Yearly Price',
+      openaiModel: 'OpenAI Model',
+      visionModel: 'Vision Model',
+      maxScans: 'Max Free Scans',
+      maxMessages: 'Max Free Messages/Day',
+      maxChildren: 'Max Free Children',
+      saveChanges: 'Save Changes',
+      savingChanges: 'Saving...',
+      changesSaved: 'Changes saved!'
     },
 
     // Common
@@ -370,7 +459,8 @@ export const translations = {
     close: 'Close',
     loading: 'Loading...',
     error: 'Error',
-    success: 'Success'
+    success: 'Success',
+    confirm: 'Confirm'
   },
 
   es: {
