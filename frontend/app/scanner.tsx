@@ -144,7 +144,7 @@ export default function Scanner() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Scanner AI Piatti</Text>
+          <Text style={styles.headerTitle}>{t('scanner.title')}</Text>
           {photoUri && (
             <TouchableOpacity onPress={reset} style={styles.resetButton}>
               <Ionicons name="refresh" size={24} color="#fff" />
