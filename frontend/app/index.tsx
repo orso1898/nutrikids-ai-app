@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Slide {
   id: number;
   icon: keyof typeof Ionicons.glyphMap;
   iconColor: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   imageUrl: string;
 }
 
@@ -20,32 +21,32 @@ const slides: Slide[] = [
     id: 1,
     icon: 'restaurant',
     iconColor: '#fff',
-    title: 'Nutrizione Intelligente',
-    description: 'Scopri l\'alimentazione perfetta per i tuoi bambini con l\'aiuto dell\'AI',
+    titleKey: 'onboarding.slide1.title',
+    descriptionKey: 'onboarding.slide1.description',
     imageUrl: 'https://images.unsplash.com/photo-1576089073624-b5751a8f4de9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxmYW1pbHklMjBlYXRpbmclMjBoZWFsdGh5fGVufDB8fHx8MTc2MDQzMDAwMXww&ixlib=rb-4.1.0&q=85'
   },
   {
     id: 2,
     icon: 'search',
     iconColor: '#fff',
-    title: 'Scanner Alimentare',
-    description: 'Scansiona etichette e scopri istantamente i valori nutrizionali',
+    titleKey: 'onboarding.slide2.title',
+    descriptionKey: 'onboarding.slide2.description',
     imageUrl: 'https://images.unsplash.com/photo-1596776572010-93e181f9fc07?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxjb2xvcmZ1bCUyMHZlZ2V0YWJsZXMlMjBoZWFsdGh5fGVufDB8fHx8MTc2MDQzMDAwN3ww&ixlib=rb-4.1.0&q=85'
   },
   {
     id: 3,
     icon: 'medical',
     iconColor: '#fff',
-    title: 'Coach Maya',
-    description: 'Il tuo assistente personale per consigli nutrizionali esperti',
+    titleKey: 'onboarding.slide3.title',
+    descriptionKey: 'onboarding.slide3.description',
     imageUrl: 'https://images.pexels.com/photos/8844379/pexels-photo-8844379.jpeg'
   },
   {
     id: 4,
     icon: 'leaf',
     iconColor: '#fff',
-    title: 'Crescita Sana',
-    description: 'Monitora la crescita e lo sviluppo dei tuoi bambini',
+    titleKey: 'onboarding.slide4.title',
+    descriptionKey: 'onboarding.slide4.description',
     imageUrl: 'https://images.unsplash.com/photo-1758743871361-bd24138a0cb7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwZWF0aW5nfGVufDB8fHx8MTc2MDQzMDAxOHww&ixlib=rb-4.1.0&q=85'
   }
 ];
@@ -54,6 +55,7 @@ export default function Onboarding() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     checkOnboardingStatus();
