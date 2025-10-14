@@ -132,7 +132,7 @@ export default function Diario() {
           {entries.length === 0 ? (
             <View style={styles.emptyState}>
               <Ionicons name="book-outline" size={64} color="#cbd5e1" />
-              <Text style={styles.emptyText}>Nessuna entry oggi</Text>
+              <Text style={styles.emptyText}>{t('diary.noEntries')}</Text>
               <Text style={styles.emptySubtext}>Inizia a tracciare i tuoi pasti!</Text>
             </View>
           ) : (
