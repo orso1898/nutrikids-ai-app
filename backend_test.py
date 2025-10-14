@@ -443,7 +443,15 @@ class NutriKidsBackendTester:
         # Test 8: Delete Child
         self.test_delete_child(child_id)
         
-        # Test 9: Error Cases
+        # Test 9: Admin Configuration Tests
+        print("\n=== Testing Admin Configuration Endpoints ===")
+        self.test_admin_config_get()
+        self.test_admin_config_update_single()
+        self.test_admin_config_update_multiple()
+        self.test_admin_config_get_single_value()
+        self.test_admin_config_get_nonexistent_key()
+        
+        # Test 10: Error Cases
         self.test_error_cases()
         
         # Summary
