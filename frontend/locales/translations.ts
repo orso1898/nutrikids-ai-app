@@ -1,5 +1,8 @@
 export const translations = {
   it: {
+    // Language code
+    language: 'it',
+    
     // Language Selection
     selectLanguage: 'Seleziona la tua lingua',
     continue: 'Continua',
