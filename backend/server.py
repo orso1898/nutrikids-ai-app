@@ -104,10 +104,27 @@ async def root():
 @api_router.post("/coach-maya", response_model=ChatResponse)
 async def coach_maya(chat_msg: ChatMessage):
     try:
-        system_message = """Sei Coach Maya, un'assistente AI specializzata in nutrizione infantile. 
-        Sei empatica, gentile e professionale. Fornisci consigli pratici e rassicuranti 
-        sulla nutrizione dei bambini. Rispondi sempre in italiano. Mantieni un tono caldo 
-        e comprensivo come in una conversazione WhatsApp. Risposte brevi e chiare."""
+        # System messages per lingua
+        language = chat_msg.language if hasattr(chat_msg, 'language') else 'it'
+        
+        system_messages = {
+            'it': """Sei Coach Maya, un'assistente AI specializzata in nutrizione infantile. 
+            Sei empatica, gentile e professionale. Fornisci consigli pratici e rassicuranti 
+            sulla nutrizione dei bambini. Rispondi sempre in italiano. Mantieni un tono caldo 
+            e comprensivo come in una conversazione WhatsApp. Risposte brevi e chiare.""",
+            
+            'en': """You are Coach Maya, an AI assistant specialized in children's nutrition. 
+            You are empathetic, kind and professional. Provide practical and reassuring advice 
+            about children's nutrition. Always respond in English. Maintain a warm and 
+            understanding tone like in a WhatsApp conversation. Keep responses short and clear.""",
+            
+            'es': """Eres Coach Maya, una asistente de IA especializada en nutrición infantil. 
+            Eres empática, amable y profesional. Proporciona consejos prácticos y tranquilizadores 
+            sobre la nutrición de los niños. Responde siempre en español. Mantén un tono cálido 
+            y comprensivo como en una conversación de WhatsApp. Respuestas breves y claras."""
+        }
+        
+        system_message = system_messages.get(language, system_messages['it'])
         
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
