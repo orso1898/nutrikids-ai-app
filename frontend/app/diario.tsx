@@ -261,6 +261,30 @@ export default function Diario() {
             </View>
           </View>
         </Modal>
+
+        {/* Photo Modal for enlarged view */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={photoModalVisible}
+          onRequestClose={() => setPhotoModalVisible(false)}
+        >
+          <View style={styles.photoModalOverlay}>
+            <TouchableOpacity 
+              style={styles.photoModalClose}
+              onPress={() => setPhotoModalVisible(false)}
+            >
+              <Ionicons name="close-circle" size={40} color="#fff" />
+            </TouchableOpacity>
+            {selectedPhoto && (
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${selectedPhoto}` }}
+                style={styles.enlargedPhoto}
+                resizeMode="contain"
+              />
+            )}
+          </View>
+        </Modal>
       </SafeAreaView>
     </LinearGradient>
   );
