@@ -233,6 +233,35 @@ async def delete_child(child_id: str):
         raise HTTPException(status_code=404, detail="Child not found")
     return {"message": "Child deleted"}
 
+# Admin - App Configuration
+@api_router.get("/admin/config", response_model=AppConfig)
+async def get_app_config():
+    config = await db.app_config.find_one({"id": "app_config"})
+    if not config:
+        # Create default config if doesn't exist
+        default_config = AppConfig(emergent_llm_key=EMERGENT_LLM_KEY)
+        await db.app_config.insert_one(default_config.dict())
+        return default_config
+    return AppConfig(**config)
+
+@api_router.put("/admin/config", response_model=AppConfig)
+async def update_app_config(config_update: AppConfigUpdate):
+    current_config = await db.app_config.find_one({"id": "app_config"})
+    if not current_config:
+        raise HTTPException(status_code=404, detail="Config not found")
+    
+    # Update only provided fields
+    update_data = {k: v for k, v in config_update.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.app_config.update_one(
+        {"id": "app_config"},
+        {"$set": update_data}
+    )
+    
+    updated_config = await db.app_config.find_one({"id": "app_config"})
+    return AppConfig(**updated_config)
+
 # Include router
 app.include_router(api_router)
 
