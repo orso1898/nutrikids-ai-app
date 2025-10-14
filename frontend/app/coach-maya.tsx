@@ -60,7 +60,8 @@ export default function CoachMaya() {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/coach-maya`, {
         user_email: userEmail,
-        message: inputText
+        message: inputText,
+        language: t('language') // Passa la lingua al backend
       });
 
       const botMessage: Message = {
