@@ -86,16 +86,16 @@ export default function Premium() {
 
           <View style={styles.pricingCard}>
             <View style={styles.pricingHeader}>
-              <Text style={styles.pricingLabel}>Piano Mensile</Text>
+              <Text style={styles.pricingLabel}>{t('premium.monthlyPlan')}</Text>
               <View style={styles.pricingBadge}>
                 <Text style={styles.badgeText}>Popolare</Text>
               </View>
             </View>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingPrice}>€9.99</Text>
+              <Text style={styles.pricingPrice}>{t('premium.monthlyPrice')}</Text>
               <Text style={styles.pricingPeriod}>/mese</Text>
             </View>
-            <Text style={styles.pricingSubtext}>Cancella in qualsiasi momento</Text>
+            <Text style={styles.pricingSubtext}>{t('premium.cancelAnytime')}</Text>
           </View>
 
           <View style={styles.pricingCard}>
