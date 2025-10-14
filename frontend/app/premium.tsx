@@ -100,16 +100,16 @@ export default function Premium() {
 
           <View style={styles.pricingCard}>
             <View style={styles.pricingHeader}>
-              <Text style={styles.pricingLabel}>Piano Annuale</Text>
+              <Text style={styles.pricingLabel}>{t('premium.yearlyPlan')}</Text>
               <View style={[styles.pricingBadge, styles.savingBadge]}>
-                <Text style={styles.badgeText}>Risparmia 40%</Text>
+                <Text style={styles.badgeText}>{t('premium.savePercent')}</Text>
               </View>
             </View>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingPrice}>€5.99</Text>
+              <Text style={styles.pricingPrice}>{t('premium.yearlyPrice')}</Text>
               <Text style={styles.pricingPeriod}>/mese</Text>
             </View>
-            <Text style={styles.pricingSubtext}>Fatturato €71.88 all'anno</Text>
+            <Text style={styles.pricingSubtext}>{t('premium.billedYearly')}</Text>
           </View>
 
           <Text style={styles.featuresTitle}>Tutto quello che ottieni:</Text>
