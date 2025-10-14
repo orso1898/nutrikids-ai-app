@@ -151,11 +151,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 40,
     paddingBottom: 40,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   greetingsContainer: {
     alignItems: 'center',
-    paddingVertical: 40,
+    marginBottom: 32,
   },
   greetingBox: {
     alignItems: 'center',
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   greetingTextLarge: {
-    fontSize: 48,
+    fontSize: 42,
     color: '#fff',
     fontWeight: 'bold',
     marginVertical: 8,
@@ -177,16 +177,15 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 12,
   },
   languagesContainer: {
-    flex: 1,
-    justifyContent: 'center',
     gap: 16,
+    marginBottom: 32,
   },
   languageButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
