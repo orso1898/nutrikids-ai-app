@@ -637,7 +637,18 @@ export const translations = {
       noEntries: 'No hay comidas registradas hoy',
       addMeal: 'Agregar Comida',
       viewPhoto: 'Ver Foto',
-      nutritionalDetails: 'Detalles Nutricionales'
+      nutritionalDetails: 'Detalles Nutricionales',
+      mealType: 'Tipo de comida',
+      description: 'Descripción',
+      descriptionPlaceholder: 'Ej.: Pasta con tomate y verduras',
+      saving: 'Guardando...',
+      mealTypes: {
+        colazione: 'Desayuno',
+        spuntino: 'Merienda',
+        pranzo: 'Almuerzo',
+        merenda: 'Merienda',
+        cena: 'Cena'
+      }
     },
 
     // Dashboard
