@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal, Alert, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +14,14 @@ interface DiaryEntry {
   meal_type: string;
   description: string;
   date: string;
+  photo_base64?: string;
+  nutritional_info?: {
+    calories: number;
+    proteins: number;
+    carbs: number;
+    fats: number;
+    fiber: number;
+  };
 }
 
 const mealTypes = [
