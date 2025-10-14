@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Language } from '../locales/translations';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const greetings = {
   it: ['Ciao', 'Benvenuto', 'Buongiorno'],
@@ -24,9 +25,10 @@ export default function LanguageSelection() {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('it');
   const router = useRouter();
+  const { setLanguage: setContextLanguage } = useLanguage();
 
   useEffect(() => {
-    // Cycle through greetings
+    // Cicla attraverso i saluti
     const interval = setInterval(() => {
       Animated.sequence([
         Animated.timing(fadeAnim, {
@@ -44,7 +46,7 @@ export default function LanguageSelection() {
       setCurrentGreeting((prev) => (prev + 1) % 3);
     }, 2000);
 
-    // Initial fade in
+    // Fade in iniziale
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
@@ -56,11 +58,20 @@ export default function LanguageSelection() {
 
   const handleContinue = async () => {
     try {
-      await AsyncStorage.setItem('appLanguage', selectedLanguage);
+      console.log('🌍 Saving selected language:', selectedLanguage);
+      
+      // Usa setLanguage del context che aggiorna sia AsyncStorage che lo stato
+      await setContextLanguage(selectedLanguage);
+      
+      // Salva anche il flag che la lingua è stata selezionata
       await AsyncStorage.setItem('hasSelectedLanguage', 'true');
+      
+      console.log('✅ Language saved and context updated');
+      
+      // Naviga all'onboarding
       router.replace('/');
     } catch (error) {
-      console.error('Error saving language:', error);
+      console.error('❌ Error saving language:', error);
     }
   };
 
