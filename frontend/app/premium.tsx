@@ -112,7 +112,7 @@ export default function Premium() {
             <Text style={styles.pricingSubtext}>{t('premium.billedYearly')}</Text>
           </View>
 
-          <Text style={styles.featuresTitle}>Tutto quello che ottieni:</Text>
+          <Text style={styles.featuresTitle}>{t('premium.featuresTitle')}</Text>
 
           <View style={styles.featuresGrid}>
             {features.map((feature, index) => (
