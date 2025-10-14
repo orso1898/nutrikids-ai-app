@@ -131,25 +131,24 @@ export default function Profilo() {
       console.log('🔄 Starting app reset...');
       
       // Conferma prima di resettare
-      const confirmReset = () => {
-        return new Promise((resolve) => {
-          try {
-            const confirmed = window.confirm('Sei sicuro di voler resettare l\'app? Perderai tutti i dati e tornerai alla selezione lingua.');
-            resolve(confirmed);
-          } catch (e) {
-            Alert.alert(
-              'Reset App',
-              'Sei sicuro di voler resettare l\'app? Perderai tutti i dati.',
-              [
-                { text: 'Annulla', style: 'cancel', onPress: () => resolve(false) },
-                { text: 'Reset', style: 'destructive', onPress: () => resolve(true) }
-              ]
-            );
-          }
+      let confirmed = false;
+      
+      try {
+        confirmed = window.confirm('Sei sicuro di voler resettare l\'app? Perderai tutti i dati e tornerai alla selezione lingua.');
+      } catch (e) {
+        // Su mobile usa Alert
+        await new Promise((resolve) => {
+          Alert.alert(
+            'Reset App',
+            'Sei sicuro di voler resettare l\'app? Perderai tutti i dati.',
+            [
+              { text: 'Annulla', style: 'cancel', onPress: () => { confirmed = false; resolve(null); } },
+              { text: 'Reset', style: 'destructive', onPress: () => { confirmed = true; resolve(null); } }
+            ]
+          );
         });
-      };
+      }
 
-      const confirmed = await confirmReset();
       if (!confirmed) {
         console.log('❌ Reset cancelled by user');
         return;
@@ -162,27 +161,18 @@ export default function Profilo() {
       
       console.log('✅ AsyncStorage cleared successfully');
       
-      // Verifica che sia stato cancellato
-      const check = await AsyncStorage.getAllKeys();
-      console.log('📋 Remaining keys after clear:', check);
-      
       // Messaggio di conferma
       try {
-        window.alert('App resettata! La pagina verrà ricaricata...');
+        window.alert('App resettata! Riavvio in corso...');
       } catch (e) {
         Alert.alert('Successo', 'App resettata completamente');
       }
       
-      // Su web, facciamo un reload della pagina
-      if (typeof window !== 'undefined' && window.location) {
-        console.log('🔄 Reloading page...');
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
-      } else {
-        // Su mobile, usa router
-        router.replace('/language-selection');
-      }
+      // Usa semplicemente router push con delay per dare tempo al clear
+      setTimeout(() => {
+        router.push('/language-selection');
+      }, 500);
+      
     } catch (error) {
       console.error('❌ Reset error:', error);
       try {
