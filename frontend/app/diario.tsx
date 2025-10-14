@@ -113,7 +113,7 @@ export default function Diario() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Diario Alimentare</Text>
+          <Text style={styles.headerTitle}>{t('diary.title')}</Text>
           <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
             <Ionicons name="add" size={28} color="#fff" />
           </TouchableOpacity>
