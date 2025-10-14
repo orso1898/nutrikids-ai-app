@@ -75,6 +75,9 @@ export const translations = {
       savePercent: 'Risparmia 40%',
       billedYearly: 'Fatturato €49,99 all\'anno',
       trialText: '7 giorni di prova gratuita, poi €5,99/mese. Cancella in qualsiasi momento.',
+      featuresTitle: 'Tutto quello che ottieni:',
+      startFreeTrial: 'Inizia Prova Gratuita',
+      disclaimer: '7 giorni di prova gratuita, poi €5,99/mese. Cancella in qualsiasi momento.',
       features: {
         coachUnlimited: 'Coach Maya Illimitato',
         scannerUnlimited: 'Scanner Illimitato',
