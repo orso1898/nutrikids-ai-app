@@ -57,6 +57,7 @@ const features: Feature[] = [
 
 export default function Premium() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <LinearGradient colors={['#eab308', '#ca8a04']} style={styles.container}>
