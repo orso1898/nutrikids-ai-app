@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -24,6 +25,7 @@ export default function Profilo() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { userEmail, isAdmin, logout } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
     loadChildren();
