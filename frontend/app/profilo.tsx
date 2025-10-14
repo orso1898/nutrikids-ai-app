@@ -95,8 +95,7 @@ export default function Profilo() {
 
   const handleLogout = async () => {
     try {
-      const confirmLogout = window.confirm('Sei sicuro di voler uscire?');
-      if (!confirmLogout) return;
+      console.log('🚪 Starting logout...');
       
       await logout();
       
@@ -121,6 +120,56 @@ export default function Profilo() {
         window.alert('Errore durante il logout');
       } catch (e) {
         Alert.alert('Errore', 'Errore durante il logout');
+      }
+    }
+  };
+
+  const handleReset = async () => {
+    try {
+      console.log('🔄 Starting app reset...');
+      
+      // Conferma prima di resettare
+      const confirmReset = () => {
+        return new Promise((resolve) => {
+          try {
+            const confirmed = window.confirm('Sei sicuro di voler resettare l\'app? Perderai tutti i dati e tornerai alla selezione lingua.');
+            resolve(confirmed);
+          } catch (e) {
+            Alert.alert(
+              'Reset App',
+              'Sei sicuro di voler resettare l\'app? Perderai tutti i dati.',
+              [
+                { text: 'Annulla', style: 'cancel', onPress: () => resolve(false) },
+                { text: 'Reset', style: 'destructive', onPress: () => resolve(true) }
+              ]
+            );
+          }
+        });
+      };
+
+      const confirmed = await confirmReset();
+      if (!confirmed) return;
+
+      // Cancella TUTTO da AsyncStorage
+      await AsyncStorage.clear();
+      
+      console.log('✅ AsyncStorage cleared');
+      
+      // Messaggio di conferma
+      try {
+        window.alert('App resettata! Riavvio in corso...');
+      } catch (e) {
+        Alert.alert('Successo', 'App resettata completamente');
+      }
+      
+      // Vai alla selezione lingua
+      router.replace('/language-selection');
+    } catch (error) {
+      console.error('Reset error:', error);
+      try {
+        window.alert('Errore durante il reset');
+      } catch (e) {
+        Alert.alert('Errore', 'Errore durante il reset');
       }
     }
   };
