@@ -145,7 +145,18 @@ export const translations = {
       noEntries: 'Nessun pasto registrato per oggi',
       addMeal: 'Aggiungi Pasto',
       viewPhoto: 'Visualizza Foto',
-      nutritionalDetails: 'Dettagli Nutrizionali'
+      nutritionalDetails: 'Dettagli Nutrizionali',
+      mealType: 'Tipo di pasto',
+      description: 'Descrizione',
+      descriptionPlaceholder: 'Es: Pasta al pomodoro con verdure',
+      saving: 'Salvataggio...',
+      mealTypes: {
+        colazione: 'Colazione',
+        spuntino: 'Spuntino',
+        pranzo: 'Pranzo',
+        merenda: 'Merenda',
+        cena: 'Cena'
+      }
     },
 
     // Dashboard
