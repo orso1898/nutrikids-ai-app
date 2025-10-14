@@ -585,12 +585,101 @@ export const translations = {
       yourFunctions: 'Tus Funciones',
       children: 'Tus Niños',
       addChild: 'Agregar Niño',
+      childName: 'Nombre del niño',
+      childAge: 'Edad',
       settings: 'Configuración',
       helpSupport: 'Ayuda y Soporte',
       appInfo: 'Info de la App',
       logout: 'Cerrar Sesión',
       reset: 'Resetear App',
-      adminDashboard: 'Panel de Administración'
+      adminDashboard: 'Panel de Administración',
+      noChildren: '¡Aún no hay niños. Agrega el primero!',
+      administration: 'Administración',
+      adminDashboardSubtitle: 'Estadísticas y gestión'
+    },
+
+    // Diary
+    diary: {
+      title: 'Diario Alimentario',
+      subtitle: 'Rastrea las comidas de tus niños',
+      today: 'Hoy',
+      noEntries: 'No hay comidas registradas hoy',
+      addMeal: 'Agregar Comida',
+      viewPhoto: 'Ver Foto',
+      nutritionalDetails: 'Detalles Nutricionales'
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Panel',
+      subtitle: 'Estadísticas y tendencias',
+      comingSoon: 'Próximamente',
+      description: 'Aquí encontrarás gráficos y estadísticas nutricionales'
+    },
+
+    // Plans
+    plans: {
+      title: 'Planes Nutricionales',
+      subtitle: 'Planes semanales personalizados',
+      comingSoon: 'Próximamente',
+      description: 'Planes nutricionales personalizados para tus niños'
+    },
+
+    // Settings
+    settings: {
+      title: 'Configuración',
+      subtitle: 'Configura tu app',
+      language: 'Idioma',
+      notifications: 'Notificaciones',
+      privacy: 'Privacidad',
+      comingSoon: 'Próximamente'
+    },
+
+    // Help & Support
+    helpSupport: {
+      title: 'Ayuda y Soporte',
+      subtitle: 'Te ayudamos a usar la app',
+      faq: 'Preguntas Frecuentes',
+      contact: 'Contáctanos',
+      comingSoon: 'Próximamente'
+    },
+
+    // App Info
+    appInfo: {
+      title: 'Info de la App',
+      subtitle: 'Sobre NutriKids AI',
+      version: 'Versión',
+      developer: 'Desarrollado por',
+      description: 'NutriKids AI es tu app de referencia para la nutrición infantil'
+    },
+
+    // Admin Dashboard
+    adminDashboard: {
+      title: 'Panel de Administración',
+      subtitle: 'Panel de control',
+      configurations: 'Configuraciones',
+      stats: 'Estadísticas',
+      users: 'Usuarios'
+    },
+
+    // Admin Config
+    adminConfig: {
+      title: 'Configuraciones Admin',
+      subtitle: 'Gestiona la configuración de la app',
+      apiKeys: 'Claves API',
+      pricing: 'Precios Premium',
+      limits: 'Límites',
+      emergentKey: 'Clave Emergent LLM',
+      monthlyPrice: 'Precio Mensual',
+      yearlyPrice: 'Precio Anual',
+      openaiModel: 'Modelo OpenAI',
+      visionModel: 'Modelo Vision',
+      maxScans: 'Escaneos Gratuitos Máx',
+      maxMessages: 'Mensajes Gratuitos Máx/Día',
+      maxChildren: 'Niños Gratuitos Máx',
+      saveChanges: 'Guardar Cambios',
+      savingChanges: 'Guardando...',
+      changesSaved: '¡Cambios guardados!'
     },
 
     // Common
@@ -602,7 +691,8 @@ export const translations = {
     close: 'Cerrar',
     loading: 'Cargando...',
     error: 'Error',
-    success: 'Éxito'
+    success: 'Éxito',
+    confirm: 'Confirmar'
   }
 };
 
