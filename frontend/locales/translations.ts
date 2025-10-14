@@ -235,6 +235,9 @@ export const translations = {
   },
 
   en: {
+    // Language code
+    language: 'en',
+    
     // Language Selection
     selectLanguage: 'Select your language',
     continue: 'Continue',
