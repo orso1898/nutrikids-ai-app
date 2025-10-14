@@ -234,15 +234,18 @@ test_plan:
 
   - task: "Admin Configuration Panel"
     implemented: true
-    working: false
+    working: true
     file: "backend/server.py, frontend/app/admin-config.tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented admin configuration endpoints (GET /api/admin/config, PUT /api/admin/config) with AppConfig model for managing API keys, pricing, and limits. Frontend screen admin-config.tsx created with form inputs for all configuration fields. Navigation button added to admin-dashboard.tsx."
+        - working: true
+          agent: "testing"
+          comment: "All admin configuration endpoints tested successfully: GET /api/admin/config returns correct default values (premium_monthly_price: 9.99, premium_yearly_price: 71.88, openai_model: gpt-4o-mini, vision_model: gpt-4o, max_free_scans: 5). PUT /api/admin/config works for both single and multiple field updates with proper persistence. GET /api/admin/config/{key} correctly retrieves individual values and returns 404 for non-existent keys. All CRUD operations working perfectly with MongoDB persistence and proper updated_at timestamp handling."
 
 agent_communication:
     - agent: "testing"
