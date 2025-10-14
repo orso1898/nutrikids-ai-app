@@ -72,26 +72,18 @@ export default function LanguageSelection() {
     <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Animated Greetings */}
+          {/* Animated Greetings - compatti in alto */}
           <View style={styles.greetingsContainer}>
             <Animated.View style={[styles.greetingBox, { opacity: fadeAnim }]}>
-              {allGreetings.map((greeting, index) => (
-                <Text 
-                  key={index} 
-                  style={[
-                    styles.greetingText,
-                    index === 0 && styles.greetingTextLarge
-                  ]}
-                >
-                  {greeting}
-                </Text>
-              ))}
+              <Text style={styles.greetingTextLarge}>
+                {allGreetings[0]}
+              </Text>
             </Animated.View>
           </View>
 
           {/* Language Selection Title */}
           <View style={styles.titleContainer}>
-            <Ionicons name="globe-outline" size={32} color="#fff" />
+            <Ionicons name="globe-outline" size={28} color="#fff" />
             <Text style={styles.title}>
               {selectedLanguage === 'it' && 'Seleziona la tua lingua'}
               {selectedLanguage === 'en' && 'Select your language'}
@@ -99,7 +91,7 @@ export default function LanguageSelection() {
             </Text>
           </View>
 
-          {/* Language Options */}
+          {/* Language Options - centrate */}
           <View style={styles.languagesContainer}>
             {(['it', 'en', 'es'] as Language[]).map((lang) => (
               <TouchableOpacity
