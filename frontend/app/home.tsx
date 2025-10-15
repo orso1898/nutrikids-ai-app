@@ -144,9 +144,10 @@ export default function Home() {
             <Animated.View
               key={card.id}
               entering={FadeInDown.delay(300 + index * 100).duration(600).springify()}
+              style={styles.card}
             >
               <TouchableOpacity
-                style={styles.card}
+                style={{ flex: 1 }}
                 onPress={() => handleCardPress(card.route)}
                 activeOpacity={0.8}
               >
