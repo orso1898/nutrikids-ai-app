@@ -357,7 +357,7 @@ export const translations = {
       yearlyPrice: '€49.99',
       perYear: '/year',
       savePercent: 'Save 40%',
-      billedYearly: 'Billed €49.99 per year',
+      billedYearly: 'Annual payment',
       trialText: '7-day free trial, then €5.99/month. Cancel anytime.',
       featuresTitle: 'Everything you get:',
       startFreeTrial: 'Start Free Trial',
