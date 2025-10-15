@@ -73,6 +73,23 @@ export default function Home() {
   const router = useRouter();
   const { userEmail, isAdmin } = useAuth();
   const { t } = useLanguage();
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    // Subtle pulse animation for profile button
+    scale.value = withRepeat(
+      withSequence(
+        withSpring(1.05, { damping: 8 }),
+        withSpring(1, { damping: 8 })
+      ),
+      -1,
+      false
+    );
+  }, []);
+
+  const animatedProfileStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   const handleCardPress = (route: string) => {
     router.push(route as any);
@@ -81,7 +98,10 @@ export default function Home() {
   return (
     <LinearGradient colors={['#f0fdf4', '#dcfce7']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
+        <Animated.View 
+          entering={FadeInUp.duration(600).springify()}
+          style={styles.header}
+        >
           <View style={styles.headerContent}>
             <Text style={styles.greeting}>
               {userEmail?.split('@')[0] ? 
@@ -97,41 +117,50 @@ export default function Home() {
               </View>
             )}
           </View>
-          <TouchableOpacity 
-            style={styles.profileButton}
-            onPress={() => router.push('/profilo')}
-          >
-            <Ionicons name="person-circle" size={40} color="#10b981" />
-          </TouchableOpacity>
-        </View>
+          <Animated.View style={animatedProfileStyle}>
+            <TouchableOpacity 
+              style={styles.profileButton}
+              onPress={() => router.push('/profilo')}
+            >
+              <Ionicons name="person-circle" size={40} color="#10b981" />
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
 
-        <View style={styles.titleContainer}>
+        <Animated.View 
+          entering={FadeInDown.delay(200).duration(600).springify()}
+          style={styles.titleContainer}
+        >
           <Text style={styles.title}>{t('home.title')}</Text>
           <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-        </View>
+        </Animated.View>
 
         <ScrollView 
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.cardsContainer}
         >
-          {cards.map((card) => (
-            <TouchableOpacity
+          {cards.map((card, index) => (
+            <Animated.View
               key={card.id}
-              style={styles.card}
-              onPress={() => handleCardPress(card.route)}
-              activeOpacity={0.8}
+              entering={FadeInDown.delay(300 + index * 100).duration(600).springify()}
             >
-              <LinearGradient
-                colors={card.gradient}
-                style={styles.cardGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => handleCardPress(card.route)}
+                activeOpacity={0.8}
               >
-                <Ionicons name={card.icon} size={48} color="#fff" />
-                <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={card.gradient}
+                  style={styles.cardGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name={card.icon} size={48} color="#fff" />
+                  <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </ScrollView>
       </SafeAreaView>
