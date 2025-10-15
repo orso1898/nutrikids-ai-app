@@ -166,14 +166,30 @@ export default function Scanner() {
           contentContainerStyle={styles.scrollContent}
         >
           {!photoUri ? (
-            <View style={styles.emptyState}>
-              <Ionicons name="camera" size={80} color="#fff" />
-              <Text style={styles.emptyTitle}>{t('scanner.subtitle')}</Text>
-              <Text style={styles.emptySubtitle}>
+            <Animated.View 
+              entering={FadeIn.duration(600)}
+              style={styles.emptyState}
+            >
+              <Animated.View entering={ZoomIn.delay(200).springify()}>
+                <Ionicons name="camera" size={80} color="#fff" />
+              </Animated.View>
+              <Animated.Text 
+                entering={FadeInDown.delay(400).springify()}
+                style={styles.emptyTitle}
+              >
+                {t('scanner.subtitle')}
+              </Animated.Text>
+              <Animated.Text 
+                entering={FadeInDown.delay(500).springify()}
+                style={styles.emptySubtitle}
+              >
                 {t('scanner.description')}
-              </Text>
+              </Animated.Text>
 
-              <View style={styles.buttonsContainer}>
+              <Animated.View 
+                entering={FadeInUp.delay(600).springify()}
+                style={styles.buttonsContainer}
+              >
                 <TouchableOpacity style={styles.primaryButton} onPress={takePicture}>
                   <Ionicons name="camera" size={24} color="#fff" />
                   <Text style={styles.buttonText}>{t('scanner.takePhoto')}</Text>
@@ -183,30 +199,42 @@ export default function Scanner() {
                   <Ionicons name="images" size={24} color="#10b981" />
                   <Text style={styles.secondaryButtonText}>{t('scanner.fromGallery')}</Text>
                 </TouchableOpacity>
-              </View>
-            </View>
+              </Animated.View>
+            </Animated.View>
           ) : (
             <View style={styles.analysisContainer}>
-              <View style={styles.photoCard}>
+              <Animated.View 
+                entering={FadeIn.duration(500)}
+                style={styles.photoCard}
+              >
                 <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" />
-              </View>
+              </Animated.View>
 
               {!result && !analyzing && (
-                <TouchableOpacity style={styles.analyzeButton} onPress={analyzePhoto}>
-                  <Ionicons name="analytics" size={24} color="#fff" />
-                  <Text style={styles.analyzeButtonText}>Analizza con AI</Text>
-                </TouchableOpacity>
+                <Animated.View entering={SlideInRight.springify()}>
+                  <TouchableOpacity style={styles.analyzeButton} onPress={analyzePhoto}>
+                    <Ionicons name="analytics" size={24} color="#fff" />
+                    <Text style={styles.analyzeButtonText}>Analizza con AI</Text>
+                  </TouchableOpacity>
+                </Animated.View>
               )}
 
               {analyzing && (
-                <View style={styles.loadingCard}>
+                <Animated.View 
+                  entering={FadeIn}
+                  exiting={FadeOut}
+                  style={styles.loadingCard}
+                >
                   <ActivityIndicator size="large" color="#10b981" />
                   <Text style={styles.loadingText}>Analisi in corso con GPT-4o Vision...</Text>
-                </View>
+                </Animated.View>
               )}
 
               {result && (
-                <View style={styles.resultsContainer}>
+                <Animated.View 
+                  entering={FadeInDown.duration(600).springify()}
+                  style={styles.resultsContainer}
+                >
                   <View style={styles.scoreCard}>
                     <View style={styles.scoreCircle}>
                       <Text style={styles.scoreNumber}>{result.health_score}</Text>
