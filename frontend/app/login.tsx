@@ -272,4 +272,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
   },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  registerText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 14,
+  },
+  registerLink: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });
