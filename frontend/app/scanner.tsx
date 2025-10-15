@@ -298,7 +298,7 @@ export default function Scanner() {
                         <Text style={styles.nutritionLabel}>Fibre</Text>
                       </View>
                     </View>
-                  </View>
+                  </Animated.View>
 
                   <Animated.View 
                     entering={FadeInDown.delay(600).springify()}
