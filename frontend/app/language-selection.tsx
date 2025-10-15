@@ -83,11 +83,17 @@ export default function LanguageSelection() {
     <LinearGradient colors={['#10b981', '#059669', '#047857']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Animated Greetings - compatti in alto */}
+          {/* Animated Greetings - tutti e 3 i saluti */}
           <View style={styles.greetingsContainer}>
             <Animated.View style={[styles.greetingBox, { opacity: fadeAnim }]}>
               <Text style={styles.greetingTextLarge}>
-                {allGreetings[0]}
+                {greetings.it[currentGreeting]}
+              </Text>
+              <Text style={styles.greetingTextMedium}>
+                {greetings.en[currentGreeting]}
+              </Text>
+              <Text style={styles.greetingTextMedium}>
+                {greetings.es[currentGreeting]}
               </Text>
             </Animated.View>
           </View>
