@@ -673,6 +673,12 @@ const styles = StyleSheet.create({
     color: '#64748b',
     lineHeight: 18,
   },
+  helpText: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
