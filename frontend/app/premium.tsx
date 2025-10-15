@@ -22,10 +22,10 @@ export default function Premium() {
 
   const loadPricing = async () => {
     try {
-      // Prova a caricare i prezzi dall'API (pubblici, senza auth)
-      const response = await axios.get(`${BACKEND_URL}/api/admin/config`);
-      setMonthlyPrice(response.data.premium_monthly_price || 5.99);
-      setYearlyPrice(response.data.premium_yearly_price || 49.99);
+      // Carica i prezzi dall'endpoint pubblico
+      const response = await axios.get(`${BACKEND_URL}/api/pricing`);
+      setMonthlyPrice(response.data.monthly_price || 5.99);
+      setYearlyPrice(response.data.yearly_price || 49.99);
     } catch (error) {
       // Se fallisce, usa i prezzi di default
       console.log('Using default prices');
