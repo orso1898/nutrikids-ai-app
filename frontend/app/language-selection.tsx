@@ -189,6 +189,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 8,
   },
+  greetingTextMedium: {
+    fontSize: 24,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+    marginVertical: 4,
+  },
   titleContainer: {
     alignItems: 'center',
     marginBottom: 32,
