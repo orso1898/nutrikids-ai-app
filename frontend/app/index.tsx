@@ -54,6 +54,8 @@ const slides: Slide[] = [
 export default function Onboarding() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isChecking, setIsChecking] = useState(true);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
   const router = useRouter();
   const { t } = useLanguage();
 
