@@ -25,9 +25,45 @@ db = client[os.environ['DB_NAME']]
 # LLM Key
 EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+# Auth Models
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+    name: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    email: str
+    name: Optional[str]
+    created_at: datetime
+    is_premium: bool = False
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    reset_code: str
+    new_password: str
+
+class UserInDB(BaseModel):
+    email: str
+    hashed_password: str
+    name: Optional[str]
+    created_at: datetime
+    is_premium: bool = False
+    reset_code: Optional[str] = None
+    reset_code_expires: Optional[datetime] = None
 
 # Models
 class ChatMessage(BaseModel):
