@@ -174,7 +174,15 @@ export default function Onboarding() {
           <Text style={styles.skipText}>{t('skip')}</Text>
         </TouchableOpacity>
 
-        <View style={styles.slideContainer}>
+        <Animated.View 
+          style={[
+            styles.slideContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateX: slideAnim }]
+            }
+          ]}
+        >
           {/* Image card with rounded corners */}
           <View style={styles.imageCard}>
             <Image 
@@ -196,7 +204,7 @@ export default function Onboarding() {
               <Text style={styles.description}>{t(currentSlide.descriptionKey)}</Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
         <View style={styles.bottomContainer}>
           <View style={styles.pagination}>
