@@ -233,4 +233,23 @@ const styles = StyleSheet.create({
   },
   ctaButtonText: { fontSize: 18, fontWeight: 'bold', color: '#eab308' },
   disclaimer: { fontSize: 12, color: 'rgba(255, 255, 255, 0.8)', textAlign: 'center', marginTop: 16, marginHorizontal: 32, lineHeight: 18 },
+  loadingCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginHorizontal: 16,
+    padding: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    gap: 12,
+  },
+  loadingText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  savingsText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#10b981',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
 });
