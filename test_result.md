@@ -116,6 +116,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "GET /api/ endpoint working correctly, returns proper NutriKids AI Backend message"
+        - working: true
+          agent: "testing"
+          comment: "Re-tested after UI improvements: Health check endpoint working perfectly, returns correct NutriKids AI Backend message"
 
   - task: "Coach Maya AI Chatbot"
     implemented: true
