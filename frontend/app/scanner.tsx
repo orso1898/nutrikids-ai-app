@@ -8,6 +8,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  FadeInDown,
+  FadeInUp,
+  SlideInRight,
+  ZoomIn,
+} from 'react-native-reanimated';
 
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
