@@ -250,6 +250,45 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "All admin configuration endpoints tested successfully: GET /api/admin/config returns correct default values (premium_monthly_price: 9.99, premium_yearly_price: 71.88, openai_model: gpt-4o-mini, vision_model: gpt-4o, max_free_scans: 5). PUT /api/admin/config works for both single and multiple field updates with proper persistence. GET /api/admin/config/{key} correctly retrieves individual values and returns 404 for non-existent keys. All CRUD operations working perfectly with MongoDB persistence and proper updated_at timestamp handling."
+        - working: true
+          agent: "testing"
+          comment: "Re-tested after UI improvements: Admin config endpoints working perfectly. Minor: config values were modified by previous tests (premium_monthly_price: 14.99, max_free_scans: 10) but all CRUD operations function correctly."
+
+  - task: "User Registration API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/register endpoint working correctly. Successfully creates users with hashed passwords, proper validation, and returns correct user data. Handles duplicate email registration appropriately with 400 status."
+
+  - task: "User Login API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/login endpoint working correctly. Successfully authenticates users with bcrypt password verification, returns proper user data including premium status and creation date."
+
+  - task: "Photo Analysis API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/analyze-photo endpoint working correctly with GPT-4o vision model. Successfully processes base64 images, returns structured nutritional analysis with foods detected, nutritional info, suggestions in Italian, and health score. Fallback mechanism works when JSON parsing fails."
 
 agent_communication:
     - agent: "testing"
