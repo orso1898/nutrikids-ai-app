@@ -81,6 +81,10 @@ class ResetPasswordRequest(BaseModel):
     reset_code: str
     new_password: str
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
 class UserInDB(BaseModel):
     email: str
     hashed_password: str
