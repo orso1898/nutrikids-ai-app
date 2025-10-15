@@ -6,6 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -41,7 +44,7 @@ export default function Login() {
 
     if (!password.trim() || password.length < 4) {
       try {
-        window.alert(t('login.invalidEmail'));
+        window.alert('Password deve essere almeno 4 caratteri');
       } catch (e) {
         Alert.alert(t('error'), 'Password troppo corta');
       }
@@ -50,13 +53,34 @@ export default function Login() {
 
     setLoading(true);
     try {
+      console.log('🔐 Attempting login for:', email);
+      
+      // Call backend API to verify credentials
+      const response = await axios.post(`${BACKEND_URL}/api/login`, {
+        email: email,
+        password: password
+      });
+      
+      console.log('✅ Login successful:', response.data);
+      
+      // Save email in AsyncStorage via AuthContext
       await login(email);
+      
       router.replace('/home');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      
+      let errorMessage = 'Credenziali non valide';
+      if (error.response?.status === 401) {
+        errorMessage = 'Email o password errate';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
       try {
-        window.alert(t('error'));
+        window.alert(errorMessage);
       } catch (e) {
-        Alert.alert(t('error'), 'Errore durante il login');
+        Alert.alert(t('error'), errorMessage);
       }
     } finally {
       setLoading(false);
