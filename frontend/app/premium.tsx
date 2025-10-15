@@ -1,14 +1,38 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useLanguage } from '../contexts/LanguageContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 export default function Premium() {
   const router = useRouter();
   const { t } = useLanguage();
+  const [monthlyPrice, setMonthlyPrice] = useState<number>(5.99);
+  const [yearlyPrice, setYearlyPrice] = useState<number>(49.99);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadPricing();
+  }, []);
+
+  const loadPricing = async () => {
+    try {
+      // Prova a caricare i prezzi dall'API (pubblici, senza auth)
+      const response = await axios.get(`${BACKEND_URL}/api/admin/config`);
+      setMonthlyPrice(response.data.premium_monthly_price || 5.99);
+      setYearlyPrice(response.data.premium_yearly_price || 49.99);
+    } catch (error) {
+      // Se fallisce, usa i prezzi di default
+      console.log('Using default prices');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const features = [
     { icon: 'bar-chart' as const, titleKey: 'premium.features.advancedCharts', descKey: 'premium.features.advancedChartsDesc' },
