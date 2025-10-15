@@ -8,18 +8,125 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <LanguageProvider>
         <AuthProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="language-selection" />
-            <Stack.Screen name="login" />
-            <Stack.Screen name="home" />
-            <Stack.Screen name="coach-maya" />
-            <Stack.Screen name="scanner" />
-            <Stack.Screen name="piani" />
-            <Stack.Screen name="diario" />
-            <Stack.Screen name="dashboard" />
-            <Stack.Screen name="premium" />
-            <Stack.Screen name="profilo" />
+          <Stack 
+            screenOptions={{ 
+              headerShown: false,
+              animation: 'slide_from_right',
+              animationDuration: 300,
+              gestureEnabled: true,
+              gestureDirection: 'horizontal',
+              customAnimationOnGesture: true,
+              fullScreenGestureEnabled: false,
+            }}
+          >
+            <Stack.Screen 
+              name="index" 
+              options={{
+                animation: 'fade',
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen 
+              name="language-selection" 
+              options={{
+                animation: 'fade',
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen 
+              name="login" 
+              options={{
+                animation: 'slide_from_bottom',
+                animationDuration: 350,
+              }}
+            />
+            <Stack.Screen 
+              name="register" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="home" 
+              options={{
+                animation: 'fade',
+                animationDuration: 400,
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen 
+              name="coach-maya" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="scanner" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="piani" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="diario" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="dashboard" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="premium" 
+              options={{
+                animation: 'slide_from_bottom',
+                animationDuration: 350,
+              }}
+            />
+            <Stack.Screen 
+              name="profilo" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="admin-dashboard" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="admin-config" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="impostazioni" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="info-app" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="aiuto-supporto" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
           </Stack>
         </AuthProvider>
       </LanguageProvider>
