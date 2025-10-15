@@ -15,7 +15,14 @@ interface AppConfig {
   premium_yearly_price: number;
   openai_model: string;
   vision_model: string;
-  max_free_scans: number;
+  // Limiti FREE
+  max_free_scans_daily: number;
+  max_free_coach_messages_daily: number;
+  max_free_children: number;
+  // Limiti PREMIUM
+  max_premium_scans_daily: number;
+  max_premium_coach_messages_daily: number;
+  max_premium_children: number;
 }
 
 export default function AdminConfig() {
