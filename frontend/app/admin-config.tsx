@@ -23,7 +23,7 @@ export default function AdminConfig() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
-  const { isAdmin } = useAuth();
+  const { isAdmin, userEmail } = useAuth();
 
   useEffect(() => {
     if (!isAdmin) {
@@ -35,15 +35,20 @@ export default function AdminConfig() {
 
   const loadConfig = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/admin/config`);
+      const response = await axios.get(`${BACKEND_URL}/api/admin/config`, {
+        headers: {
+          'X-User-Email': userEmail || ''
+        }
+      });
       console.log('Config loaded:', response.data);
       setConfig(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading config:', error);
+      const errorMsg = error.response?.data?.detail || 'Errore nel caricamento delle configurazioni';
       try {
-        window.alert('Errore nel caricamento delle configurazioni');
+        window.alert(errorMsg);
       } catch (e) {
-        Alert.alert('Errore', 'Impossibile caricare le configurazioni');
+        Alert.alert('Errore', errorMsg);
       }
     } finally {
       setLoading(false);
@@ -55,19 +60,24 @@ export default function AdminConfig() {
     
     setSaving(true);
     try {
-      await axios.put(`${BACKEND_URL}/api/admin/config`, config);
+      await axios.put(`${BACKEND_URL}/api/admin/config`, config, {
+        headers: {
+          'X-User-Email': userEmail || ''
+        }
+      });
       
       try {
         window.alert('Configurazioni salvate con successo! ✅');
       } catch (e) {
         Alert.alert('Successo', 'Configurazioni salvate!');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving config:', error);
+      const errorMsg = error.response?.data?.detail || 'Errore durante il salvataggio';
       try {
-        window.alert('Errore durante il salvataggio');
+        window.alert(errorMsg);
       } catch (e) {
-        Alert.alert('Errore', 'Impossibile salvare le configurazioni');
+        Alert.alert('Errore', errorMsg);
       }
     } finally {
       setSaving(false);
