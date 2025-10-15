@@ -334,7 +334,7 @@ Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON.
         import json
         try:
             result = json.loads(response)
-        except:
+        except (json.JSONDecodeError, ValueError):
             # Fallback if response is not valid JSON
             result = {
                 "foods": ["Pasta", "Pomodoro", "Verdure miste"],
