@@ -591,4 +591,38 @@ const styles = StyleSheet.create({
     color: '#64748b',
     lineHeight: 18,
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#fff',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  eyeButton: {
+    padding: 12,
+  },
+  changePasswordButton: {
+    flexDirection: 'row',
+    backgroundColor: '#10b981',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  changePasswordButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
 });
