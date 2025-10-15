@@ -95,6 +95,73 @@ export default function AdminConfig() {
     setConfig({ ...config, [field]: value });
   };
 
+  const changePassword = async () => {
+    // Validazione
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      try {
+        window.alert('Compila tutti i campi');
+      } catch (e) {
+        Alert.alert('Errore', 'Compila tutti i campi');
+      }
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      try {
+        window.alert('Le password non corrispondono');
+      } catch (e) {
+        Alert.alert('Errore', 'Le password non corrispondono');
+      }
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      try {
+        window.alert('La nuova password deve essere di almeno 6 caratteri');
+      } catch (e) {
+        Alert.alert('Errore', 'La nuova password deve essere di almeno 6 caratteri');
+      }
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      await axios.post(
+        `${BACKEND_URL}/api/admin/change-password`,
+        {
+          current_password: currentPassword,
+          new_password: newPassword,
+        },
+        {
+          headers: {
+            'X-User-Email': userEmail || '',
+          },
+        }
+      );
+
+      // Reset form
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+
+      try {
+        window.alert('Password cambiata con successo! 🔐');
+      } catch (e) {
+        Alert.alert('Successo', 'Password cambiata con successo!');
+      }
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      const errorMsg = error.response?.data?.detail || 'Errore durante il cambio password';
+      try {
+        window.alert(errorMsg);
+      } catch (e) {
+        Alert.alert('Errore', errorMsg);
+      }
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   if (loading) {
     return (
       <LinearGradient colors={['#7c3aed', '#6d28d9']} style={styles.container}>
