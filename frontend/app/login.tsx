@@ -125,9 +125,19 @@ export default function Login() {
                   placeholder={t('login.passwordPlaceholder')}
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   autoCapitalize="none"
                 />
+                <TouchableOpacity 
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons 
+                    name={showPassword ? "eye-off" : "eye"} 
+                    size={20} 
+                    color="#64748b" 
+                  />
+                </TouchableOpacity>
               </View>
 
               <TouchableOpacity 
