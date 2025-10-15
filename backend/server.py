@@ -28,6 +28,31 @@ EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Admin authentication dependency
+async def verify_admin(x_user_email: str = Header(None)):
+    """Verifica che l'utente sia admin"""
+    if not x_user_email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Autenticazione richiesta. Header X-User-Email mancante."
+        )
+    
+    if x_user_email != "admin@nutrikids.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Accesso negato. Solo gli amministratori possono accedere a questa risorsa."
+        )
+    
+    # Verifica che l'utente admin esista nel database
+    admin_user = await db.users.find_one({"email": x_user_email})
+    if not admin_user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Utente amministratore non trovato."
+        )
+    
+    return x_user_email
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
