@@ -427,7 +427,8 @@ async def delete_child(child_id: str):
 
 # Admin - App Configuration
 @api_router.get("/admin/config", response_model=AppConfig)
-async def get_app_config():
+async def get_app_config(admin_email: str = Depends(verify_admin)):
+    """Ottiene la configurazione dell'app (solo admin)"""
     config = await db.app_config.find_one({"id": "app_config"})
     if not config:
         # Create default config if doesn't exist
@@ -437,7 +438,8 @@ async def get_app_config():
     return AppConfig(**config)
 
 @api_router.put("/admin/config", response_model=AppConfig)
-async def update_app_config(config_update: AppConfigUpdate):
+async def update_app_config(config_update: AppConfigUpdate, admin_email: str = Depends(verify_admin)):
+    """Aggiorna la configurazione dell'app (solo admin)"""
     current_config = await db.app_config.find_one({"id": "app_config"})
     if not current_config:
         raise HTTPException(status_code=404, detail="Config not found")
@@ -455,8 +457,8 @@ async def update_app_config(config_update: AppConfigUpdate):
     return AppConfig(**updated_config)
 
 @api_router.get("/admin/config/{key}")
-async def get_config_value(key: str):
-    """Get a specific configuration value"""
+async def get_config_value(key: str, admin_email: str = Depends(verify_admin)):
+    """Ottiene un valore specifico dalla configurazione (solo admin)"""
     config = await db.app_config.find_one({"id": "app_config"})
     if not config:
         raise HTTPException(status_code=404, detail="Config not found")
