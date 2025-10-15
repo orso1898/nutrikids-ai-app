@@ -99,9 +99,45 @@ export default function Onboarding() {
     }
   };
 
+  const animateSlideChange = (newIndex: number) => {
+    // Fade out e slide out
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: -50,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Cambia slide
+      setCurrentIndex(newIndex);
+      
+      // Reset position per fade in
+      slideAnim.setValue(50);
+      
+      // Fade in e slide in
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
+
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      animateSlideChange(currentIndex + 1);
     } else {
       handleFinish();
     }
