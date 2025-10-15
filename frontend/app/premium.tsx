@@ -68,33 +68,45 @@ export default function Premium() {
             <Text style={styles.heroSubtitle}>{t('premium.heroSubtitle')}</Text>
           </View>
 
-          <View style={styles.pricingCard}>
-            <View style={styles.pricingHeader}>
-              <Text style={styles.pricingLabel}>{t('premium.monthlyPlan')}</Text>
-              <View style={styles.pricingBadge}>
-                <Text style={styles.badgeText}>{t('premium.popular')}</Text>
+          {loading ? (
+            <View style={styles.loadingCard}>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.loadingText}>Caricamento prezzi...</Text>
+            </View>
+          ) : (
+            <>
+              <View style={styles.pricingCard}>
+                <View style={styles.pricingHeader}>
+                  <Text style={styles.pricingLabel}>{t('premium.monthlyPlan')}</Text>
+                  <View style={styles.pricingBadge}>
+                    <Text style={styles.badgeText}>{t('premium.popular')}</Text>
+                  </View>
+                </View>
+                <View style={styles.pricingRow}>
+                  <Text style={styles.pricingPrice}>€{monthlyPrice.toFixed(2)}</Text>
+                  <Text style={styles.pricingPeriod}>{t('premium.perMonth')}</Text>
+                </View>
+                <Text style={styles.pricingSubtext}>{t('premium.cancelAnytime')}</Text>
               </View>
-            </View>
-            <View style={styles.pricingRow}>
-              <Text style={styles.pricingPrice}>{t('premium.monthlyPrice')}</Text>
-              <Text style={styles.pricingPeriod}>{t('premium.perMonth')}</Text>
-            </View>
-            <Text style={styles.pricingSubtext}>{t('premium.cancelAnytime')}</Text>
-          </View>
 
-          <View style={styles.pricingCard}>
-            <View style={styles.pricingHeader}>
-              <Text style={styles.pricingLabel}>{t('premium.yearlyPlan')}</Text>
-              <View style={[styles.pricingBadge, styles.savingBadge]}>
-                <Text style={styles.badgeText}>{t('premium.savePercent')}</Text>
+              <View style={styles.pricingCard}>
+                <View style={styles.pricingHeader}>
+                  <Text style={styles.pricingLabel}>{t('premium.yearlyPlan')}</Text>
+                  <View style={[styles.pricingBadge, styles.savingBadge]}>
+                    <Text style={styles.badgeText}>{t('premium.savePercent')}</Text>
+                  </View>
+                </View>
+                <View style={styles.pricingRow}>
+                  <Text style={styles.pricingPrice}>€{yearlyPrice.toFixed(2)}</Text>
+                  <Text style={styles.pricingPeriod}>{t('premium.perYear')}</Text>
+                </View>
+                <Text style={styles.pricingSubtext}>{t('premium.billedYearly')}</Text>
+                <Text style={styles.savingsText}>
+                  💰 Risparmio annuale: €{((monthlyPrice * 12) - yearlyPrice).toFixed(2)}
+                </Text>
               </View>
-            </View>
-            <View style={styles.pricingRow}>
-              <Text style={styles.pricingPrice}>{t('premium.yearlyPrice')}</Text>
-              <Text style={styles.pricingPeriod}>{t('premium.perYear')}</Text>
-            </View>
-            <Text style={styles.pricingSubtext}>{t('premium.billedYearly')}</Text>
-          </View>
+            </>
+          )}
 
           <Text style={styles.featuresTitle}>{t('premium.featuresTitle')}</Text>
 
