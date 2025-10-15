@@ -300,19 +300,24 @@ export default function Scanner() {
                     </View>
                   </View>
 
-                  <View style={styles.card}>
+                  <Animated.View 
+                    entering={FadeInDown.delay(600).springify()}
+                    style={styles.card}
+                  >
                     <View style={styles.cardHeader}>
                       <Ionicons name="bulb" size={20} color="#10b981" />
                       <Text style={styles.cardTitle}>Suggerimenti di Coach Maya</Text>
                     </View>
                     <Text style={styles.suggestionsText}>{result.suggestions}</Text>
-                  </View>
+                  </Animated.View>
 
-                  <TouchableOpacity style={styles.saveButton} onPress={saveToDiario}>
-                    <Ionicons name="bookmark" size={20} color="#fff" />
-                    <Text style={styles.saveButtonText}>Salva nel Diario</Text>
-                  </TouchableOpacity>
-                </View>
+                  <Animated.View entering={FadeInUp.delay(700).springify()}>
+                    <TouchableOpacity style={styles.saveButton} onPress={saveToDiario}>
+                      <Ionicons name="bookmark" size={20} color="#fff" />
+                      <Text style={styles.saveButtonText}>Salva nel Diario</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </Animated.View>
               )}
             </View>
           )}
