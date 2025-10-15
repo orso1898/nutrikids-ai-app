@@ -274,29 +274,104 @@ export default function AdminConfig() {
             </View>
           </View>
 
-          {/* Limits */}
+          {/* FREE User Limits */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Ionicons name="settings" size={20} color="#fff" />
-              <Text style={styles.sectionTitle}>Limiti & Restrizioni</Text>
+              <Ionicons name="person" size={20} color="#fff" />
+              <Text style={styles.sectionTitle}>Limiti Utenti FREE</Text>
             </View>
 
-            <View style={styles.card}>
-              <Text style={styles.label}>Max Scan Gratuiti</Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Scansioni Giornaliere</Text>
               <TextInput
                 style={styles.input}
-                value={config.max_free_scans.toString()}
-                onChangeText={(value) => updateField('max_free_scans', parseInt(value) || 0)}
+                value={config.max_free_scans_daily?.toString() || '3'}
+                onChangeText={(value) => updateField('max_free_scans_daily', parseInt(value) || 0)}
                 keyboardType="number-pad"
-                placeholder="5"
+                placeholder="3"
+                placeholderTextColor="rgba(255,255,255,0.5)"
               />
+              <Text style={styles.helpText}>Numero massimo di scansioni al giorno per utenti free</Text>
+            </View>
 
-              <View style={styles.infoBox}>
-                <Ionicons name="information-circle" size={16} color="#7c3aed" />
-                <Text style={styles.infoText}>
-                  Numero massimo di scansioni AI gratuite per utente
-                </Text>
-              </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Messaggi Coach Maya Giornalieri</Text>
+              <TextInput
+                style={styles.input}
+                value={config.max_free_coach_messages_daily?.toString() || '8'}
+                onChangeText={(value) => updateField('max_free_coach_messages_daily', parseInt(value) || 0)}
+                keyboardType="number-pad"
+                placeholder="8"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
+              <Text style={styles.helpText}>Numero massimo di messaggi al giorno per Coach Maya (free)</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Bambini Massimi</Text>
+              <TextInput
+                style={styles.input}
+                value={config.max_free_children?.toString() || '2'}
+                onChangeText={(value) => updateField('max_free_children', parseInt(value) || 0)}
+                keyboardType="number-pad"
+                placeholder="2"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
+              <Text style={styles.helpText}>Numero massimo di profili bambini per utenti free</Text>
+            </View>
+          </View>
+
+          {/* PREMIUM User Limits */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="diamond" size={20} color="#fff" />
+              <Text style={styles.sectionTitle}>Limiti Utenti PREMIUM</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Scansioni Giornaliere</Text>
+              <TextInput
+                style={styles.input}
+                value={config.max_premium_scans_daily?.toString() || '0'}
+                onChangeText={(value) => updateField('max_premium_scans_daily', parseInt(value) || 0)}
+                keyboardType="number-pad"
+                placeholder="0"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
+              <Text style={styles.helpText}>Scansioni al giorno (0 = illimitato)</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Messaggi Coach Maya Giornalieri</Text>
+              <TextInput
+                style={styles.input}
+                value={config.max_premium_coach_messages_daily?.toString() || '0'}
+                onChangeText={(value) => updateField('max_premium_coach_messages_daily', parseInt(value) || 0)}
+                keyboardType="number-pad"
+                placeholder="0"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
+              <Text style={styles.helpText}>Messaggi al giorno per Coach Maya (0 = illimitato)</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Bambini Massimi</Text>
+              <TextInput
+                style={styles.input}
+                value={config.max_premium_children?.toString() || '0'}
+                onChangeText={(value) => updateField('max_premium_children', parseInt(value) || 0)}
+                keyboardType="number-pad"
+                placeholder="0"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
+              <Text style={styles.helpText}>Profili bambini (0 = illimitato)</Text>
+            </View>
+
+            <View style={styles.warningCard}>
+              <Ionicons name="information-circle" size={20} color="#3b82f6" />
+              <Text style={styles.warningText}>
+                💡 Imposta 0 per limiti illimitati per gli utenti Premium
+              </Text>
             </View>
           </View>
 
