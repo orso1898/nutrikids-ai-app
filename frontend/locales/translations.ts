@@ -632,7 +632,7 @@ export const translations = {
       yearlyPrice: '€49,99',
       perYear: '/año',
       savePercent: 'Ahorra 40%',
-      billedYearly: 'Facturado €49,99 al año',
+      billedYearly: 'Pago anual',
       trialText: '7 días de prueba gratuita, luego €5,99/mes. Cancela en cualquier momento.',
       featuresTitle: 'Todo lo que obtienes:',
       startFreeTrial: 'Iniciar Prueba Gratuita',
