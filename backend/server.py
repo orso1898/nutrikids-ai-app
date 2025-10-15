@@ -472,6 +472,45 @@ async def get_config_value(key: str, admin_email: str = Depends(verify_admin)):
     
     return {"key": key, "value": config[key]}
 
+@api_router.post("/admin/change-password")
+async def change_admin_password(
+    password_data: ChangePasswordRequest,
+    admin_email: str = Depends(verify_admin)
+):
+    """Cambia la password dell'admin (solo admin)"""
+    # Verifica password attuale
+    admin_user = await db.users.find_one({"email": admin_email})
+    if not admin_user:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    
+    # Verifica che la password attuale sia corretta
+    if not pwd_context.verify(password_data.current_password, admin_user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Password attuale non corretta"
+        )
+    
+    # Valida la nuova password
+    if len(password_data.new_password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La nuova password deve essere di almeno 6 caratteri"
+        )
+    
+    # Hash della nuova password
+    new_hashed_password = pwd_context.hash(password_data.new_password)
+    
+    # Aggiorna la password nel database
+    await db.users.update_one(
+        {"email": admin_email},
+        {"$set": {"hashed_password": new_hashed_password, "updated_at": datetime.utcnow()}}
+    )
+    
+    return {
+        "success": True,
+        "message": "Password cambiata con successo"
+    }
+
 # Include router
 app.include_router(api_router)
 
