@@ -329,6 +329,92 @@ export default function AdminConfig() {
             </View>
           </View>
 
+          {/* Password Change Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="lock-closed" size={20} color="#fff" />
+              <Text style={styles.sectionTitle}>Sicurezza Account</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Password Attuale</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={currentPassword}
+                  onChangeText={setCurrentPassword}
+                  placeholder="Inserisci password attuale"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  secureTextEntry={!showCurrentPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowCurrentPassword(!showCurrentPassword)}
+                  style={styles.eyeButton}
+                >
+                  <Ionicons 
+                    name={showCurrentPassword ? 'eye-off' : 'eye'} 
+                    size={24} 
+                    color="rgba(255,255,255,0.7)" 
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Nuova Password</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
+                  placeholder="Inserisci nuova password (min 6 caratteri)"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  secureTextEntry={!showNewPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowNewPassword(!showNewPassword)}
+                  style={styles.eyeButton}
+                >
+                  <Ionicons 
+                    name={showNewPassword ? 'eye-off' : 'eye'} 
+                    size={24} 
+                    color="rgba(255,255,255,0.7)" 
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Conferma Nuova Password</Text>
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Conferma nuova password"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                secureTextEntry={true}
+                autoCapitalize="none"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={[styles.changePasswordButton, changingPassword && styles.saveButtonDisabled]}
+              onPress={changePassword}
+              disabled={changingPassword}
+            >
+              {changingPassword ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name="key" size={20} color="#fff" />
+                  <Text style={styles.changePasswordButtonText}>Cambia Password</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+
           {/* Save Button */}
           <TouchableOpacity 
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
