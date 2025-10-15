@@ -138,7 +138,115 @@ class AppConfigUpdate(BaseModel):
 # Routes
 @api_router.get("/")
 async def root():
-    return {"message": "NutriKids AI Backend"}
+    return {"message": "NutriKids AI Backend is running"}
+
+# Authentication Endpoints
+@api_router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def register(user: UserRegister):
+    # Check if user already exists
+    existing_user = await db.users.find_one({"email": user.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Hash password
+    hashed_password = pwd_context.hash(user.password)
+    
+    # Create user document
+    user_doc = {
+        "email": user.email,
+        "hashed_password": hashed_password,
+        "name": user.name,
+        "created_at": datetime.utcnow(),
+        "is_premium": False,
+        "reset_code": None,
+        "reset_code_expires": None
+    }
+    
+    await db.users.insert_one(user_doc)
+    
+    return UserResponse(
+        email=user.email,
+        name=user.name,
+        created_at=user_doc["created_at"],
+        is_premium=False
+    )
+
+@api_router.post("/login", response_model=UserResponse)
+async def login(credentials: UserLogin):
+    # Find user
+    user = await db.users.find_one({"email": credentials.email})
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Verify password
+    if not pwd_context.verify(credentials.password, user["hashed_password"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    return UserResponse(
+        email=user["email"],
+        name=user.get("name"),
+        created_at=user["created_at"],
+        is_premium=user.get("is_premium", False)
+    )
+
+@api_router.post("/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    # Find user
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        # Don't reveal if email exists or not for security
+        return {"message": "If the email exists, a reset code has been sent"}
+    
+    # Generate 6-digit reset code
+    reset_code = str(secrets.randbelow(900000) + 100000)
+    reset_code_expires = datetime.utcnow() + timedelta(hours=1)
+    
+    # Update user with reset code
+    await db.users.update_one(
+        {"email": request.email},
+        {"$set": {
+            "reset_code": reset_code,
+            "reset_code_expires": reset_code_expires
+        }}
+    )
+    
+    # In production, send email here
+    # For now, return the code (ONLY FOR DEVELOPMENT)
+    return {
+        "message": "Reset code generated",
+        "reset_code": reset_code,  # Remove this in production
+        "note": "In production, this would be sent via email"
+    }
+
+@api_router.post("/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    # Find user
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check reset code
+    if not user.get("reset_code") or user["reset_code"] != request.reset_code:
+        raise HTTPException(status_code=400, detail="Invalid reset code")
+    
+    # Check if code expired
+    if user.get("reset_code_expires") and user["reset_code_expires"] < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Reset code expired")
+    
+    # Hash new password
+    hashed_password = pwd_context.hash(request.new_password)
+    
+    # Update password and clear reset code
+    await db.users.update_one(
+        {"email": request.email},
+        {"$set": {
+            "hashed_password": hashed_password,
+            "reset_code": None,
+            "reset_code_expires": None
+        }}
+    )
+    
+    return {"message": "Password reset successfully"}
 
 # Coach Maya - AI Chat
 @api_router.post("/coach-maya", response_model=ChatResponse)
