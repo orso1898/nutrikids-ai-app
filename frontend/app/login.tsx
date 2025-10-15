@@ -226,6 +226,9 @@ const styles = StyleSheet.create({
   inputIcon: {
     marginRight: 12,
   },
+  eyeIcon: {
+    padding: 8,
+  },
   input: {
     flex: 1,
     paddingVertical: 16,
