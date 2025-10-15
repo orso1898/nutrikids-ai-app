@@ -151,9 +151,14 @@ class AppConfig(BaseModel):
     premium_yearly_price: float = 49.99
     openai_model: str = "gpt-4o-mini"
     vision_model: str = "gpt-4o"
-    max_free_scans: int = 5
+    # Limiti per utenti FREE
+    max_free_scans_daily: int = 3
     max_free_coach_messages_daily: int = 8
     max_free_children: int = 2
+    # Limiti per utenti PREMIUM (0 = illimitato)
+    max_premium_scans_daily: int = 0  # 0 = illimitato
+    max_premium_coach_messages_daily: int = 0  # 0 = illimitato
+    max_premium_children: int = 0  # 0 = illimitato
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AppConfigUpdate(BaseModel):
@@ -162,7 +167,12 @@ class AppConfigUpdate(BaseModel):
     premium_yearly_price: Optional[float] = None
     openai_model: Optional[str] = None
     vision_model: Optional[str] = None
-    max_free_scans: Optional[int] = None
+    max_free_scans_daily: Optional[int] = None
+    max_free_coach_messages_daily: Optional[int] = None
+    max_free_children: Optional[int] = None
+    max_premium_scans_daily: Optional[int] = None
+    max_premium_coach_messages_daily: Optional[int] = None
+    max_premium_children: Optional[int] = None
 
 # Routes
 @api_router.get("/")
