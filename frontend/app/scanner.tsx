@@ -235,30 +235,43 @@ export default function Scanner() {
                   entering={FadeInDown.duration(600).springify()}
                   style={styles.resultsContainer}
                 >
-                  <View style={styles.scoreCard}>
+                  <Animated.View 
+                    entering={ZoomIn.delay(100).springify()}
+                    style={styles.scoreCard}
+                  >
                     <View style={styles.scoreCircle}>
                       <Text style={styles.scoreNumber}>{result.health_score}</Text>
                       <Text style={styles.scoreLabel}>/10</Text>
                     </View>
                     <Text style={styles.scoreTitle}>Punteggio Salute</Text>
-                  </View>
+                  </Animated.View>
 
-                  <View style={styles.card}>
+                  <Animated.View 
+                    entering={FadeInDown.delay(200).springify()}
+                    style={styles.card}
+                  >
                     <View style={styles.cardHeader}>
                       <Ionicons name="restaurant" size={20} color="#10b981" />
                       <Text style={styles.cardTitle}>Alimenti Riconosciuti</Text>
                     </View>
                     <View style={styles.foodsList}>
                       {result.foods_detected.map((food, index) => (
-                        <View key={index} style={styles.foodItem}>
+                        <Animated.View 
+                          key={index} 
+                          entering={FadeInDown.delay(300 + index * 100).springify()}
+                          style={styles.foodItem}
+                        >
                           <Ionicons name="checkmark-circle" size={16} color="#10b981" />
                           <Text style={styles.foodText}>{food}</Text>
-                        </View>
+                        </Animated.View>
                       ))}
                     </View>
-                  </View>
+                  </Animated.View>
 
-                  <View style={styles.card}>
+                  <Animated.View 
+                    entering={FadeInDown.delay(400).springify()}
+                    style={styles.card}
+                  >
                     <View style={styles.cardHeader}>
                       <Ionicons name="nutrition" size={20} color="#10b981" />
                       <Text style={styles.cardTitle}>Valori Nutrizionali</Text>
