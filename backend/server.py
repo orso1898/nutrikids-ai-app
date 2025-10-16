@@ -431,26 +431,45 @@ async def coach_maya(chat_msg: ChatMessage):
 @api_router.post("/analyze-photo", response_model=PhotoAnalysisResponse)
 async def analyze_photo(request: PhotoAnalysisRequest):
     try:
-        system_message = """Sei un esperto nutrizionista specializzato nell'analisi visiva dei piatti. 
+        # Get children allergies
+        children_cursor = db.children.find({"parent_email": request.user_email})
+        children = await children_cursor.to_list(length=100)
+        
+        all_allergies = []
+        for child in children:
+            allergies = child.get("allergies", [])
+            all_allergies.extend(allergies)
+        
+        # Remove duplicates
+        all_allergies = list(set(all_allergies))
+        
+        allergies_info = ""
+        if all_allergies:
+            allergies_info = f"\n\nIMPORTANTE: I bambini hanno le seguenti allergie/intolleranze: {', '.join(all_allergies)}. Controlla se nel piatto ci sono questi allergeni e segnalalo nel campo 'allergens'."
+        
+        system_message = f"""Sei un esperto nutrizionista specializzato nell'analisi visiva dei piatti. 
         Analizza l'immagine del piatto e fornisci:
         1. Lista degli alimenti riconosciuti
         2. Stima dei valori nutrizionali (calorie, proteine, carboidrati, grassi, fibre)
         3. Suggerimenti nutrizionali per bambini
         4. Un punteggio di salute da 1 a 10
+        5. Lista di eventuali allergeni comuni presenti (lattosio, glutine, uova, frutta secca, pesce, crostacei, soia, ecc.)
+        {allergies_info}
         
         Rispondi in italiano in formato JSON con questa struttura:
-        {
+        {{
             "foods": ["alimento1", "alimento2"],
-            "nutrition": {
+            "nutrition": {{
                 "calories": 450,
                 "proteins": 20,
                 "carbs": 50,
                 "fats": 15,
                 "fiber": 8
-            },
+            }},
             "suggestions": "suggerimenti dettagliati",
-            "health_score": 8
-        }"""
+            "health_score": 8,
+            "allergens": ["lattosio", "glutine"]
+        }}"""
         
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
