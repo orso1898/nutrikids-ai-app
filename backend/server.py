@@ -563,13 +563,12 @@ Formato richiesto:
     
     try:
         chat = LlmChat(
-            model="gpt-4o-mini",
-            api_key=EMERGENT_LLM_KEY,
-            messages=[UserMessage(prompt)]
-        )
+            api_key=EMERGENT_LLM_KEY
+        ).with_model("openai", "gpt-4o-mini")
         
-        response = chat.get_answer()
-        shopping_list = response.content
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        shopping_list = response
         
         # Update plan with shopping list
         await db.meal_plans.update_one(
