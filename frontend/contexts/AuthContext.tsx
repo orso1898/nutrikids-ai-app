@@ -5,7 +5,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   userEmail: string | null;
   isAdmin: boolean;
-  login: (email: string) => Promise<void>;
+  authToken: string | null;
+  login: (email: string, token?: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
 }
