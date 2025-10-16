@@ -241,24 +241,15 @@ export default function Piani() {
             </TouchableOpacity>
           </View>
 
-          {/* Number of People */}
-          <View style={styles.peopleCard}>
-            <Ionicons name="people" size={24} color="#f59e0b" />
-            <Text style={styles.peopleLabel}>Numero di Bambini:</Text>
-            <View style={styles.peopleControls}>
-              <TouchableOpacity 
-                onPress={() => setNumPeople(Math.max(1, numPeople - 1))}
-                style={styles.peopleButton}
-              >
-                <Ionicons name="remove" size={20} color="#f59e0b" />
-              </TouchableOpacity>
-              <Text style={styles.peopleNumber}>{numPeople}</Text>
-              <TouchableOpacity 
-                onPress={() => setNumPeople(numPeople + 1)}
-                style={styles.peopleButton}
-              >
-                <Ionicons name="add" size={20} color="#f59e0b" />
-              </TouchableOpacity>
+          {/* Info Card */}
+          <View style={styles.infoCard}>
+            <Ionicons name="information-circle" size={24} color="#3b82f6" />
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Porzioni Personalizzate</Text>
+              <Text style={styles.infoText}>
+                La lista della spesa sarà calcolata automaticamente in base ai profili bambini che hai creato (età e numero). 
+                Vai su Profilo per gestire i tuoi bambini.
+              </Text>
             </View>
           </View>
 
