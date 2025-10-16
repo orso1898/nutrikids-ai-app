@@ -41,6 +41,8 @@ export default function Piani() {
   const [generating, setGenerating] = useState(false);
   const [numPeople, setNumPeople] = useState(2);
   const [currentWeekStart, setCurrentWeekStart] = useState('');
+  const [mode, setMode] = useState<'daily' | 'weekly'>('daily'); // Modalità: giornaliero o settimanale
+  const [selectedDay, setSelectedDay] = useState('monday'); // Giorno selezionato per modalità giornaliera
 
   useEffect(() => {
     // Calculate current week start (Monday)
