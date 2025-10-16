@@ -66,29 +66,35 @@ def verify_token(token: str):
 security = HTTPBearer()
 
 # Admin authentication dependency (JWT-based)
-async def verify_admin(x_user_email: str = Header(None)):
-    """Verifica che l'utente sia admin"""
-    if not x_user_email:
+async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verifica che l'utente sia admin tramite JWT token"""
+    token = credentials.credentials
+    payload = verify_token(token)
+    
+    email = payload.get("sub")
+    is_admin = payload.get("is_admin", False)
+    
+    if not email:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Autenticazione richiesta. Header X-User-Email mancante."
+            detail="Token non valido: email mancante."
         )
     
-    if x_user_email != "admin@nutrikids.com":
+    if not is_admin or email != "admin@nutrikids.com":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Accesso negato. Solo gli amministratori possono accedere a questa risorsa."
         )
     
     # Verifica che l'utente admin esista nel database
-    admin_user = await db.users.find_one({"email": x_user_email})
+    admin_user = await db.users.find_one({"email": email})
     if not admin_user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Utente amministratore non trovato."
         )
     
-    return x_user_email
+    return email
 
 # Create the main app
 app = FastAPI()
