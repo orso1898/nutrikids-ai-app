@@ -234,9 +234,29 @@ export default function Profilo() {
                   <Text style={styles.childName}>{child.name}</Text>
                   <Text style={styles.childAge}>{child.age} {child.age === 1 ? 'anno' : 'anni'}</Text>
                 </View>
-                <TouchableOpacity onPress={() => deleteChild(child.id, child.name)}>
-                  <Ionicons name="trash-outline" size={24} color="#ef4444" />
-                </TouchableOpacity>
+                <View style={styles.childActions}>
+                  <TouchableOpacity 
+                    onPress={() => router.push({
+                      pathname: '/edit-child',
+                      params: {
+                        childId: child.id,
+                        childName: child.name,
+                        childAge: child.age.toString(),
+                        childAllergies: JSON.stringify(child.allergies || []),
+                        parentEmail: userEmail
+                      }
+                    })}
+                    style={styles.actionButton}
+                  >
+                    <Ionicons name="create-outline" size={24} color="#3b82f6" />
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={() => deleteChild(child.id, child.name)}
+                    style={styles.actionButton}
+                  >
+                    <Ionicons name="trash-outline" size={24} color="#ef4444" />
+                  </TouchableOpacity>
+                </View>
               </View>
             ))
           )}
