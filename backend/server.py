@@ -181,12 +181,14 @@ class Child(BaseModel):
     parent_email: str
     name: str
     age: int
+    allergies: List[str] = []  # Lista allergie/intolleranze
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class ChildCreate(BaseModel):
     parent_email: str
     name: str
     age: int
+    allergies: Optional[List[str]] = []
 
 # Weekly Meal Plan Models
 class MealPlanDay(BaseModel):
