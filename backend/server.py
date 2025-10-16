@@ -306,11 +306,20 @@ async def login(credentials: UserLogin):
     if not pwd_context.verify(credentials.password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
+    # Check if user is admin
+    is_admin = user["email"] == "admin@nutrikids.com"
+    
+    # Create JWT token
+    access_token = create_access_token(
+        data={"sub": user["email"], "is_admin": is_admin}
+    )
+    
     return UserResponse(
         email=user["email"],
         name=user.get("name"),
         created_at=user["created_at"],
-        is_premium=user.get("is_premium", False)
+        is_premium=user.get("is_premium", False),
+        token=access_token
     )
 
 @api_router.post("/forgot-password")
