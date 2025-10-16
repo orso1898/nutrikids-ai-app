@@ -505,11 +505,23 @@ Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON.
                 "health_score": 7
             }
         
+        # Check allergens
+        detected_allergens = result.get("allergens", [])
+        allergen_warning = None
+        
+        if all_allergies and detected_allergens:
+            # Check if any detected allergen matches user allergies
+            dangerous_allergens = [a for a in detected_allergens if a.lower() in [al.lower() for al in all_allergies]]
+            if dangerous_allergens:
+                allergen_warning = f"⚠️ ATTENZIONE! Questo piatto contiene: {', '.join(dangerous_allergens)}. Allergia segnalata nel profilo del bambino!"
+        
         return PhotoAnalysisResponse(
             foods_detected=result.get("foods", []),
             nutritional_info=result.get("nutrition", {}),
             suggestions=result.get("suggestions", ""),
-            health_score=result.get("health_score", 5)
+            health_score=result.get("health_score", 5),
+            allergens_detected=detected_allergens,
+            allergen_warning=allergen_warning
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
