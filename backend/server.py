@@ -565,7 +565,7 @@ Formato richiesto:
         chat = LlmChat(
             model="gpt-4o-mini",
             api_key=EMERGENT_LLM_KEY,
-            messages=[UserMessage(content=prompt)]
+            messages=[UserMessage(prompt)]
         )
         
         response = chat.get_answer()
