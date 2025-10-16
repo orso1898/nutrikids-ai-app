@@ -561,6 +561,28 @@ async def get_children(parent_email: str):
     children = await db.children.find({"parent_email": parent_email}).to_list(100)
     return [Child(**child) for child in children]
 
+@api_router.put("/children/{child_id}", response_model=Child)
+async def update_child(child_id: str, child_update: ChildCreate):
+    """Aggiorna un profilo bambino"""
+    existing = await db.children.find_one({"id": child_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Child not found")
+    
+    # Update fields
+    update_data = {
+        "name": child_update.name,
+        "age": child_update.age,
+        "allergies": child_update.allergies or []
+    }
+    
+    await db.children.update_one(
+        {"id": child_id},
+        {"$set": update_data}
+    )
+    
+    updated = await db.children.find_one({"id": child_id})
+    return Child(**updated)
+
 @api_router.delete("/children/{child_id}")
 async def delete_child(child_id: str):
     result = await db.children.delete_one({"id": child_id})
