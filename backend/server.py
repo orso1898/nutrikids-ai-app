@@ -115,6 +115,7 @@ class UserResponse(BaseModel):
     name: Optional[str]
     created_at: datetime
     is_premium: bool = False
+    token: Optional[str] = None
 
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
