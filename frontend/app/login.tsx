@@ -64,8 +64,9 @@ export default function Login() {
       
       console.log('✅ Login successful:', response.data);
       
-      // Save email in AsyncStorage via AuthContext
-      await login(email);
+      // Save email and token in AsyncStorage via AuthContext
+      const token = response.data.token;
+      await login(email, token);
       
       router.replace('/home');
     } catch (error: any) {
