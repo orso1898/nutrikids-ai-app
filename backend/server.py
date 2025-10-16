@@ -171,6 +171,9 @@ class AppConfigUpdate(BaseModel):
     premium_yearly_price: Optional[float] = None
     openai_model: Optional[str] = None
     vision_model: Optional[str] = None
+    stripe_publishable_key: Optional[str] = None
+    stripe_secret_key: Optional[str] = None
+    sendgrid_api_key: Optional[str] = None
     max_free_scans_daily: Optional[int] = None
     max_free_coach_messages_daily: Optional[int] = None
     max_free_children: Optional[int] = None
