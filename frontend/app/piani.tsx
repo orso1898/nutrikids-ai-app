@@ -220,6 +220,28 @@ export default function Piani() {
         </View>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          {/* Mode Toggle */}
+          <View style={styles.modeToggle}>
+            <TouchableOpacity
+              style={[styles.modeButton, mode === 'daily' && styles.modeButtonActive]}
+              onPress={() => setMode('daily')}
+            >
+              <Ionicons name="today" size={20} color={mode === 'daily' ? '#fff' : '#f59e0b'} />
+              <Text style={[styles.modeButtonText, mode === 'daily' && styles.modeButtonTextActive]}>
+                Giornaliero
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modeButton, mode === 'weekly' && styles.modeButtonActive]}
+              onPress={() => setMode('weekly')}
+            >
+              <Ionicons name="calendar" size={20} color={mode === 'weekly' ? '#fff' : '#f59e0b'} />
+              <Text style={[styles.modeButtonText, mode === 'weekly' && styles.modeButtonTextActive]}>
+                Settimanale
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Number of People */}
           <View style={styles.peopleCard}>
             <Ionicons name="people" size={24} color="#f59e0b" />
@@ -241,14 +263,55 @@ export default function Piani() {
             </View>
           </View>
 
+          {/* Day Selector for Daily Mode */}
+          {mode === 'daily' && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daySelector}>
+              {[
+                { key: 'monday', label: 'Lun' },
+                { key: 'tuesday', label: 'Mar' },
+                { key: 'wednesday', label: 'Mer' },
+                { key: 'thursday', label: 'Gio' },
+                { key: 'friday', label: 'Ven' },
+                { key: 'saturday', label: 'Sab' },
+                { key: 'sunday', label: 'Dom' },
+              ].map((day) => (
+                <TouchableOpacity
+                  key={day.key}
+                  style={[styles.dayButton, selectedDay === day.key && styles.dayButtonActive]}
+                  onPress={() => setSelectedDay(day.key)}
+                >
+                  <Text style={[styles.dayButtonText, selectedDay === day.key && styles.dayButtonTextActive]}>
+                    {day.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+
           {/* Days */}
-          {renderDayPlan('monday', 'Lunedì')}
-          {renderDayPlan('tuesday', 'Martedì')}
-          {renderDayPlan('wednesday', 'Mercoledì')}
-          {renderDayPlan('thursday', 'Giovedì')}
-          {renderDayPlan('friday', 'Venerdì')}
-          {renderDayPlan('saturday', 'Sabato')}
-          {renderDayPlan('sunday', 'Domenica')}
+          {mode === 'daily' ? (
+            // Single day view
+            <>
+              {selectedDay === 'monday' && renderDayPlan('monday', 'Lunedì')}
+              {selectedDay === 'tuesday' && renderDayPlan('tuesday', 'Martedì')}
+              {selectedDay === 'wednesday' && renderDayPlan('wednesday', 'Mercoledì')}
+              {selectedDay === 'thursday' && renderDayPlan('thursday', 'Giovedì')}
+              {selectedDay === 'friday' && renderDayPlan('friday', 'Venerdì')}
+              {selectedDay === 'saturday' && renderDayPlan('saturday', 'Sabato')}
+              {selectedDay === 'sunday' && renderDayPlan('sunday', 'Domenica')}
+            </>
+          ) : (
+            // Weekly view - all days
+            <>
+              {renderDayPlan('monday', 'Lunedì')}
+              {renderDayPlan('tuesday', 'Martedì')}
+              {renderDayPlan('wednesday', 'Mercoledì')}
+              {renderDayPlan('thursday', 'Giovedì')}
+              {renderDayPlan('friday', 'Venerdì')}
+              {renderDayPlan('saturday', 'Sabato')}
+              {renderDayPlan('sunday', 'Domenica')}
+            </>
+          )}
 
           {/* Save Button */}
           <TouchableOpacity style={styles.saveButton} onPress={savePlan}>
