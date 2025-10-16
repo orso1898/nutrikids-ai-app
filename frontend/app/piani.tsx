@@ -538,4 +538,29 @@ const styles = StyleSheet.create({
   dayButtonTextActive: {
     color: '#fff',
   },
+  infoCard: {
+    flexDirection: 'row',
+    backgroundColor: '#eff6ff',
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    gap: 12,
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1e40af',
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#3b82f6',
+    lineHeight: 18,
+  },
 });
