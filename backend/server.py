@@ -480,6 +480,109 @@ async def delete_child(child_id: str):
         raise HTTPException(status_code=404, detail="Child not found")
     return {"message": "Child deleted"}
 
+# Weekly Meal Plans
+@api_router.post("/meal-plan", response_model=WeeklyPlan)
+async def create_meal_plan(plan: WeeklyPlanCreate):
+    """Crea o aggiorna un piano settimanale"""
+    # Check if plan already exists for this week
+    existing = await db.meal_plans.find_one({
+        "user_email": plan.user_email,
+        "week_start_date": plan.week_start_date
+    })
+    
+    if existing:
+        # Update existing plan
+        update_data = plan.dict(exclude_unset=True)
+        await db.meal_plans.update_one(
+            {"_id": existing["_id"]},
+            {"$set": update_data}
+        )
+        updated = await db.meal_plans.find_one({"_id": existing["_id"]})
+        return WeeklyPlan(**updated)
+    else:
+        # Create new plan
+        plan_obj = WeeklyPlan(**plan.dict())
+        await db.meal_plans.insert_one(plan_obj.dict())
+        return plan_obj
+
+@api_router.get("/meal-plan/{user_email}/{week_start_date}", response_model=WeeklyPlan)
+async def get_meal_plan(user_email: str, week_start_date: str):
+    """Ottiene il piano per una settimana specifica"""
+    plan = await db.meal_plans.find_one({
+        "user_email": user_email,
+        "week_start_date": week_start_date
+    })
+    
+    if not plan:
+        # Return empty plan
+        return WeeklyPlan(
+            user_email=user_email,
+            week_start_date=week_start_date,
+            num_people=2
+        )
+    
+    return WeeklyPlan(**plan)
+
+@api_router.post("/meal-plan/generate-shopping-list")
+async def generate_shopping_list(user_email: str, week_start_date: str, num_people: int = 2):
+    """Genera la lista della spesa usando AI"""
+    # Get the meal plan
+    plan = await db.meal_plans.find_one({
+        "user_email": user_email,
+        "week_start_date": week_start_date
+    })
+    
+    if not plan:
+        raise HTTPException(status_code=404, detail="Piano non trovato")
+    
+    # Collect all meals
+    all_meals = []
+    days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    for day in days:
+        day_meals = plan.get(day, {})
+        for meal_type in ['breakfast', 'lunch', 'dinner', 'snack']:
+            meal = day_meals.get(meal_type, '')
+            if meal:
+                all_meals.append(f"{meal_type.capitalize()}: {meal}")
+    
+    if not all_meals:
+        raise HTTPException(status_code=400, detail="Nessun piatto inserito nel piano")
+    
+    # Generate shopping list with AI
+    prompt = f"""Sei un assistente nutrizionale. Analizza i seguenti pasti della settimana e genera una lista della spesa completa con ingredienti e quantità precise per {num_people} persone.
+
+Pasti della settimana:
+{chr(10).join(all_meals)}
+
+Genera una lista della spesa organizzata per categorie (Frutta e Verdura, Proteine, Carboidrati, Latticini, ecc.) con quantità precise in grammi, litri, pezzi.
+
+Formato richiesto:
+**Categoria**
+- Ingrediente: quantità
+"""
+    
+    try:
+        chat = LlmChat(
+            model="gpt-4o-mini",
+            api_key=EMERGENT_LLM_KEY,
+            messages=[UserMessage(content=prompt)]
+        )
+        
+        response = chat.get_answer()
+        shopping_list = response.content
+        
+        # Update plan with shopping list
+        await db.meal_plans.update_one(
+            {"user_email": user_email, "week_start_date": week_start_date},
+            {"$set": {"shopping_list": shopping_list}}
+        )
+        
+        return {"shopping_list": shopping_list}
+        
+    except Exception as e:
+        logging.error(f"Error generating shopping list: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Errore nella generazione: {str(e)}")
+
 # Admin - App Configuration
 @api_router.get("/admin/config", response_model=AppConfig)
 async def get_app_config(admin_email: str = Depends(verify_admin)):
