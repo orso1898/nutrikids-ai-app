@@ -151,6 +151,10 @@ class AppConfig(BaseModel):
     premium_yearly_price: float = 49.99
     openai_model: str = "gpt-4o-mini"
     vision_model: str = "gpt-4o"
+    # API Keys per servizi esterni
+    stripe_publishable_key: str = ""
+    stripe_secret_key: str = ""
+    sendgrid_api_key: str = ""  # Per invio email reset password
     # Limiti per utenti FREE
     max_free_scans_daily: int = 3
     max_free_coach_messages_daily: int = 8
