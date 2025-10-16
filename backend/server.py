@@ -576,6 +576,66 @@ async def get_meal_plan(user_email: str, week_start_date: str):
     
     return WeeklyPlan(**plan)
 
+# Dashboard Statistics
+@api_router.get("/dashboard/stats/{user_email}")
+async def get_dashboard_stats(user_email: str):
+    """Ottiene statistiche per la dashboard"""
+    try:
+        # Data di riferimento: ultimi 7 giorni
+        seven_days_ago = datetime.utcnow() - timedelta(days=7)
+        
+        # 1. Conta pasti nel diario (ultimi 7 giorni)
+        diary_entries = await db.diary.count_documents({
+            "user_email": user_email,
+            "timestamp": {"$gte": seven_days_ago}
+        })
+        
+        # 2. Ottieni punteggi salute medi
+        diary_cursor = db.diary.find({
+            "user_email": user_email,
+            "timestamp": {"$gte": seven_days_ago}
+        })
+        diary_list = await diary_cursor.to_list(length=100)
+        
+        health_scores = [entry.get("health_score", 0) for entry in diary_list if entry.get("health_score")]
+        avg_health_score = sum(health_scores) / len(health_scores) if health_scores else 0
+        
+        # 3. Conta messaggi Coach Maya (ultimi 7 giorni)
+        # Assumiamo che ogni messaggio salvato sia una richiesta
+        coach_messages = await db.coach_messages.count_documents({
+            "user_email": user_email,
+            "timestamp": {"$gte": seven_days_ago}
+        })
+        
+        # 4. Pasti per giorno (ultimi 7 giorni)
+        daily_meals = {}
+        for entry in diary_list:
+            date = entry.get("timestamp", datetime.utcnow()).strftime("%Y-%m-%d")
+            daily_meals[date] = daily_meals.get(date, 0) + 1
+        
+        # 5. Distribuzione per tipo pasto
+        meal_types = {}
+        for entry in diary_list:
+            meal_type = entry.get("meal_type", "Altro")
+            meal_types[meal_type] = meal_types.get(meal_type, 0) + 1
+        
+        # 6. Ottieni numero bambini
+        children_count = await db.children.count_documents({"parent_email": user_email})
+        
+        return {
+            "total_meals_7days": diary_entries,
+            "total_scans_7days": diary_entries,  # Assumiamo 1 scan = 1 entry
+            "coach_messages_7days": coach_messages,
+            "avg_health_score": round(avg_health_score, 1),
+            "daily_meals": daily_meals,
+            "meal_types": meal_types,
+            "children_count": children_count,
+            "period": "7 days"
+        }
+    except Exception as e:
+        logging.error(f"Error getting dashboard stats: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Errore nel recupero statistiche: {str(e)}")
+
 @api_router.post("/meal-plan/generate-shopping-list")
 async def generate_shopping_list(user_email: str, week_start_date: str):
     """Genera la lista della spesa usando AI basata sui profili bambini"""
