@@ -243,6 +243,60 @@ export default function AdminConfig() {
             </View>
           </View>
 
+          {/* Stripe & SendGrid Configuration */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="card" size={20} color="#fff" />
+              <Text style={styles.sectionTitle}>Servizi Esterni</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Stripe Publishable Key</Text>
+              <TextInput
+                style={styles.input}
+                value={config.stripe_publishable_key || ''}
+                onChangeText={(value) => updateField('stripe_publishable_key', value)}
+                placeholder="pk_live_..."
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                secureTextEntry
+              />
+              <Text style={styles.helpText}>Chiave pubblica per pagamenti Stripe (frontend)</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Stripe Secret Key</Text>
+              <TextInput
+                style={styles.input}
+                value={config.stripe_secret_key || ''}
+                onChangeText={(value) => updateField('stripe_secret_key', value)}
+                placeholder="sk_live_..."
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                secureTextEntry
+              />
+              <Text style={styles.helpText}>Chiave segreta per pagamenti Stripe (backend)</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>SendGrid API Key</Text>
+              <TextInput
+                style={styles.input}
+                value={config.sendgrid_api_key || ''}
+                onChangeText={(value) => updateField('sendgrid_api_key', value)}
+                placeholder="SG...."
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                secureTextEntry
+              />
+              <Text style={styles.helpText}>Per invio email di recupero password</Text>
+            </View>
+
+            <View style={styles.warningCard}>
+              <Ionicons name="shield-checkmark" size={20} color="#10b981" />
+              <Text style={styles.warningText}>
+                🔒 Le API keys vengono salvate in modo sicuro nel database
+              </Text>
+            </View>
+          </View>
+
           {/* Pricing */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
