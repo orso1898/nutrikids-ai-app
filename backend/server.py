@@ -524,8 +524,8 @@ async def get_meal_plan(user_email: str, week_start_date: str):
     return WeeklyPlan(**plan)
 
 @api_router.post("/meal-plan/generate-shopping-list")
-async def generate_shopping_list(user_email: str, week_start_date: str, num_people: int = 2):
-    """Genera la lista della spesa usando AI"""
+async def generate_shopping_list(user_email: str, week_start_date: str):
+    """Genera la lista della spesa usando AI basata sui profili bambini"""
     # Get the meal plan
     plan = await db.meal_plans.find_one({
         "user_email": user_email,
@@ -534,6 +534,34 @@ async def generate_shopping_list(user_email: str, week_start_date: str, num_peop
     
     if not plan:
         raise HTTPException(status_code=404, detail="Piano non trovato")
+    
+    # Get children profiles for this user
+    children_cursor = db.children.find({"parent_email": user_email})
+    children = await children_cursor.to_list(length=100)
+    
+    if not children:
+        raise HTTPException(status_code=400, detail="Nessun profilo bambino trovato. Crea prima un profilo bambino nella sezione Profilo.")
+    
+    # Build children info string
+    children_info = []
+    for child in children:
+        name = child.get('name', 'Bambino')
+        age = child.get('age', 0)
+        
+        # Determine age category
+        if age < 1:
+            age_cat = "lattante (6-12 mesi)"
+        elif age <= 3:
+            age_cat = "prima infanzia (1-3 anni)"
+        elif age <= 6:
+            age_cat = "età prescolare (3-6 anni)"
+        else:
+            age_cat = "età scolare (6-10 anni)"
+        
+        children_info.append(f"{name}, {age} anni ({age_cat})")
+    
+    children_description = "\n".join([f"- {info}" for info in children_info])
+    num_children = len(children)
     
     # Collect all meals
     all_meals = []
@@ -549,28 +577,30 @@ async def generate_shopping_list(user_email: str, week_start_date: str, num_peop
         raise HTTPException(status_code=400, detail="Nessun piatto inserito nel piano")
     
     # Generate shopping list with AI
-    prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile. Analizza i seguenti pasti della settimana per BAMBINI e genera una lista della spesa completa.
+    prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile. Analizza i seguenti pasti della settimana e genera una lista della spesa completa.
 
-IMPORTANTE: 
-- Questi pasti sono per {num_people} BAMBINO/I (età 6 mesi - 10 anni)
-- Le porzioni devono essere appropriate per bambini (molto più piccole rispetto agli adulti)
-- Ingredienti devono essere sicuri e adatti all'alimentazione infantile
-- Evita alimenti ad alto rischio allergenico per i più piccoli
+PROFILI BAMBINI (personalizza le porzioni in base all'età):
+{children_description}
 
-Pasti della settimana per bambini:
+TOTALE BAMBINI: {num_children}
+
+Pasti della settimana:
 {chr(10).join(all_meals)}
 
-Genera una lista della spesa organizzata per categorie con quantità PEDIATRICHE precise (grammi, litri, pezzi).
-
-Linee guida porzioni bambini:
-- Pasta/riso: 30-60g per bambino piccolo, 60-80g per bambino più grande
-- Carne/pesce: 30-50g per bambino piccolo, 50-80g per bambino più grande
-- Verdura: 50-100g per porzione
-- Frutta: 1 porzione piccola o 100-150g
+ISTRUZIONI IMPORTANTI:
+1. Calcola le quantità PERSONALIZZATE in base all'età specifica di ogni bambino
+2. Usa le seguenti linee guida per età:
+   - Lattanti (6-12 mesi): porzioni molto piccole, cibi morbidi
+   - Prima infanzia (1-3 anni): 30-50g pasta/riso, 30-40g proteine
+   - Età prescolare (3-6 anni): 50-70g pasta/riso, 40-60g proteine
+   - Età scolare (6-10 anni): 70-90g pasta/riso, 60-80g proteine
+3. Se ci sono bambini di età diverse, somma le quantità appropriate per ciascuno
+4. Considera sicurezza alimentare per ogni fascia d'età
+5. Organizza per categorie (Frutta e Verdura, Proteine, Carboidrati, Latticini, ecc.)
 
 Formato richiesto:
-**Categoria** (con nota età consigliata se necessario)
-- Ingrediente: quantità per {num_people} bambino/i - Note età se rilevante
+**Categoria**
+- Ingrediente: quantità totale (specificare se ci sono note per età)
 """
     
     try:
