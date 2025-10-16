@@ -497,4 +497,55 @@ const styles = StyleSheet.create({
     color: '#4b5563',
     lineHeight: 22,
   },
+  modeToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  modeButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 8,
+    gap: 8,
+  },
+  modeButtonActive: {
+    backgroundColor: '#f59e0b',
+  },
+  modeButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#f59e0b',
+  },
+  modeButtonTextActive: {
+    color: '#fff',
+  },
+  daySelector: {
+    marginHorizontal: 16,
+    marginTop: 12,
+  },
+  dayButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  dayButtonActive: {
+    backgroundColor: '#10b981',
+  },
+  dayButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748b',
+  },
+  dayButtonTextActive: {
+    color: '#fff',
+  },
 });
