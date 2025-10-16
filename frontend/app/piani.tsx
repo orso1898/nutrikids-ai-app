@@ -245,7 +245,7 @@ export default function Piani() {
           {/* Number of People */}
           <View style={styles.peopleCard}>
             <Ionicons name="people" size={24} color="#f59e0b" />
-            <Text style={styles.peopleLabel}>Numero di Persone:</Text>
+            <Text style={styles.peopleLabel}>Numero di Bambini:</Text>
             <View style={styles.peopleControls}>
               <TouchableOpacity 
                 onPress={() => setNumPeople(Math.max(1, numPeople - 1))}
