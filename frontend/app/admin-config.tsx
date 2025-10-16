@@ -85,13 +85,13 @@ export default function AdminConfig() {
   };
 
   const saveConfig = async () => {
-    if (!config) return;
+    if (!config || !authToken) return;
     
     setSaving(true);
     try {
       await axios.put(`${BACKEND_URL}/api/admin/config`, config, {
         headers: {
-          'X-User-Email': userEmail || ''
+          'Authorization': `Bearer ${authToken}`
         }
       });
       
