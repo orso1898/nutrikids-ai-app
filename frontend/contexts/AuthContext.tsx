@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,10 +27,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkAuthStatus = async () => {
     try {
       const email = await AsyncStorage.getItem('userEmail');
+      const token = await AsyncStorage.getItem('authToken');
       if (email) {
         setIsAuthenticated(true);
         setUserEmail(email);
         setIsAdmin(email === 'admin@nutrikids.com');
+        setAuthToken(token);
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
@@ -38,12 +41,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const login = async (email: string) => {
+  const login = async (email: string, token?: string) => {
     try {
       await AsyncStorage.setItem('userEmail', email);
+      if (token) {
+        await AsyncStorage.setItem('authToken', token);
+      }
       setIsAuthenticated(true);
       setUserEmail(email);
       setIsAdmin(email === 'admin@nutrikids.com');
+      setAuthToken(token || null);
     } catch (error) {
       console.error('Error during login:', error);
       throw error;
@@ -53,10 +60,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('hasSeenOnboarding');
       setIsAuthenticated(false);
       setUserEmail(null);
       setIsAdmin(false);
+      setAuthToken(null);
     } catch (error) {
       console.error('Error during logout:', error);
       throw error;
@@ -64,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userEmail, isAdmin, login, logout, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, userEmail, isAdmin, authToken, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
