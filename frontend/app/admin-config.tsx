@@ -52,7 +52,6 @@ export default function AdminConfig() {
 
   const loadConfig = async () => {
     try {
-      const { authToken } = useAuth();
       if (!authToken) {
         router.replace('/login');
         return;
