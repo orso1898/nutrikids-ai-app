@@ -98,6 +98,14 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen 
+              name="edit-child" 
+              options={{
+                animation: 'slide_from_bottom',
+                animationDuration: 350,
+                presentation: 'modal',
+              }}
+            />
+            <Stack.Screen 
               name="admin-dashboard" 
               options={{
                 animation: 'slide_from_right',
