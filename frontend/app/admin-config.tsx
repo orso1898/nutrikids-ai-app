@@ -52,9 +52,15 @@ export default function AdminConfig() {
 
   const loadConfig = async () => {
     try {
+      const { authToken } = useAuth();
+      if (!authToken) {
+        router.replace('/login');
+        return;
+      }
+      
       const response = await axios.get(`${BACKEND_URL}/api/admin/config`, {
         headers: {
-          'X-User-Email': userEmail || ''
+          'Authorization': `Bearer ${authToken}`
         }
       });
       console.log('Config loaded:', response.data);
@@ -62,6 +68,13 @@ export default function AdminConfig() {
     } catch (error: any) {
       console.error('Error loading config:', error);
       const errorMsg = error.response?.data?.detail || 'Errore nel caricamento delle configurazioni';
+      
+      // Se errore di autenticazione, redirect al login
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        router.replace('/login');
+        return;
+      }
+      
       try {
         window.alert(errorMsg);
       } catch (e) {
