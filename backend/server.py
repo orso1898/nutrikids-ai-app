@@ -563,7 +563,9 @@ Formato richiesto:
     
     try:
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"shopping_{user_email}_{week_start_date}",
+            system_message="Sei un assistente nutrizionale esperto che crea liste della spesa dettagliate."
         ).with_model("openai", "gpt-4o-mini")
         
         user_message = UserMessage(text=prompt)
