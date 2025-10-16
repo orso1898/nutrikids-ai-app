@@ -113,7 +113,6 @@ export default function Piani() {
         params: {
           user_email: userEmail,
           week_start_date: currentWeekStart,
-          num_people: numPeople,
         },
       });
       
@@ -123,7 +122,7 @@ export default function Piani() {
       });
       
       try {
-        window.alert('Lista della spesa generata! 🛒');
+        window.alert('Lista della spesa generata basata sui profili bambini! 🛒👶');
       } catch (e) {
         Alert.alert('Successo', 'Lista della spesa generata!');
       }
