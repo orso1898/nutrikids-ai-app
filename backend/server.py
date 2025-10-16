@@ -157,6 +157,8 @@ class PhotoAnalysisResponse(BaseModel):
     nutritional_info: dict
     suggestions: str
     health_score: int
+    allergens_detected: List[str] = []  # Allergeni rilevati nel piatto
+    allergen_warning: Optional[str] = None  # Messaggio di avviso allergie
 
 class DiaryEntry(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
