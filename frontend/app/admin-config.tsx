@@ -40,7 +40,7 @@ export default function AdminConfig() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const router = useRouter();
-  const { isAdmin, userEmail } = useAuth();
+  const { isAdmin, userEmail, authToken } = useAuth();
 
   useEffect(() => {
     if (!isAdmin) {
