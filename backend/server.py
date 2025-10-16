@@ -549,23 +549,35 @@ async def generate_shopping_list(user_email: str, week_start_date: str, num_peop
         raise HTTPException(status_code=400, detail="Nessun piatto inserito nel piano")
     
     # Generate shopping list with AI
-    prompt = f"""Sei un assistente nutrizionale. Analizza i seguenti pasti della settimana e genera una lista della spesa completa con ingredienti e quantità precise per {num_people} persone.
+    prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile. Analizza i seguenti pasti della settimana per BAMBINI e genera una lista della spesa completa.
 
-Pasti della settimana:
+IMPORTANTE: 
+- Questi pasti sono per {num_people} BAMBINO/I (età 6 mesi - 10 anni)
+- Le porzioni devono essere appropriate per bambini (molto più piccole rispetto agli adulti)
+- Ingredienti devono essere sicuri e adatti all'alimentazione infantile
+- Evita alimenti ad alto rischio allergenico per i più piccoli
+
+Pasti della settimana per bambini:
 {chr(10).join(all_meals)}
 
-Genera una lista della spesa organizzata per categorie (Frutta e Verdura, Proteine, Carboidrati, Latticini, ecc.) con quantità precise in grammi, litri, pezzi.
+Genera una lista della spesa organizzata per categorie con quantità PEDIATRICHE precise (grammi, litri, pezzi).
+
+Linee guida porzioni bambini:
+- Pasta/riso: 30-60g per bambino piccolo, 60-80g per bambino più grande
+- Carne/pesce: 30-50g per bambino piccolo, 50-80g per bambino più grande
+- Verdura: 50-100g per porzione
+- Frutta: 1 porzione piccola o 100-150g
 
 Formato richiesto:
-**Categoria**
-- Ingrediente: quantità
+**Categoria** (con nota età consigliata se necessario)
+- Ingrediente: quantità per {num_people} bambino/i - Note età se rilevante
 """
     
     try:
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"shopping_{user_email}_{week_start_date}",
-            system_message="Sei un assistente nutrizionale esperto che crea liste della spesa dettagliate."
+            system_message="Sei un nutrizionista pediatrico esperto in alimentazione infantile (6 mesi - 10 anni). Crei liste della spesa con porzioni appropriate per bambini, considerando sicurezza alimentare e sviluppo."
         ).with_model("openai", "gpt-4o-mini")
         
         user_message = UserMessage(text=prompt)
