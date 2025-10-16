@@ -510,6 +510,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748b',
   },
+  childActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    padding: 4,
+  },
   actionsSection: {
     backgroundColor: '#fff',
     borderRadius: 12,
