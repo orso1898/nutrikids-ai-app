@@ -30,6 +30,8 @@ interface AnalysisResult {
   };
   suggestions: string;
   health_score: number;
+  allergens_detected?: string[];
+  allergen_warning?: string;
 }
 
 export default function Scanner() {
