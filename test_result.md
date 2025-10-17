@@ -290,14 +290,70 @@ test_plan:
           agent: "testing"
           comment: "POST /api/analyze-photo endpoint working correctly with GPT-4o vision model. Successfully processes base64 images, returns structured nutritional analysis with foods detected, nutritional info, suggestions in Italian, and health score. Fallback mechanism works when JSON parsing fails."
 
+  - task: "Gamification Backend - Award Points Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implementato endpoint POST /api/children/{child_id}/award-points con modelli AwardPointsRequest e AwardPointsResponse. Sistema livelli: 1 livello = 100 punti. Badge automatici: first_century (100 punti), level_5, level_10. Pronto per testing."
+
+frontend:
+  - task: "Gamification UI - Profilo Visualization"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/profilo.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Aggiunto visualizzazione gamification nel profilo: badge livello con icona trofeo, contatore punti con stella, progress bar con percentuale al prossimo livello. Interfaccia Child aggiornata con points, level, badges."
+
+  - task: "Gamification Integration - Diario Points"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/diario.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Integrata assegnazione punti automatica: 10 punti per ogni pasto salvato nel diario. Funzione awardPointsToChildren() assegna punti a tutti i bambini del genitore. Alert di conferma con emoji."
+
+  - task: "Gamification Integration - Scanner Points"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/scanner.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Integrata assegnazione punti automatica: 5 punti per ogni scansione foto completata. Funzione awardPointsToChildren() chiamata dopo analisi AI con successo."
+
+metadata:
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 2
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Gamification Backend - Award Points Endpoint"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
 agent_communication:
     - agent: "testing"
-      message: "Completed comprehensive backend testing for NutriKids AI. All 8 core endpoints plus error handling tested successfully. Fixed MongoDB connection issue during testing. All CRUD operations working correctly with proper UUID generation and data persistence. Coach Maya AI integration with Emergent LLM working perfectly in Italian. Ready for production use."
-    - agent: "main"
-      message: "Implemented Admin Configuration Panel. Backend endpoints for GET and PUT config are ready. Frontend screen with all input fields for API keys, pricing, and limits has been created. Added navigation from admin-dashboard to admin-config. Ready for backend testing of new admin endpoints."
-    - agent: "testing"
-      message: "Admin Configuration endpoints testing completed successfully! All 3 endpoints working perfectly: GET /api/admin/config (retrieves all config with defaults), PUT /api/admin/config (updates single/multiple fields), GET /api/admin/config/{key} (retrieves individual values, 404 for non-existent). Complete scenario tested: initial config → single update → multiple updates → verification. MongoDB persistence working correctly with proper updated_at timestamps. All 16 backend tests passing (100% success rate)."
-    - agent: "main"
-      message: "Miglioramento UI completato: Aggiornato expo-router con transizioni fluide tra schermate (slide_from_right, slide_from_bottom, fade). Aggiunto animazioni react-native-reanimated alla home (FadeInUp, FadeInDown, pulse su profilo) e scanner (FadeIn, ZoomIn, SlideInRight per tutti i componenti). Ora è necessario un test generale del backend per verificare che tutto funzioni correttamente."
-    - agent: "testing"
       message: "Test generale completo del backend NutriKids AI completato dopo miglioramenti UI. Risultati: 15/16 test core passati (93.8% successo), 4/5 test aggiuntivi passati (80% successo). Tutti gli endpoint principali funzionano correttamente: Health check ✅, Coach Maya italiano ✅, Diary CRUD ✅, Children CRUD ✅, Photo Analysis ✅, User Registration/Login ✅. Solo problema minore: Admin config ha valori modificati da test precedenti (premium_monthly_price: 14.99 invece di 9.99). Admin login fallisce - credenziali potrebbero essere diverse. Backend completamente funzionale per produzione."
+    - agent: "main"
+      message: "🎮 GAMIFICATION IMPLEMENTATA: Backend endpoint /api/children/{child_id}/award-points completato con sistema livelli (100 punti = 1 livello) e badge automatici. Frontend: visualizzazione punti/livelli/progress bar nel profilo bambini. Integrazione: 10 punti per pasto salvato in Diario, 5 punti per scansione Scanner. Pronto per testing backend del nuovo endpoint."
