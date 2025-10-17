@@ -195,6 +195,17 @@ class ChildCreate(BaseModel):
     age: int
     allergies: Optional[List[str]] = []
 
+# Gamification Models
+class AwardPointsRequest(BaseModel):
+    points: int = Field(gt=0, description="Points to award (must be positive)")
+
+class AwardPointsResponse(BaseModel):
+    child_id: str
+    points: int
+    level: int
+    level_up: bool
+    new_badges: List[str]
+
 # Weekly Meal Plan Models
 class MealPlanDay(BaseModel):
     breakfast: str = ""
