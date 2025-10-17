@@ -184,6 +184,9 @@ class Child(BaseModel):
     name: str
     age: int
     allergies: List[str] = []  # Lista allergie/intolleranze
+    points: int = 0  # Punti gamification
+    level: int = 1  # Livello calcolato dai punti
+    badges: List[str] = []  # Badge guadagnati
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class ChildCreate(BaseModel):
