@@ -387,6 +387,270 @@ class NutriKidsBackendTester:
             self.log_result("Admin Config - GET Nonexistent Key", False, f"Request error: {str(e)}")
             return False
 
+    def test_gamification_setup(self):
+        """Setup test data for gamification tests"""
+        print("\n=== Setting up Gamification Test Data ===")
+        
+        # Create a test user and child for gamification
+        import uuid
+        self.test_user_email = f"gamification_test_{uuid.uuid4().hex[:8]}@nutrikids.test"
+        
+        # Register test user
+        user_data = {
+            "email": self.test_user_email,
+            "password": "testpass123",
+            "name": "Gamification Test Parent"
+        }
+        
+        try:
+            response = self.session.post(f"{BACKEND_URL}/register", json=user_data)
+            if response.status_code == 201:
+                self.log_result("Gamification Setup - User Registration", True, f"Created user: {self.test_user_email}")
+            elif response.status_code == 400 and "already registered" in response.text:
+                self.log_result("Gamification Setup - User Registration", True, "User already exists - continuing")
+            else:
+                self.log_result("Gamification Setup - User Registration", False, f"Status: {response.status_code}")
+                return None
+        except Exception as e:
+            self.log_result("Gamification Setup - User Registration", False, f"Exception: {str(e)}")
+            return None
+            
+        # Create test child
+        child_data = {
+            "parent_email": self.test_user_email,
+            "name": "Marco Rossi",
+            "age": 8,
+            "allergies": ["lattosio"]
+        }
+        
+        try:
+            response = self.session.post(f"{BACKEND_URL}/children", json=child_data)
+            if response.status_code == 200:
+                child_info = response.json()
+                self.test_child_id = child_info["id"]
+                self.created_children.append(self.test_child_id)
+                self.log_result("Gamification Setup - Child Creation", True, f"Created child: {child_info['name']} (ID: {self.test_child_id})")
+                return self.test_child_id
+            else:
+                self.log_result("Gamification Setup - Child Creation", False, f"Status: {response.status_code}")
+                return None
+        except Exception as e:
+            self.log_result("Gamification Setup - Child Creation", False, f"Exception: {str(e)}")
+            return None
+
+    def test_gamification_award_points_basic(self):
+        """Test gamification - Basic point assignment (10 points for diary)"""
+        if not hasattr(self, 'test_child_id') or not self.test_child_id:
+            self.log_result("Gamification - Basic Points", False, "No test child available")
+            return False
+            
+        try:
+            request_data = {"points": 10}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
+                json=request_data
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                expected_fields = ["child_id", "points", "level", "level_up", "new_badges"]
+                
+                # Check response structure
+                missing_fields = [field for field in expected_fields if field not in data]
+                if missing_fields:
+                    self.log_result("Gamification - Basic Points", False, f"Missing fields: {missing_fields}")
+                    return False
+                
+                # Validate values
+                if (data["child_id"] == self.test_child_id and 
+                    data["points"] == 10 and 
+                    data["level"] == 1 and 
+                    data["level_up"] == False):
+                    self.log_result("Gamification - Basic Points", True, f"Points: {data['points']}, Level: {data['level']}")
+                    return True
+                else:
+                    self.log_result("Gamification - Basic Points", False, f"Invalid values: {data}")
+                    return False
+            else:
+                self.log_result("Gamification - Basic Points", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Basic Points", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_award_points_scanner(self):
+        """Test gamification - Scanner point assignment (5 points)"""
+        if not hasattr(self, 'test_child_id') or not self.test_child_id:
+            self.log_result("Gamification - Scanner Points", False, "No test child available")
+            return False
+            
+        try:
+            request_data = {"points": 5}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
+                json=request_data
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Should now have 15 points total (10 + 5)
+                if data["points"] == 15 and data["level"] == 1:
+                    self.log_result("Gamification - Scanner Points", True, f"Cumulative points: {data['points']}, Level: {data['level']}")
+                    return True
+                else:
+                    self.log_result("Gamification - Scanner Points", False, f"Wrong cumulative points: {data['points']}, expected 15")
+                    return False
+            else:
+                self.log_result("Gamification - Scanner Points", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Scanner Points", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_level_up(self):
+        """Test gamification - Level up functionality (reach 100 points)"""
+        if not hasattr(self, 'test_child_id') or not self.test_child_id:
+            self.log_result("Gamification - Level Up", False, "No test child available")
+            return False
+            
+        try:
+            # Award 85 more points to reach 100 total (15 + 85 = 100)
+            request_data = {"points": 85}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
+                json=request_data
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Should now have 100 points and level 2
+                if (data["points"] == 100 and 
+                    data["level"] == 2 and 
+                    data["level_up"] == True):
+                    self.log_result("Gamification - Level Up", True, f"Points: {data['points']}, Level: {data['level']}, Level Up: {data['level_up']}")
+                    return True
+                else:
+                    self.log_result("Gamification - Level Up", False, f"Level up failed: {data}")
+                    return False
+            else:
+                self.log_result("Gamification - Level Up", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Level Up", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_badge_first_century(self):
+        """Test gamification - Badge system (first_century at 100 points)"""
+        if not hasattr(self, 'test_user_email') or not self.test_user_email:
+            self.log_result("Gamification - First Century Badge", False, "No test user available")
+            return False
+            
+        try:
+            # Get current child data to check badges
+            response = self.session.get(f"{BACKEND_URL}/children/{self.test_user_email}")
+            
+            if response.status_code == 200:
+                children = response.json()
+                child = next((c for c in children if c["id"] == self.test_child_id), None)
+                
+                if not child:
+                    self.log_result("Gamification - First Century Badge", False, "Child not found in children list")
+                    return False
+                
+                badges = child.get("badges", [])
+                
+                if "first_century" in badges:
+                    self.log_result("Gamification - First Century Badge", True, f"first_century badge awarded. All badges: {badges}")
+                    return True
+                else:
+                    self.log_result("Gamification - First Century Badge", False, f"Missing first_century badge. Current badges: {badges}")
+                    return False
+            else:
+                self.log_result("Gamification - First Century Badge", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - First Century Badge", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_validation_negative_points(self):
+        """Test gamification - Validation: negative points should fail"""
+        if not hasattr(self, 'test_child_id') or not self.test_child_id:
+            self.log_result("Gamification - Negative Points Validation", False, "No test child available")
+            return False
+            
+        try:
+            request_data = {"points": -5}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
+                json=request_data
+            )
+            
+            # Should fail with 422 (validation error)
+            if response.status_code == 422:
+                self.log_result("Gamification - Negative Points Validation", True, "Correctly rejected negative points")
+                return True
+            else:
+                self.log_result("Gamification - Negative Points Validation", False, f"Should have failed with 422, got {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Negative Points Validation", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_validation_zero_points(self):
+        """Test gamification - Validation: zero points should fail"""
+        if not hasattr(self, 'test_child_id') or not self.test_child_id:
+            self.log_result("Gamification - Zero Points Validation", False, "No test child available")
+            return False
+            
+        try:
+            request_data = {"points": 0}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
+                json=request_data
+            )
+            
+            # Should fail with 422 (validation error)
+            if response.status_code == 422:
+                self.log_result("Gamification - Zero Points Validation", True, "Correctly rejected zero points")
+                return True
+            else:
+                self.log_result("Gamification - Zero Points Validation", False, f"Should have failed with 422, got {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Zero Points Validation", False, f"Exception: {str(e)}")
+            return False
+
+    def test_gamification_validation_nonexistent_child(self):
+        """Test gamification - Validation: non-existent child should return 404"""
+        try:
+            import uuid
+            fake_child_id = str(uuid.uuid4())
+            request_data = {"points": 10}
+            response = self.session.post(
+                f"{BACKEND_URL}/children/{fake_child_id}/award-points",
+                json=request_data
+            )
+            
+            # Should fail with 404
+            if response.status_code == 404:
+                self.log_result("Gamification - Non-existent Child Validation", True, "Correctly returned 404 for non-existent child")
+                return True
+            else:
+                self.log_result("Gamification - Non-existent Child Validation", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Gamification - Non-existent Child Validation", False, f"Exception: {str(e)}")
+            return False
+
     def test_error_cases(self):
         """Test error handling"""
         print("\n=== Testing Error Cases ===")
