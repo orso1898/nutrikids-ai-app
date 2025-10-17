@@ -757,12 +757,30 @@ async def generate_shopping_list(user_email: str, week_start_date: str):
         raise HTTPException(status_code=400, detail="Nessun piatto inserito nel piano")
     
     # Generate shopping list with AI
-    prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile. Analizza i seguenti pasti della settimana e genera una lista della spesa completa.
+    allergen_instructions = ""
+    if all_allergies:
+        allergen_instructions = f"""
+🚨 ATTENZIONE ALLERGIE/INTOLLERANZE:
+I bambini hanno le seguenti allergie: {', '.join(all_allergies)}
+
+ISTRUZIONI CRITICHE ALLERGIE:
+1. **ESCLUDI COMPLETAMENTE** tutti gli ingredienti che contengono questi allergeni
+2. **SOSTITUISCI** automaticamente con alternative sicure:
+   - Lattosio → Latte vegetale (soia, avena, riso, mandorla)
+   - Glutine → Pasta/pane senza glutine, riso, quinoa, mais
+   - Uova → Sostituti per cottura (semi di lino, banana schiacciata)
+   - Frutta secca → Semi (zucca, girasole, chia)
+3. **INDICA CHIARAMENTE** nella lista "⚠️ Sostituito per allergia a [allergene]"
+4. Se un piatto contiene allergeni, suggerisci una versione modificata del piatto
+"""
+    
+    prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile E gestione allergie. Analizza i seguenti pasti della settimana e genera una lista della spesa SICURA per questi bambini.
 
 PROFILI BAMBINI (personalizza le porzioni in base all'età):
 {children_description}
 
 TOTALE BAMBINI: {num_children}
+{allergen_instructions}
 
 Pasti della settimana:
 {chr(10).join(all_meals)}
@@ -780,7 +798,7 @@ ISTRUZIONI IMPORTANTI:
 
 Formato richiesto:
 **Categoria**
-- Ingrediente: quantità totale (specificare se ci sono note per età)
+- Ingrediente: quantità totale ⚠️ [Se sostituito, indica: "Sostituito per allergia a X"]
 """
     
     try:
