@@ -712,11 +712,17 @@ async def generate_shopping_list(user_email: str, week_start_date: str):
     if not children:
         raise HTTPException(status_code=400, detail="Nessun profilo bambino trovato. Crea prima un profilo bambino nella sezione Profilo.")
     
-    # Build children info string
+    # Build children info string with allergies
     children_info = []
+    all_allergies = []
+    
     for child in children:
         name = child.get('name', 'Bambino')
         age = child.get('age', 0)
+        allergies = child.get('allergies', [])
+        
+        # Collect all allergies
+        all_allergies.extend(allergies)
         
         # Determine age category
         if age < 1:
@@ -728,10 +734,14 @@ async def generate_shopping_list(user_email: str, week_start_date: str):
         else:
             age_cat = "età scolare (6-10 anni)"
         
-        children_info.append(f"{name}, {age} anni ({age_cat})")
+        allergy_text = f" - ALLERGIE: {', '.join(allergies)}" if allergies else ""
+        children_info.append(f"{name}, {age} anni ({age_cat}){allergy_text}")
     
     children_description = "\n".join([f"- {info}" for info in children_info])
     num_children = len(children)
+    
+    # Remove duplicates from allergies
+    all_allergies = list(set(all_allergies))
     
     # Collect all meals
     all_meals = []
