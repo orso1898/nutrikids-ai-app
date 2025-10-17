@@ -237,6 +237,30 @@ export default function Scanner() {
                   entering={FadeInDown.duration(600).springify()}
                   style={styles.resultsContainer}
                 >
+                  {/* Allergen Warning - PRIORITY ALERT */}
+                  {result.allergen_warning && (
+                    <Animated.View 
+                      entering={ZoomIn.springify()}
+                      style={styles.allergenAlert}
+                    >
+                      <View style={styles.allergenAlertHeader}>
+                        <Ionicons name="warning" size={32} color="#fff" />
+                        <Text style={styles.allergenAlertTitle}>ATTENZIONE ALLERGIA!</Text>
+                      </View>
+                      <Text style={styles.allergenAlertText}>{result.allergen_warning}</Text>
+                      {result.allergens_detected && result.allergens_detected.length > 0 && (
+                        <View style={styles.allergensList}>
+                          {result.allergens_detected.map((allergen, idx) => (
+                            <View key={idx} style={styles.allergenChip}>
+                              <Ionicons name="close-circle" size={16} color="#fff" />
+                              <Text style={styles.allergenChipText}>{allergen}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+                    </Animated.View>
+                  )}
+
                   <Animated.View 
                     entering={ZoomIn.delay(100).springify()}
                     style={styles.scoreCard}
