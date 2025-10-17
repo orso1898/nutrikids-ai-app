@@ -98,6 +98,25 @@ export default function Scanner() {
     }
   };
 
+  const awardPointsToChildren = async () => {
+    try {
+      // Get all children for this parent
+      const childrenResponse = await axios.get(`${BACKEND_URL}/api/children/${userEmail}`);
+      const children = childrenResponse.data;
+      
+      // Award 5 points to each child for scanning
+      const pointsPromises = children.map((child: any) => 
+        axios.post(`${BACKEND_URL}/api/children/${child.id}/award-points`, { points: 5 })
+      );
+      
+      await Promise.all(pointsPromises);
+      console.log('✅ Punti scanner assegnati ai bambini!');
+    } catch (error) {
+      console.error('⚠️ Errore assegnazione punti:', error);
+      // Non bloccare il flusso se l'assegnazione fallisce
+    }
+  };
+
   const analyzePhoto = async () => {
     if (!photoBase64) {
       window.alert('Nessuna foto da analizzare');
@@ -112,6 +131,9 @@ export default function Scanner() {
       });
 
       setResult(response.data);
+      
+      // Award points to all children for using scanner
+      await awardPointsToChildren();
     } catch (error) {
       console.error('Error analyzing photo:', error);
       window.alert('Errore durante l\'analisi. Riprova.');
