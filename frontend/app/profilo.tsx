@@ -539,6 +539,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748b',
   },
+  gamificationContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  statBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0fdf4',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#10b981',
+  },
+  progressBarContainer: {
+    height: 6,
+    backgroundColor: '#e5e7eb',
+    borderRadius: 3,
+    marginTop: 8,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#10b981',
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: 10,
+    color: '#9ca3af',
+    marginTop: 4,
+  },
   childActions: {
     flexDirection: 'row',
     gap: 12,
