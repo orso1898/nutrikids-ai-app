@@ -393,7 +393,7 @@ class NutriKidsBackendTester:
         
         # Create a test user and child for gamification
         import uuid
-        self.test_user_email = f"gamification_test_{uuid.uuid4().hex[:8]}@nutrikids.test"
+        self.test_user_email = f"gamification_test_{uuid.uuid4().hex[:8]}@example.com"
         
         # Register test user
         user_data = {
