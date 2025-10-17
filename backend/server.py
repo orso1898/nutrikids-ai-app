@@ -593,6 +593,53 @@ async def delete_child(child_id: str):
         raise HTTPException(status_code=404, detail="Child not found")
     return {"message": "Child deleted"}
 
+# Gamification - Award Points
+@api_router.post("/children/{child_id}/award-points")
+async def award_points(child_id: str, points_to_add: int):
+    """Assegna punti a un bambino e calcola il nuovo livello"""
+    child = await db.children.find_one({"id": child_id})
+    if not child:
+        raise HTTPException(status_code=404, detail="Child not found")
+    
+    current_points = child.get("points", 0)
+    new_points = current_points + points_to_add
+    
+    # Calculate level: 1 level = 100 points
+    new_level = max(1, (new_points // 100) + 1)
+    
+    # Check for new badges
+    current_badges = child.get("badges", [])
+    new_badges = current_badges.copy()
+    
+    # Badge: First 100 points
+    if new_points >= 100 and "first_century" not in new_badges:
+        new_badges.append("first_century")
+    
+    # Badge: Level 5
+    if new_level >= 5 and "level_5" not in new_badges:
+        new_badges.append("level_5")
+    
+    # Badge: Level 10
+    if new_level >= 10 and "level_10" not in new_badges:
+        new_badges.append("level_10")
+    
+    await db.children.update_one(
+        {"id": child_id},
+        {"$set": {
+            "points": new_points,
+            "level": new_level,
+            "badges": new_badges
+        }}
+    )
+    
+    return {
+        "child_id": child_id,
+        "points": new_points,
+        "level": new_level,
+        "level_up": new_level > child.get("level", 1),
+        "new_badges": [b for b in new_badges if b not in current_badges]
+    }
+
 # Weekly Meal Plans
 @api_router.post("/meal-plan", response_model=WeeklyPlan)
 async def create_meal_plan(plan: WeeklyPlanCreate):
