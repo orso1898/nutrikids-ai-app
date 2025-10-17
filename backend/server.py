@@ -756,22 +756,38 @@ async def generate_shopping_list(user_email: str, week_start_date: str):
     if not all_meals:
         raise HTTPException(status_code=400, detail="Nessun piatto inserito nel piano")
     
-    # Generate shopping list with AI
+    # Generate shopping list with AI with detailed allergy breakdown
     allergen_instructions = ""
     if all_allergies:
+        # Build detailed allergy map per child
+        allergy_details = []
+        for child in children:
+            name = child.get('name', 'Bambino')
+            allergies = child.get('allergies', [])
+            if allergies:
+                allergy_details.append(f"  - {name}: {', '.join(allergies)}")
+        
+        allergy_breakdown = "\n".join(allergy_details) if allergy_details else "  - Nessuna allergia"
+        
         allergen_instructions = f"""
-🚨 ATTENZIONE ALLERGIE/INTOLLERANZE:
-I bambini hanno le seguenti allergie: {', '.join(all_allergies)}
+🚨 ALLERGIE PER BAMBINO (IMPORTANTE - LEGGI ATTENTAMENTE):
+{allergy_breakdown}
 
-ISTRUZIONI CRITICHE ALLERGIE:
-1. **ESCLUDI COMPLETAMENTE** tutti gli ingredienti che contengono questi allergeni
-2. **SOSTITUISCI** automaticamente con alternative sicure:
-   - Lattosio → Latte vegetale (soia, avena, riso, mandorla)
-   - Glutine → Pasta/pane senza glutine, riso, quinoa, mais
-   - Uova → Sostituti per cottura (semi di lino, banana schiacciata)
-   - Frutta secca → Semi (zucca, girasole, chia)
-3. **INDICA CHIARAMENTE** nella lista "⚠️ Sostituito per allergia a [allergene]"
-4. Se un piatto contiene allergeni, suggerisci una versione modificata del piatto
+ISTRUZIONI CRITICHE:
+1. **CALCOLA QUANTITÀ SEPARATE** per bambini con/senza allergie:
+   Esempio: Se 1 bambino su 3 ha allergia al lattosio:
+   - Latte vaccino: quantità per 2 bambini (quelli SENZA allergia)
+   - Latte vegetale: quantità per 1 bambino (quello CON allergia)
+   
+2. **SOSTITUISCI SOLO LE ALLERGIE PRESENTI** (non inventare sostituzioni):
+   - Solo se c'è "Lattosio" → aggiungi latte vegetale per quel bambino
+   - Solo se c'è "Glutine" → aggiungi pasta senza glutine per quel bambino
+   - Solo se c'è "Uova" → aggiungi sostituto per quel bambino
+
+3. **INDICA CHIARAMENTE**:
+   "⚠️ Per [nome bambino] con allergia a [allergene]"
+
+4. **NON sostituire** ingredienti per allergie non presenti nell'elenco sopra
 """
     
     prompt = f"""Sei un nutrizionista pediatrico specializzato in alimentazione infantile E gestione allergie. Analizza i seguenti pasti della settimana e genera una lista della spesa SICURA per questi bambini.
