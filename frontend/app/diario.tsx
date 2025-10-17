@@ -60,6 +60,25 @@ export default function Diario() {
     }
   };
 
+  const awardPointsToChildren = async () => {
+    try {
+      // Get all children for this parent
+      const childrenResponse = await axios.get(`${BACKEND_URL}/api/children/${userEmail}`);
+      const children = childrenResponse.data;
+      
+      // Award 10 points to each child
+      const pointsPromises = children.map((child: any) => 
+        axios.post(`${BACKEND_URL}/api/children/${child.id}/award-points`, { points: 10 })
+      );
+      
+      await Promise.all(pointsPromises);
+      console.log('✅ Punti assegnati ai bambini!');
+    } catch (error) {
+      console.error('⚠️ Errore assegnazione punti:', error);
+      // Non bloccare il flusso se l'assegnazione fallisce
+    }
+  };
+
   const addEntry = async () => {
     if (!description.trim()) {
       Alert.alert('Errore', 'Inserisci una descrizione');
@@ -76,9 +95,15 @@ export default function Diario() {
         date: today
       });
 
+      // Award points to all children
+      await awardPointsToChildren();
+
       setDescription('');
       setModalVisible(false);
       await loadEntries();
+      
+      // Show success message
+      Alert.alert('✨ Ottimo!', 'Pasto salvato e punti assegnati ai tuoi bambini! 🎉');
     } catch (error) {
       Alert.alert('Errore', 'Impossibile salvare l\'entry');
       console.error('Error adding entry:', error);
