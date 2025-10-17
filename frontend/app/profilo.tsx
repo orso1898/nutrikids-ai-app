@@ -15,6 +15,10 @@ interface Child {
   id: string;
   name: string;
   age: number;
+  allergies?: string[];
+  points?: number;
+  level?: number;
+  badges?: string[];
 }
 
 export default function Profilo() {
