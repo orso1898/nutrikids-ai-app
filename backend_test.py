@@ -715,7 +715,20 @@ class NutriKidsBackendTester:
         self.test_admin_config_get_single_value()
         self.test_admin_config_get_nonexistent_key()
         
-        # Test 10: Error Cases
+        # Test 10: Gamification System Tests
+        print("\n=== Testing Gamification System ===")
+        if self.test_gamification_setup():
+            self.test_gamification_award_points_basic()
+            self.test_gamification_award_points_scanner()
+            self.test_gamification_level_up()
+            self.test_gamification_badge_first_century()
+            self.test_gamification_validation_negative_points()
+            self.test_gamification_validation_zero_points()
+            self.test_gamification_validation_nonexistent_child()
+        else:
+            self.log_result("Gamification Tests", False, "Setup failed - skipping gamification tests")
+        
+        # Test 11: Error Cases
         self.test_error_cases()
         
         # Summary
