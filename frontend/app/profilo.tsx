@@ -237,6 +237,31 @@ export default function Profilo() {
                 <View style={styles.childInfo}>
                   <Text style={styles.childName}>{child.name}</Text>
                   <Text style={styles.childAge}>{child.age} {child.age === 1 ? 'anno' : 'anni'}</Text>
+                  
+                  {/* Gamification Stats */}
+                  <View style={styles.gamificationContainer}>
+                    <View style={styles.statBadge}>
+                      <Ionicons name="trophy" size={16} color="#fbbf24" />
+                      <Text style={styles.statText}>Livello {child.level || 1}</Text>
+                    </View>
+                    <View style={styles.statBadge}>
+                      <Ionicons name="star" size={16} color="#8b5cf6" />
+                      <Text style={styles.statText}>{child.points || 0} punti</Text>
+                    </View>
+                  </View>
+                  
+                  {/* Progress Bar */}
+                  <View style={styles.progressBarContainer}>
+                    <View 
+                      style={[
+                        styles.progressBar, 
+                        { width: `${((child.points || 0) % 100)}%` }
+                      ]} 
+                    />
+                  </View>
+                  <Text style={styles.progressText}>
+                    {100 - ((child.points || 0) % 100)} punti al prossimo livello
+                  </Text>
                 </View>
                 <View style={styles.childActions}>
                   <TouchableOpacity 
