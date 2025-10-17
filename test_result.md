@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test completo del backend di NutriKids AI - Testing all backend endpoints including health check, AI chatbot, diary management, and children management"
+user_problem_statement: "Implementazione Sistema Gamification - Backend endpoint per assegnare punti, frontend visualizzazione su profilo, integrazione con Diario e Scanner per assegnazione automatica punti"
 
 backend:
   - task: "Health Check API"
