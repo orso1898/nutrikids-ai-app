@@ -72,7 +72,7 @@ index ce8c64e..e69de29 100644
 --+from datetime import datetime
 --+
 --+# Backend URL
---+BACKEND_URL = "https://meal-mentor-8.preview.emergentagent.com/api"
+--+BACKEND_URL = "https://kidsfood-helper.preview.emergentagent.com/api"
 --+
 --+def test_user_registration():
 --+    """Test POST /api/register - User Registration"""
