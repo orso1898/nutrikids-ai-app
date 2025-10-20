@@ -109,6 +109,21 @@ export default function Profilo() {
     }
   };
 
+  // Test Functions - Add points manually for demo
+  const testAddPoints = async (points: number) => {
+    if (!selectedTestChild) return;
+    
+    try {
+      await axios.post(`${BACKEND_URL}/api/children/${selectedTestChild.id}/award-points`, { points });
+      await loadChildren();
+      setTestModalVisible(false);
+      Alert.alert('✅ Successo', `${points} punti aggiunti a ${selectedTestChild.name}!`);
+    } catch (error) {
+      Alert.alert('Errore', 'Impossibile aggiungere punti');
+      console.error('Error adding test points:', error);
+    }
+  };
+
   const deleteChild = async (childId: string, childName: string) => {
     Alert.alert(
       'Conferma',
