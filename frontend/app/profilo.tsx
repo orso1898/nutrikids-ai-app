@@ -406,6 +406,98 @@ export default function Profilo() {
             </View>
           </View>
         </Modal>
+
+        {/* Info Modal - Gamification Explanation */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={infoModalVisible}
+          onRequestClose={() => setInfoModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.infoModalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>🎮 Come Funziona la Gamification</Text>
+                <TouchableOpacity onPress={() => setInfoModalVisible(false)}>
+                  <Ionicons name="close" size={24} color="#64748b" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Punti Section */}
+                <View style={styles.infoSection}>
+                  <View style={styles.infoIconContainer}>
+                    <Ionicons name="star" size={32} color="#8b5cf6" />
+                  </View>
+                  <Text style={styles.infoTitle}>⭐ Guadagna Punti</Text>
+                  <Text style={styles.infoText}>
+                    I tuoi bambini guadagnano punti quando:
+                  </Text>
+                  <View style={styles.infoList}>
+                    <Text style={styles.infoListItem}>• Aggiungi un pasto nel Diario: <Text style={styles.infoBold}>+10 punti</Text></Text>
+                    <Text style={styles.infoListItem}>• Scansioni un cibo con lo Scanner: <Text style={styles.infoBold}>+5 punti</Text></Text>
+                  </View>
+                </View>
+
+                {/* Livelli Section */}
+                <View style={styles.infoSection}>
+                  <View style={styles.infoIconContainer}>
+                    <Ionicons name="trophy" size={32} color="#fbbf24" />
+                  </View>
+                  <Text style={styles.infoTitle}>🏆 Sali di Livello</Text>
+                  <Text style={styles.infoText}>
+                    Ogni <Text style={styles.infoBold}>100 punti</Text> = 1 livello!
+                  </Text>
+                  <View style={styles.infoList}>
+                    <Text style={styles.infoListItem}>• Livello 5: Sblocca avatar speciali</Text>
+                    <Text style={styles.infoListItem}>• Livello 10: Ricevi certificati d'onore</Text>
+                    <Text style={styles.infoListItem}>• Livello 20: Badge esclusivi!</Text>
+                  </View>
+                </View>
+
+                {/* Badge Section */}
+                <View style={styles.infoSection}>
+                  <View style={styles.infoIconContainer}>
+                    <Ionicons name="medal" size={32} color="#ef4444" />
+                  </View>
+                  <Text style={styles.infoTitle}>🏅 Colleziona Badge</Text>
+                  <Text style={styles.infoText}>
+                    Raggiungi traguardi speciali per sbloccare badge:
+                  </Text>
+                  <View style={styles.infoList}>
+                    <Text style={styles.infoListItem}>• 🌟 Prima Centuria: 100 punti totali</Text>
+                    <Text style={styles.infoListItem}>• 🚀 Livello 5 Raggiunto</Text>
+                    <Text style={styles.infoListItem}>• 👑 Livello 10 Raggiunto</Text>
+                  </View>
+                </View>
+
+                {/* Obiettivo Section */}
+                <View style={styles.infoSection}>
+                  <View style={styles.infoIconContainer}>
+                    <Ionicons name="rocket" size={32} color="#10b981" />
+                  </View>
+                  <Text style={styles.infoTitle}>🎯 Obiettivo Finale</Text>
+                  <Text style={styles.infoText}>
+                    Usa la gamification per:
+                  </Text>
+                  <View style={styles.infoList}>
+                    <Text style={styles.infoListItem}>• Motivare i bambini a mangiare sano</Text>
+                    <Text style={styles.infoListItem}>• Rendere la nutrizione divertente</Text>
+                    <Text style={styles.infoListItem}>• Monitorare i progressi nel tempo</Text>
+                    <Text style={styles.infoListItem}>• Creare abitudini alimentari positive</Text>
+                  </View>
+                </View>
+              </ScrollView>
+
+              <TouchableOpacity 
+                style={styles.closeInfoButton}
+                onPress={() => setInfoModalVisible(false)}
+              >
+                <Text style={styles.closeInfoButtonText}>Ho Capito! 🎉</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </LinearGradient>
   );
