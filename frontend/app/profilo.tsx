@@ -684,6 +684,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#10b981',
   },
+  childAvatarEmoji: {
+    fontSize: 32,
+  },
   childInfo: {
     flex: 1,
   },
