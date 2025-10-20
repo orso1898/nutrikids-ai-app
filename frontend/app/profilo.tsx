@@ -828,4 +828,67 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  infoButton: {
+    padding: 4,
+  },
+  infoModalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '85%',
+  },
+  infoSection: {
+    marginBottom: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f5f9',
+  },
+  infoIconContainer: {
+    alignSelf: 'center',
+    marginBottom: 12,
+  },
+  infoTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1e293b',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  infoText: {
+    fontSize: 15,
+    color: '#64748b',
+    lineHeight: 22,
+    marginBottom: 12,
+  },
+  infoBold: {
+    fontWeight: 'bold',
+    color: '#10b981',
+  },
+  infoList: {
+    marginTop: 8,
+  },
+  infoListItem: {
+    fontSize: 14,
+    color: '#64748b',
+    lineHeight: 24,
+    paddingLeft: 8,
+  },
+  closeInfoButton: {
+    backgroundColor: '#10b981',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  closeInfoButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
