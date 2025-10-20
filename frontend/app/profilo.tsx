@@ -1056,4 +1056,62 @@ const styles = StyleSheet.create({
   badgeEmoji: {
     fontSize: 20,
   },
+  testModalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '75%',
+  },
+  testSubtitle: {
+    fontSize: 16,
+    color: '#64748b',
+    textAlign: 'center',
+    marginBottom: 24,
+    marginTop: 8,
+  },
+  testButtonsContainer: {
+    gap: 12,
+  },
+  testButton: {
+    backgroundColor: '#f1f5f9',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#e2e8f0',
+  },
+  testButtonPrimary: {
+    backgroundColor: '#dbeafe',
+    borderColor: '#3b82f6',
+  },
+  testButtonSuccess: {
+    backgroundColor: '#d1fae5',
+    borderColor: '#10b981',
+  },
+  testButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1e293b',
+  },
+  testButtonSubtext: {
+    fontSize: 12,
+    color: '#64748b',
+    marginTop: 4,
+  },
+  testInfoBox: {
+    flexDirection: 'row',
+    backgroundColor: '#eff6ff',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 24,
+    gap: 8,
+    alignItems: 'flex-start',
+  },
+  testInfoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#1e40af',
+    lineHeight: 18,
+  },
 });
