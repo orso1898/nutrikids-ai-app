@@ -568,6 +568,70 @@ export default function Profilo() {
             </View>
           </View>
         </Modal>
+
+        {/* Test Modal - Add Points Manually */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={testModalVisible}
+          onRequestClose={() => setTestModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.testModalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>🧪 Modalità Test</Text>
+                <TouchableOpacity onPress={() => setTestModalVisible(false)}>
+                  <Ionicons name="close" size={24} color="#64748b" />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.testSubtitle}>
+                Aggiungi punti a {selectedTestChild?.name} per testare la gamification
+              </Text>
+
+              <View style={styles.testButtonsContainer}>
+                <TouchableOpacity 
+                  style={styles.testButton}
+                  onPress={() => testAddPoints(10)}
+                >
+                  <Text style={styles.testButtonText}>+10 Punti</Text>
+                  <Text style={styles.testButtonSubtext}>(Simula Diario)</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.testButton}
+                  onPress={() => testAddPoints(5)}
+                >
+                  <Text style={styles.testButtonText}>+5 Punti</Text>
+                  <Text style={styles.testButtonSubtext}>(Simula Scanner)</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.testButton, styles.testButtonPrimary]}
+                  onPress={() => testAddPoints(50)}
+                >
+                  <Text style={styles.testButtonText}>+50 Punti</Text>
+                  <Text style={styles.testButtonSubtext}>(Test Rapido)</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.testButton, styles.testButtonSuccess]}
+                  onPress={() => testAddPoints(100)}
+                >
+                  <Text style={styles.testButtonText}>+100 Punti</Text>
+                  <Text style={styles.testButtonSubtext}>(Level Up!)</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.testInfoBox}>
+                <Ionicons name="information-circle" size={20} color="#3b82f6" />
+                <Text style={styles.testInfoText}>
+                  Usa questi pulsanti per vedere avatar, badge e animazioni senza dover accumulare punti realmente.
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </LinearGradient>
   );
