@@ -43,6 +43,8 @@ export default function Diario() {
   const [selectedMealType, setSelectedMealType] = useState('colazione');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [levelUpModalVisible, setLevelUpModalVisible] = useState(false);
+  const [levelUpData, setLevelUpData] = useState<{childName: string, newLevel: number, newBadges: string[]}>({childName: '', newLevel: 0, newBadges: []});
   const router = useRouter();
   const { userEmail } = useAuth();
 
