@@ -231,14 +231,43 @@ export default function Profilo() {
           ) : (
             children.map((child) => (
               <View key={child.id} style={styles.childCard}>
-                <View style={styles.childAvatar}>
-                  <Text style={styles.childInitial}>{child.name[0].toUpperCase()}</Text>
+                <View style={styles.childCardHeader}>
+                  <View style={styles.childHeaderLeft}>
+                    <View style={styles.childAvatar}>
+                      <Text style={styles.childInitial}>{child.name[0].toUpperCase()}</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.childName}>{child.name}</Text>
+                      <Text style={styles.childAge}>{child.age} {child.age === 1 ? 'anno' : 'anni'}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.childActions}>
+                    <TouchableOpacity 
+                      onPress={() => router.push({
+                        pathname: '/edit-child',
+                        params: {
+                          childId: child.id,
+                          childName: child.name,
+                          childAge: child.age.toString(),
+                          childAllergies: JSON.stringify(child.allergies || []),
+                          parentEmail: userEmail
+                        }
+                      })}
+                      style={styles.actionButton}
+                    >
+                      <Ionicons name="create-outline" size={24} color="#3b82f6" />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={() => deleteChild(child.id, child.name)}
+                      style={styles.actionButton}
+                    >
+                      <Ionicons name="trash-outline" size={24} color="#ef4444" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={styles.childInfo}>
-                  <Text style={styles.childName}>{child.name}</Text>
-                  <Text style={styles.childAge}>{child.age} {child.age === 1 ? 'anno' : 'anni'}</Text>
-                  
-                  {/* Gamification Stats */}
+                
+                {/* Gamification Stats */}
+                <View style={styles.gamificationSection}>
                   <View style={styles.gamificationContainer}>
                     <View style={styles.statBadge}>
                       <Ionicons name="trophy" size={16} color="#fbbf24" />
@@ -262,29 +291,6 @@ export default function Profilo() {
                   <Text style={styles.progressText}>
                     {100 - ((child.points || 0) % 100)} punti al prossimo livello
                   </Text>
-                </View>
-                <View style={styles.childActions}>
-                  <TouchableOpacity 
-                    onPress={() => router.push({
-                      pathname: '/edit-child',
-                      params: {
-                        childId: child.id,
-                        childName: child.name,
-                        childAge: child.age.toString(),
-                        childAllergies: JSON.stringify(child.allergies || []),
-                        parentEmail: userEmail
-                      }
-                    })}
-                    style={styles.actionButton}
-                  >
-                    <Ionicons name="create-outline" size={24} color="#3b82f6" />
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={() => deleteChild(child.id, child.name)}
-                    style={styles.actionButton}
-                  >
-                    <Ionicons name="trash-outline" size={24} color="#ef4444" />
-                  </TouchableOpacity>
                 </View>
               </View>
             ))
