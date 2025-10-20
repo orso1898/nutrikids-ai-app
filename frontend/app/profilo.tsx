@@ -555,10 +555,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748b',
   },
+  gamificationSection: {
+    width: '100%',
+  },
   gamificationContainer: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 8,
+    marginBottom: 8,
   },
   statBadge: {
     flexDirection: 'row',
