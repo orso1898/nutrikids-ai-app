@@ -187,6 +187,7 @@ class Child(BaseModel):
     points: int = 0  # Punti gamification
     level: int = 1  # Livello calcolato dai punti
     badges: List[str] = []  # Badge guadagnati
+    avatar: str = "default"  # Avatar selezionato (default, hero, star, champion, legend)
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class ChildCreate(BaseModel):
