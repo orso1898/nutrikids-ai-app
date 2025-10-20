@@ -19,6 +19,7 @@ interface Child {
   points?: number;
   level?: number;
   badges?: string[];
+  avatar?: string;
 }
 
 export default function Profilo() {
