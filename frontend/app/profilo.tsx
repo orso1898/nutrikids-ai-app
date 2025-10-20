@@ -218,9 +218,14 @@ export default function Profilo() {
 
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{t('profile.children')}</Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addChildButton}>
-              <Ionicons name="add-circle" size={28} color="#fff" />
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity onPress={() => setInfoModalVisible(true)} style={styles.infoButton}>
+                <Ionicons name="help-circle" size={26} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addChildButton}>
+                <Ionicons name="add-circle" size={28} color="#fff" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {children.length === 0 ? (
