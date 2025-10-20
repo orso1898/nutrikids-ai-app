@@ -296,6 +296,15 @@ export default function Profilo() {
                   </View>
                   <View style={styles.childActions}>
                     <TouchableOpacity 
+                      onPress={() => {
+                        setSelectedTestChild(child);
+                        setTestModalVisible(true);
+                      }}
+                      style={styles.actionButton}
+                    >
+                      <Ionicons name="flask" size={24} color="#10b981" />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
                       onPress={() => router.push({
                         pathname: '/edit-child',
                         params: {
