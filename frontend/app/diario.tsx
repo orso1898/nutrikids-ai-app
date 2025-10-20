@@ -68,12 +68,23 @@ export default function Diario() {
       const childrenResponse = await axios.get(`${BACKEND_URL}/api/children/${userEmail}`);
       const children = childrenResponse.data;
       
-      // Award 10 points to each child
-      const pointsPromises = children.map((child: any) => 
-        axios.post(`${BACKEND_URL}/api/children/${child.id}/award-points`, { points: 10 })
-      );
+      // Award 10 points to each child and check for level-up
+      for (const child of children) {
+        const response = await axios.post(`${BACKEND_URL}/api/children/${child.id}/award-points`, { points: 10 });
+        
+        // Check if level up happened
+        if (response.data.level_up) {
+          setLevelUpData({
+            childName: child.name,
+            newLevel: response.data.level,
+            newBadges: response.data.new_badges || []
+          });
+          setLevelUpModalVisible(true);
+          // Show only first level up to avoid multiple modals
+          break;
+        }
+      }
       
-      await Promise.all(pointsPromises);
       console.log('✅ Punti assegnati ai bambini!');
     } catch (error) {
       console.error('⚠️ Errore assegnazione punti:', error);
