@@ -26,6 +26,8 @@ export default function Profilo() {
   const [children, setChildren] = useState<Child[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
+  const [testModalVisible, setTestModalVisible] = useState(false);
+  const [selectedTestChild, setSelectedTestChild] = useState<Child | null>(null);
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [loading, setLoading] = useState(false);
