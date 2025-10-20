@@ -33,6 +33,35 @@ export default function Profilo() {
   const { userEmail, isAdmin, logout } = useAuth();
   const { t } = useLanguage();
 
+  // Helper function to get avatar icon based on level
+  const getAvatarIcon = (level: number = 1, avatar: string = 'default') => {
+    const avatars: {[key: string]: string} = {
+      'default': '👶',
+      'hero': '🦸',
+      'star': '⭐',
+      'champion': '🏆',
+      'legend': '👑'
+    };
+    
+    // Auto-unlock based on level
+    if (level >= 20) return avatars['legend'];
+    if (level >= 10) return avatars['champion'];
+    if (level >= 5) return avatars['star'];
+    if (level >= 1) return avatars['hero'];
+    
+    return avatars[avatar] || avatars['default'];
+  };
+
+  // Helper function to get badge emoji
+  const getBadgeIcon = (badgeName: string) => {
+    const badgeIcons: {[key: string]: string} = {
+      'first_century': '🌟',
+      'level_5': '🚀',
+      'level_10': '👑',
+    };
+    return badgeIcons[badgeName] || '🏅';
+  };
+
   useEffect(() => {
     loadChildren();
   }, []);
