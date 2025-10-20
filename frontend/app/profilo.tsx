@@ -327,6 +327,20 @@ export default function Profilo() {
                   <Text style={styles.progressText}>
                     {100 - ((child.points || 0) % 100)} punti al prossimo livello
                   </Text>
+                  
+                  {/* Badges Display */}
+                  {child.badges && child.badges.length > 0 && (
+                    <View style={styles.badgesContainer}>
+                      <Text style={styles.badgesTitle}>Badge Guadagnati:</Text>
+                      <View style={styles.badgesList}>
+                        {child.badges.map((badge, index) => (
+                          <View key={index} style={styles.badgeItem}>
+                            <Text style={styles.badgeEmoji}>{getBadgeIcon(badge)}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  )}
                 </View>
               </View>
             ))
