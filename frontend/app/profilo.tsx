@@ -24,6 +24,7 @@ interface Child {
 export default function Profilo() {
   const [children, setChildren] = useState<Child[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [loading, setLoading] = useState(false);
