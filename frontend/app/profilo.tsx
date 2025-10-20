@@ -270,7 +270,7 @@ export default function Profilo() {
                 <View style={styles.childCardHeader}>
                   <View style={styles.childHeaderLeft}>
                     <View style={styles.childAvatar}>
-                      <Text style={styles.childInitial}>{child.name[0].toUpperCase()}</Text>
+                      <Text style={styles.childAvatarEmoji}>{getAvatarIcon(child.level, child.avatar)}</Text>
                     </View>
                     <View>
                       <Text style={styles.childName}>{child.name}</Text>
