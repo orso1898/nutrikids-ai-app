@@ -328,33 +328,39 @@ async def root():
 # Authentication Endpoints
 @api_router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(user: UserRegister):
-    # Check if user already exists
-    existing_user = await db.users.find_one({"email": user.email})
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Hash password
-    hashed_password = pwd_context.hash(user.password)
-    
-    # Create user document
-    user_doc = {
-        "email": user.email,
-        "hashed_password": hashed_password,
-        "name": user.name,
-        "created_at": datetime.utcnow(),
-        "is_premium": False,
-        "reset_code": None,
-        "reset_code_expires": None
-    }
-    
-    await db.users.insert_one(user_doc)
-    
-    return UserResponse(
-        email=user.email,
-        name=user.name,
-        created_at=user_doc["created_at"],
-        is_premium=False
-    )
+    try:
+        # Check if user already exists
+        existing_user = await db.users.find_one({"email": user.email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Hash password
+        hashed_password = pwd_context.hash(user.password)
+        
+        # Create user document
+        user_doc = {
+            "email": user.email,
+            "hashed_password": hashed_password,
+            "name": user.name,
+            "created_at": datetime.utcnow(),
+            "is_premium": False,
+            "reset_code": None,
+            "reset_code_expires": None
+        }
+        
+        await db.users.insert_one(user_doc)
+        
+        return UserResponse(
+            email=user.email,
+            name=user.name,
+            created_at=user_doc["created_at"],
+            is_premium=False
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Registration error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Errore durante la registrazione. Riprova.")
 
 @api_router.post("/login", response_model=UserResponse)
 async def login(credentials: UserLogin):
