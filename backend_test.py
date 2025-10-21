@@ -1007,7 +1007,14 @@ class NutriKidsBackendTester:
         else:
             self.log_result("Gamification Tests", False, "Setup failed - skipping gamification tests")
         
-        # Test 11: Error Cases
+        # Test 11: NEW HIGH PRIORITY TESTS - FASE 1 CORE PERFETTO
+        print("\n=== Testing NEW HIGH PRIORITY ENDPOINTS - FASE 1 ===")
+        self.test_stripe_checkout_session()
+        self.test_stripe_checkout_status()
+        self.test_meal_plan_generation()
+        self.test_dashboard_statistics()
+        
+        # Test 12: Error Cases
         self.test_error_cases()
         
         # Summary
