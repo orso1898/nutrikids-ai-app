@@ -1027,6 +1027,184 @@ async def change_admin_password(
         "message": "Password cambiata con successo"
     }
 
+# ========== STRIPE PAYMENT ENDPOINTS ==========
+
+@api_router.post("/checkout/create-session")
+async def create_checkout_session(request: Request, checkout_request: CreateCheckoutRequest, user_email: str = Header(..., alias="X-User-Email")):
+    """
+    Create a Stripe Checkout Session for Premium subscription.
+    Security: Amount is defined server-side only
+    """
+    # Validate plan type
+    if checkout_request.plan_type not in PREMIUM_PLANS:
+        raise HTTPException(status_code=400, detail="Invalid plan type")
+    
+    # Get amount from server-side definition (prevent price manipulation)
+    plan_data = PREMIUM_PLANS[checkout_request.plan_type]
+    amount = plan_data["amount"]
+    currency = plan_data["currency"]
+    
+    # Build success and cancel URLs using frontend origin
+    origin_url = checkout_request.origin_url
+    success_url = f"{origin_url}/premium?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin_url}/premium"
+    
+    # Initialize Stripe Checkout
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    # Create checkout session request
+    checkout_session_request = CheckoutSessionRequest(
+        amount=amount,
+        currency=currency,
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata={
+            "user_email": user_email,
+            "plan_type": checkout_request.plan_type,
+            "source": "nutrikids_app"
+        }
+    )
+    
+    # Create checkout session with Stripe
+    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_session_request)
+    
+    # Create payment transaction record in database BEFORE redirecting
+    payment_transaction = PaymentTransaction(
+        user_email=user_email,
+        session_id=session.session_id,
+        amount=amount,
+        currency=currency,
+        plan_type=checkout_request.plan_type,
+        payment_status="pending",
+        metadata={
+            "user_email": user_email,
+            "plan_type": checkout_request.plan_type
+        }
+    )
+    
+    await db.payment_transactions.insert_one(payment_transaction.dict())
+    
+    return {
+        "url": session.url,
+        "session_id": session.session_id
+    }
+
+@api_router.get("/checkout/status/{session_id}")
+async def get_checkout_status(request: Request, session_id: str):
+    """
+    Get the status of a Stripe checkout session.
+    Polls Stripe for payment status and updates database.
+    """
+    # Initialize Stripe Checkout
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    # Get status from Stripe
+    checkout_status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
+    
+    # Find transaction in database
+    transaction = await db.payment_transactions.find_one({"session_id": session_id})
+    
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    
+    # Update transaction status in database (only if not already processed)
+    if transaction["payment_status"] != "succeeded":
+        new_status = checkout_status.payment_status
+        
+        await db.payment_transactions.update_one(
+            {"session_id": session_id},
+            {
+                "$set": {
+                    "payment_status": new_status,
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        # If payment succeeded, update user to Premium
+        if new_status == "paid":
+            user_email = transaction["user_email"]
+            await db.users.update_one(
+                {"email": user_email},
+                {
+                    "$set": {
+                        "is_premium": True,
+                        "premium_plan": transaction["plan_type"],
+                        "premium_since": datetime.utcnow(),
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+    
+    return {
+        "status": checkout_status.status,
+        "payment_status": checkout_status.payment_status,
+        "amount_total": checkout_status.amount_total,
+        "currency": checkout_status.currency
+    }
+
+@api_router.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """
+    Webhook endpoint for Stripe payment events.
+    """
+    # Get raw body
+    body = await request.body()
+    signature = request.headers.get("Stripe-Signature")
+    
+    # Initialize Stripe Checkout
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    try:
+        # Handle webhook
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        # Update database based on webhook event
+        if webhook_response.event_type == "checkout.session.completed":
+            session_id = webhook_response.session_id
+            payment_status = webhook_response.payment_status
+            
+            # Find and update transaction
+            transaction = await db.payment_transactions.find_one({"session_id": session_id})
+            
+            if transaction and transaction["payment_status"] != "succeeded":
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {
+                        "$set": {
+                            "payment_status": payment_status,
+                            "updated_at": datetime.utcnow()
+                        }
+                    }
+                )
+                
+                # Update user to Premium
+                if payment_status == "paid":
+                    user_email = transaction["user_email"]
+                    await db.users.update_one(
+                        {"email": user_email},
+                        {
+                            "$set": {
+                                "is_premium": True,
+                                "premium_plan": transaction["plan_type"],
+                                "premium_since": datetime.utcnow(),
+                                "updated_at": datetime.utcnow()
+                            }
+                        }
+                    )
+        
+        return {"status": "success"}
+    
+    except Exception as e:
+        print(f"Webhook error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
 # Include router
 app.include_router(api_router)
 
