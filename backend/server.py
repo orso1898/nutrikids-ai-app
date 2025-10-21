@@ -66,6 +66,108 @@ def verify_token(token: str):
             detail="Token non valido."
         )
 
+def get_current_user(authorization: HTTPAuthorizationCredentials = Depends(security)):
+    """Verifica il token JWT e restituisce l'email dell'utente"""
+    try:
+        token = authorization.credentials
+        payload = verify_token(token)
+        return payload.get("sub")  # sub contiene l'email
+    except:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+# Usage Limits Helper Functions
+async def check_and_increment_usage(user_email: str, usage_type: str):
+    """
+    Controlla i limiti di utilizzo e incrementa il contatore.
+    usage_type: 'scans' o 'coach_messages'
+    Returns: True se ok, raise HTTPException se limite raggiunto
+    """
+    # Get user
+    user = await db.users.find_one({"email": user_email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Premium users have no limits
+    if user.get("is_premium", False):
+        return True
+    
+    # Get config limits
+    config = await db.config.find_one({})
+    if not config:
+        # Default limits if config not found
+        free_scans_limit = 3
+        free_coach_limit = 5
+    else:
+        free_scans_limit = config.get("free_scans_daily_limit", 3)
+        free_coach_limit = config.get("free_coach_messages_daily_limit", 5)
+    
+    # Check if need to reset daily counters
+    last_reset = user.get("last_usage_reset")
+    today = datetime.utcnow().date()
+    
+    if not last_reset or last_reset.date() < today:
+        # Reset counters
+        await db.users.update_one(
+            {"email": user_email},
+            {
+                "$set": {
+                    "scans_used_today": 0,
+                    "coach_messages_used_today": 0,
+                    "last_usage_reset": datetime.utcnow()
+                }
+            }
+        )
+        user["scans_used_today"] = 0
+        user["coach_messages_used_today"] = 0
+    
+    # Check limits
+    if usage_type == "scans":
+        current_usage = user.get("scans_used_today", 0)
+        if current_usage >= free_scans_limit:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Limite giornaliero raggiunto ({free_scans_limit} scansioni). Passa a Premium per scansioni illimitate!"
+            )
+        # Increment
+        await db.users.update_one(
+            {"email": user_email},
+            {"$inc": {"scans_used_today": 1}}
+        )
+    
+    elif usage_type == "coach_messages":
+        current_usage = user.get("coach_messages_used_today", 0)
+        if current_usage >= free_coach_limit:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Limite giornaliero raggiunto ({free_coach_limit} messaggi). Passa a Premium per messaggi illimitati!"
+            )
+        # Increment
+        await db.users.update_one(
+            {"email": user_email},
+            {"$inc": {"coach_messages_used_today": 1}}
+        )
+    
+    return True
+
+async def get_user_usage(user_email: str):
+    """Ottiene l'utilizzo corrente dell'utente"""
+    user = await db.users.find_one({"email": user_email})
+    if not user:
+        return {"scans_used": 0, "coach_messages_used": 0, "is_premium": False}
+    
+    # Reset if needed
+    last_reset = user.get("last_usage_reset")
+    today = datetime.utcnow().date()
+    
+    if not last_reset or last_reset.date() < today:
+        return {"scans_used": 0, "coach_messages_used": 0, "is_premium": user.get("is_premium", False)}
+    
+    return {
+        "scans_used": user.get("scans_used_today", 0),
+        "coach_messages_used": user.get("coach_messages_used_today", 0),
+        "is_premium": user.get("is_premium", False)
+    }
+
 # HTTP Bearer security scheme
 security = HTTPBearer()
 
