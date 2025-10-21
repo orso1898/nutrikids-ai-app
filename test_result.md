@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implementazione Sistema Gamification - Backend endpoint per assegnare punti, frontend visualizzazione su profilo, integrazione con Diario e Scanner per assegnazione automatica punti"
+user_problem_statement: "FASE 1 - CORE PERFETTO: Testing completo di tutte le funzionalità esistenti (Gamification, Stripe Payments, Meal Plans, Dashboard, Admin) + implementazione Password Recovery + Error Handling + Limiti Free/Premium"
 
 backend:
   - task: "Health Check API"
