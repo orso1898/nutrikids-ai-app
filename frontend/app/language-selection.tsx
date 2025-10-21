@@ -15,11 +15,15 @@ const greetings = {
   es: ['Hola', 'Bienvenido', 'Buenos Días']
 };
 
-const languageNames = {
-  it: 'Italiano',
-  en: 'English',
-  es: 'Español'
-};
+const languageOptions = [
+  { code: 'it', name: 'Italiano 🇮🇹', flag: '🇮🇹' },
+  { code: 'en', name: 'English 🇬🇧', flag: '🇬🇧' },
+  { code: 'es', name: 'Español 🇪🇸', flag: '🇪🇸' },
+  // Pronte per il futuro
+  // { code: 'fr', name: 'Français 🇫🇷', flag: '🇫🇷' },
+  // { code: 'de', name: 'Deutsch 🇩🇪', flag: '🇩🇪' },
+  // { code: 'pt', name: 'Português 🇵🇹', flag: '🇵🇹' },
+];
 
 export default function LanguageSelection() {
   const [currentGreeting, setCurrentGreeting] = useState(0);
