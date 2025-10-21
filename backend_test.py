@@ -11,6 +11,7 @@ from datetime import datetime
 
 # Backend URL from frontend .env
 BACKEND_URL = "https://kidsfood-helper.preview.emergentagent.com/api"
+TEST_USER_EMAIL = "admin@nutrikids.com"
 
 class NutriKidsBackendTester:
     def __init__(self):
