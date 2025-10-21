@@ -211,6 +211,23 @@ class AwardPointsResponse(BaseModel):
     level_up: bool
     new_badges: List[str]
 
+# Payment Models
+class CreateCheckoutRequest(BaseModel):
+    plan_type: str  # 'monthly' or 'yearly'
+    origin_url: str  # Frontend origin for success/cancel URLs
+
+class PaymentTransaction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_email: str
+    session_id: str
+    amount: float
+    currency: str = "eur"
+    plan_type: str
+    payment_status: str = "pending"  # pending, succeeded, failed, expired
+    metadata: Dict[str, str] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Weekly Meal Plan Models
 class MealPlanDay(BaseModel):
     breakfast: str = ""
