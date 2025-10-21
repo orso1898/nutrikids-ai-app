@@ -651,6 +651,284 @@ class NutriKidsBackendTester:
             self.log_result("Gamification - Non-existent Child Validation", False, f"Exception: {str(e)}")
             return False
 
+    def test_stripe_checkout_session(self):
+        """Test Stripe Checkout Session Creation"""
+        print("\n=== Testing Stripe Checkout Session ===")
+        
+        try:
+            # Test monthly plan
+            monthly_data = {
+                "plan_type": "monthly",
+                "origin_url": "http://localhost:3000"
+            }
+            headers = {"X-User-Email": TEST_USER_EMAIL}
+            
+            response = self.session.post(f"{BACKEND_URL}/checkout/create-session", 
+                                       json=monthly_data, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                if "url" in data and "session_id" in data:
+                    self.session_id = data["session_id"]  # Store for status test
+                    
+                    # Check if URL is valid Stripe URL
+                    if "stripe.com" in data["url"] or "checkout.stripe.com" in data["url"]:
+                        self.log_result("Stripe Checkout Session (Monthly)", True, 
+                                      f"Session created successfully. Session ID: {data['session_id'][:20]}...")
+                    else:
+                        self.log_result("Stripe Checkout Session (Monthly)", False, 
+                                      f"Invalid Stripe URL format: {data['url']}")
+                else:
+                    self.log_result("Stripe Checkout Session (Monthly)", False, 
+                                  "Missing required fields in response")
+            else:
+                self.log_result("Stripe Checkout Session (Monthly)", False, 
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test yearly plan
+            yearly_data = {
+                "plan_type": "yearly", 
+                "origin_url": "http://localhost:3000"
+            }
+            
+            response = self.session.post(f"{BACKEND_URL}/checkout/create-session",
+                                       json=yearly_data, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if "url" in data and "session_id" in data:
+                    if "stripe.com" in data["url"] or "checkout.stripe.com" in data["url"]:
+                        self.log_result("Stripe Checkout Session (Yearly)", True,
+                                      f"Session created successfully. Session ID: {data['session_id'][:20]}...")
+                    else:
+                        self.log_result("Stripe Checkout Session (Yearly)", False,
+                                      f"Invalid Stripe URL format: {data['url']}")
+                else:
+                    self.log_result("Stripe Checkout Session (Yearly)", False,
+                                  "Missing required fields in response")
+            else:
+                self.log_result("Stripe Checkout Session (Yearly)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test invalid plan type
+            invalid_data = {
+                "plan_type": "invalid",
+                "origin_url": "http://localhost:3000"
+            }
+            
+            response = self.session.post(f"{BACKEND_URL}/checkout/create-session",
+                                       json=invalid_data, headers=headers)
+            
+            if response.status_code == 400:
+                self.log_result("Stripe Checkout Session (Invalid Plan Validation)", True,
+                              "Correctly rejected invalid plan type")
+            else:
+                self.log_result("Stripe Checkout Session (Invalid Plan Validation)", False,
+                              f"Should return 400 for invalid plan, got {response.status_code}")
+                    
+        except Exception as e:
+            self.log_result("Stripe Checkout Session", False, f"Exception: {str(e)}")
+
+    def test_stripe_checkout_status(self):
+        """Test Stripe Checkout Status Check"""
+        print("\n=== Testing Stripe Checkout Status ===")
+        
+        if not hasattr(self, 'session_id') or not self.session_id:
+            self.log_result("Stripe Checkout Status", False, "No session_id available from previous test")
+            return
+        
+        try:
+            response = self.session.get(f"{BACKEND_URL}/checkout/status/{self.session_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["status", "payment_status", "amount_total", "currency"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_result("Stripe Checkout Status", True,
+                                  f"Status retrieved successfully. Payment status: {data['payment_status']}, Amount: {data['amount_total']} {data['currency']}")
+                else:
+                    self.log_result("Stripe Checkout Status", False,
+                                  f"Missing required fields: {missing_fields}")
+            else:
+                self.log_result("Stripe Checkout Status", False,
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test with invalid session ID
+            fake_session_id = "cs_test_fake_session_id_12345"
+            response = self.session.get(f"{BACKEND_URL}/checkout/status/{fake_session_id}")
+            
+            if response.status_code == 404:
+                self.log_result("Stripe Checkout Status (Invalid Session Validation)", True,
+                              "Correctly returned 404 for non-existent session")
+            else:
+                self.log_result("Stripe Checkout Status (Invalid Session Validation)", False,
+                              f"Should return 404 for invalid session, got {response.status_code}")
+                    
+        except Exception as e:
+            self.log_result("Stripe Checkout Status", False, f"Exception: {str(e)}")
+
+    def test_meal_plan_generation(self):
+        """Test Meal Plan Generation"""
+        print("\n=== Testing Meal Plan Generation ===")
+        
+        try:
+            from datetime import datetime, timedelta
+            
+            # Test creating a new meal plan
+            week_start = (datetime.now() - timedelta(days=datetime.now().weekday())).strftime("%Y-%m-%d")
+            
+            meal_plan_data = {
+                "user_email": TEST_USER_EMAIL,
+                "week_start_date": week_start,
+                "num_people": 2,
+                "monday": {
+                    "breakfast": "Cereali integrali con latte",
+                    "lunch": "Pasta al pomodoro con verdure",
+                    "dinner": "Pollo alla griglia con patate",
+                    "snack": "Frutta fresca"
+                },
+                "tuesday": {
+                    "breakfast": "Toast integrale con marmellata",
+                    "lunch": "Risotto ai funghi",
+                    "dinner": "Pesce al vapore con broccoli",
+                    "snack": "Yogurt greco"
+                }
+            }
+            
+            # Create meal plan
+            response = self.session.post(f"{BACKEND_URL}/meal-plan", json=meal_plan_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["id", "user_email", "week_start_date", "monday", "tuesday"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_result("Meal Plan Generation (Create)", True,
+                                  f"Meal plan created successfully. ID: {data['id'][:20]}...")
+                else:
+                    self.log_result("Meal Plan Generation (Create)", False,
+                                  f"Missing required fields: {missing_fields}")
+            else:
+                self.log_result("Meal Plan Generation (Create)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test retrieving the meal plan
+            response = self.session.get(f"{BACKEND_URL}/meal-plan/{TEST_USER_EMAIL}/{week_start}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate that we got the correct plan back
+                if (data["user_email"] == TEST_USER_EMAIL and 
+                    data["week_start_date"] == week_start and
+                    "monday" in data and "tuesday" in data):
+                    self.log_result("Meal Plan Generation (Retrieve)", True,
+                                  f"Meal plan retrieved successfully for week {week_start}")
+                else:
+                    self.log_result("Meal Plan Generation (Retrieve)", False,
+                                  "Retrieved meal plan data doesn't match expected values")
+            else:
+                self.log_result("Meal Plan Generation (Retrieve)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test retrieving non-existent meal plan (should return empty plan)
+            future_week = (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
+            response = self.session.get(f"{BACKEND_URL}/meal-plan/{TEST_USER_EMAIL}/{future_week}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Should return empty plan with default values
+                if (data["user_email"] == TEST_USER_EMAIL and 
+                    data["week_start_date"] == future_week):
+                    self.log_result("Meal Plan Generation (Empty Plan)", True,
+                                  "Correctly returned empty meal plan for non-existent week")
+                else:
+                    self.log_result("Meal Plan Generation (Empty Plan)", False,
+                                  "Empty meal plan response format incorrect")
+            else:
+                self.log_result("Meal Plan Generation (Empty Plan)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                    
+        except Exception as e:
+            self.log_result("Meal Plan Generation", False, f"Exception: {str(e)}")
+
+    def test_dashboard_statistics(self):
+        """Test Dashboard Statistics"""
+        print("\n=== Testing Dashboard Statistics ===")
+        
+        try:
+            response = self.session.get(f"{BACKEND_URL}/dashboard/stats/{TEST_USER_EMAIL}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = [
+                    "total_meals_7days", "total_scans_7days", "coach_messages_7days",
+                    "avg_health_score", "daily_meals", "meal_types", "children_count", "period"
+                ]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    # Validate data types
+                    valid_types = (
+                        isinstance(data["total_meals_7days"], int) and
+                        isinstance(data["total_scans_7days"], int) and
+                        isinstance(data["coach_messages_7days"], int) and
+                        isinstance(data["avg_health_score"], (int, float)) and
+                        isinstance(data["daily_meals"], dict) and
+                        isinstance(data["meal_types"], dict) and
+                        isinstance(data["children_count"], int) and
+                        isinstance(data["period"], str)
+                    )
+                    
+                    if valid_types:
+                        self.log_result("Dashboard Statistics", True,
+                                      f"Dashboard stats retrieved successfully. Meals: {data['total_meals_7days']}, "
+                                      f"Scans: {data['total_scans_7days']}, Children: {data['children_count']}, "
+                                      f"Avg Health Score: {data['avg_health_score']}")
+                    else:
+                        self.log_result("Dashboard Statistics", False,
+                                      "Dashboard stats have incorrect data types")
+                else:
+                    self.log_result("Dashboard Statistics", False,
+                                  f"Missing required fields: {missing_fields}")
+            else:
+                self.log_result("Dashboard Statistics", False,
+                              f"HTTP {response.status_code}: {response.text}")
+            
+            # Test with non-existent user
+            fake_email = "nonexistent@test.com"
+            response = self.session.get(f"{BACKEND_URL}/dashboard/stats/{fake_email}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Should return stats with zero values for non-existent user
+                if (data["total_meals_7days"] == 0 and 
+                    data["children_count"] == 0):
+                    self.log_result("Dashboard Statistics (Non-existent User)", True,
+                                  "Correctly returned zero stats for non-existent user")
+                else:
+                    self.log_result("Dashboard Statistics (Non-existent User)", False,
+                                  "Should return zero stats for non-existent user")
+            else:
+                self.log_result("Dashboard Statistics (Non-existent User)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                    
+        except Exception as e:
+            self.log_result("Dashboard Statistics", False, f"Exception: {str(e)}")
+
     def test_error_cases(self):
         """Test error handling"""
         print("\n=== Testing Error Cases ===")
