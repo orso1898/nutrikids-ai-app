@@ -209,45 +209,45 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 12,
   },
-  languagesContainer: {
-    gap: 16,
+  dropdownContainer: {
+    width: '100%',
     marginBottom: 32,
   },
-  languageButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  languageButtonActive: {
+  pickerWrapper: {
     backgroundColor: '#fff',
-    borderColor: '#fff',
-  },
-  languageContent: {
+    borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    paddingLeft: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    marginBottom: 16,
   },
-  languageFlag: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  pickerIcon: {
+    marginRight: 8,
   },
-  flagText: {
-    fontSize: 28,
-  },
-  languageName: {
+  picker: {
     flex: 1,
-    fontSize: 20,
+    height: 56,
+    color: '#1e293b',
+  },
+  selectedPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  selectedPreviewText: {
+    fontSize: 18,
     fontWeight: '600',
     color: '#fff',
-  },
-  languageNameActive: {
-    color: '#1e293b',
   },
   continueButton: {
     backgroundColor: '#fff',
