@@ -13,13 +13,25 @@ const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 export default function Premium() {
   const router = useRouter();
   const { t } = useLanguage();
-  const [monthlyPrice, setMonthlyPrice] = useState<number>(5.99);
-  const [yearlyPrice, setYearlyPrice] = useState<number>(49.99);
+  const { userEmail } = useAuth();
+  const params = useLocalSearchParams();
+  
+  const [monthlyPrice, setMonthlyPrice] = useState<number>(6.99);
+  const [yearlyPrice, setYearlyPrice] = useState<number>(59.99);
   const [loading, setLoading] = useState(true);
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   useEffect(() => {
     loadPricing();
   }, []);
+
+  useEffect(() => {
+    // Check if returning from Stripe with session_id
+    if (params.session_id) {
+      checkPaymentStatus(params.session_id as string);
+    }
+  }, [params.session_id]);
 
   const loadPricing = async () => {
     try {
