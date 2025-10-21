@@ -230,11 +230,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Gamification - Award Points Endpoint"
-    - "Stripe Checkout Session Creation"
-    - "Stripe Checkout Status Check"
-    - "Meal Plan Generation"
-    - "Dashboard Statistics"
+    - "FASE 1 CORE PERFETTO - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
