@@ -558,6 +558,9 @@ async def reset_password(request: ResetPasswordRequest):
 @api_router.post("/coach-maya", response_model=ChatResponse)
 async def coach_maya(chat_msg: ChatMessage):
     try:
+        # Check usage limits (Free users: 5 messages/day)
+        await check_and_increment_usage(chat_msg.user_email, "coach_messages")
+        
         # System messages per lingua
         language = chat_msg.language if hasattr(chat_msg, 'language') else 'it'
         
