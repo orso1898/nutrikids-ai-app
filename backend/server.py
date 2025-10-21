@@ -1037,7 +1037,13 @@ async def create_checkout_session(request: Request, checkout_request: CreateChec
         raise HTTPException(status_code=400, detail="Invalid plan type. Must be 'monthly' or 'yearly'")
     
     # Get prices from admin config in database (server-side only - prevent price manipulation)
-    config = await db.config.find_one({})
+    try:
+        config = await db.config.find_one({})
+        print(f"DEBUG: Config found: {config}")
+    except Exception as e:
+        print(f"DEBUG: Error fetching config: {e}")
+        config = None
+    
     if not config:
         raise HTTPException(status_code=500, detail="App configuration not found")
     
