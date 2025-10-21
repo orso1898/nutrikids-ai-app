@@ -116,10 +116,23 @@ export default function Profilo() {
     if (!selectedTestChild) return;
     
     try {
-      await axios.post(`${BACKEND_URL}/api/children/${selectedTestChild.id}/award-points`, { points });
-      await loadChildren();
+      const response = await axios.post(`${BACKEND_URL}/api/children/${selectedTestChild.id}/award-points`, { points });
+      
       setTestModalVisible(false);
-      Alert.alert('✅ Successo', `${points} punti aggiunti a ${selectedTestChild.name}!`);
+      
+      // Check if level up happened
+      if (response.data.level_up) {
+        setLevelUpData({
+          childName: selectedTestChild.name,
+          newLevel: response.data.level,
+          newBadges: response.data.new_badges || []
+        });
+        setLevelUpModalVisible(true);
+      } else {
+        Alert.alert('✅ Successo', `${points} punti aggiunti a ${selectedTestChild.name}!`);
+      }
+      
+      await loadChildren();
     } catch (error) {
       Alert.alert('Errore', 'Impossibile aggiungere punti');
       console.error('Error adding test points:', error);
