@@ -156,6 +156,14 @@ export default function Login() {
                 )}
               </TouchableOpacity>
 
+              {/* Forgot Password Link */}
+              <TouchableOpacity 
+                style={styles.forgotPasswordContainer}
+                onPress={() => router.push('/forgot-password')}
+              >
+                <Text style={styles.forgotPasswordText}>Password dimenticata?</Text>
+              </TouchableOpacity>
+
               <View style={styles.hintContainer}>
                 <Ionicons name="information-circle" size={16} color="rgba(255,255,255,0.7)" />
                 <Text style={styles.hintText}>
