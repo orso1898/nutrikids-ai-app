@@ -81,7 +81,35 @@ export default function Profilo() {
   const loadChildren = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/children/${userEmail}`);
-      setChildren(response.data);
+      const loadedChildren = response.data;
+      
+      // Initialize animations for each child
+      const newAnimations: {[key: string]: any} = {};
+      loadedChildren.forEach((child: Child) => {
+        if (!childAnimations[child.id]) {
+          newAnimations[child.id] = {
+            progressAnim: new Animated.Value(0),
+            pointsAnim: new Animated.Value(child.points || 0),
+            scaleAnim: new Animated.Value(1)
+          };
+        }
+      });
+      
+      setChildAnimations(prev => ({...prev, ...newAnimations}));
+      setChildren(loadedChildren);
+      
+      // Animate progress bars
+      loadedChildren.forEach((child: Child) => {
+        const progressPercent = ((child.points || 0) % 100);
+        if (childAnimations[child.id] || newAnimations[child.id]) {
+          const anim = childAnimations[child.id] || newAnimations[child.id];
+          Animated.timing(anim.progressAnim, {
+            toValue: progressPercent,
+            duration: 1000,
+            useNativeDriver: false
+          }).start();
+        }
+      });
     } catch (error) {
       console.error('Error loading children:', error);
     }
