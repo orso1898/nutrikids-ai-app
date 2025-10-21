@@ -647,6 +647,63 @@ export default function Profilo() {
             </View>
           </View>
         </Modal>
+
+        {/* Level Up Celebration Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={levelUpModalVisible}
+          onRequestClose={() => setLevelUpModalVisible(false)}
+        >
+          <View style={styles.celebrationOverlay}>
+            <View style={styles.celebrationContent}>
+              {/* Confetti effect with emojis */}
+              <View style={styles.confettiContainer}>
+                <Text style={styles.confetti}>🎉</Text>
+                <Text style={styles.confetti}>🎊</Text>
+                <Text style={styles.confetti}>✨</Text>
+                <Text style={styles.confetti}>🌟</Text>
+                <Text style={styles.confetti}>🎈</Text>
+              </View>
+              
+              <View style={styles.celebrationIcon}>
+                <Ionicons name="trophy" size={80} color="#fbbf24" />
+              </View>
+              
+              <Text style={styles.celebrationTitle}>🎉 LIVELLO RAGGIUNTO! 🎉</Text>
+              <Text style={styles.celebrationSubtitle}>
+                {levelUpData.childName} è salito al
+              </Text>
+              <Text style={styles.celebrationLevel}>
+                LIVELLO {levelUpData.newLevel}!
+              </Text>
+              
+              {levelUpData.newBadges.length > 0 && (
+                <View style={styles.newBadgesContainer}>
+                  <Text style={styles.newBadgesTitle}>🏅 Nuovi Badge Sbloccati!</Text>
+                  <View style={styles.newBadgesList}>
+                    {levelUpData.newBadges.map((badge, index) => (
+                      <View key={index} style={styles.newBadgeItem}>
+                        <Text style={styles.newBadgeText}>
+                          {badge === 'first_century' ? '🌟 Prima Centuria' : 
+                           badge === 'level_5' ? '🚀 Livello 5' : 
+                           badge === 'level_10' ? '👑 Livello 10' : badge}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
+              
+              <TouchableOpacity 
+                style={styles.celebrationButton}
+                onPress={() => setLevelUpModalVisible(false)}
+              >
+                <Text style={styles.celebrationButtonText}>Fantastico! 🚀</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </LinearGradient>
   );
