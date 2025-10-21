@@ -236,6 +236,66 @@ test_plan:
   test_all: true
   test_priority: "high_first"
 
+  - task: "Gamification - Award Points Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "POST /api/children/{child_id}/award-points implemented. Sistema livelli: 100 punti = 1 livello. Badge automatici: first_century, level_5, level_10. Assegnazione punti da Diario (+10) e Scanner (+5)."
+
+  - task: "Stripe Checkout Session Creation"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "POST /api/checkout/create-session implemented. Prezzi dinamici da db.config (€6.99 mensile, €59.99 annuale). Crea sessioni Stripe valide con return URLs configurati."
+
+  - task: "Stripe Checkout Status Check"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "GET /api/checkout/status/{session_id} implemented. Polling status pagamento da Stripe. Aggiorna user a Premium se pagamento completato."
+
+  - task: "Meal Plan Generation"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "POST /api/meal-plan implemented. Genera piani pasto settimanali. GET /api/meal-plan/{user_email}/{date} per recupero. Shopping list con LLM basata su età bambini e allergie."
+
+  - task: "Dashboard Statistics"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "GET /api/dashboard/stats/{user_email} implemented. Ritorna statistiche: pasti registrati, scansioni effettuate, messaggi Coach Maya usati."
+
   - task: "Admin Configuration Panel"
     implemented: true
     working: true
