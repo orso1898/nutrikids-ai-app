@@ -30,6 +30,12 @@ EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 # Stripe Key
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
+# Fixed Premium Plans (server-side only - prevent price manipulation)
+PREMIUM_PLANS = {
+    "monthly": {"amount": 9.99, "currency": "eur", "name": "Premium Mensile"},
+    "yearly": {"amount": 99.99, "currency": "eur", "name": "Premium Annuale"}
+}
+
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
