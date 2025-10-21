@@ -145,8 +145,11 @@ class UserInDB(BaseModel):
     name: Optional[str]
     created_at: datetime
     is_premium: bool = False
+    premium_plan: Optional[str] = None  # 'monthly' or 'yearly'
+    premium_since: Optional[datetime] = None
     reset_code: Optional[str] = None
     reset_code_expires: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 # Models
 class ChatMessage(BaseModel):
