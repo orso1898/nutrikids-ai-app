@@ -392,12 +392,17 @@ export default function Profilo() {
                     </View>
                   </View>
                   
-                  {/* Progress Bar */}
+                  {/* Animated Progress Bar */}
                   <View style={styles.progressBarContainer}>
-                    <View 
+                    <Animated.View 
                       style={[
                         styles.progressBar, 
-                        { width: `${((child.points || 0) % 100)}%` }
+                        { 
+                          width: childAnimations[child.id]?.progressAnim.interpolate({
+                            inputRange: [0, 100],
+                            outputRange: ['0%', '100%']
+                          }) || '0%'
+                        }
                       ]} 
                     />
                   </View>
