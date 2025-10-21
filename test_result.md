@@ -230,10 +230,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Complete backend testing after UI improvements - COMPLETED"
-    - "All core endpoints verified working"
+    - "Gamification - Award Points Endpoint"
+    - "Stripe Checkout Session Creation"
+    - "Stripe Checkout Status Check"
+    - "Meal Plan Generation"
+    - "Dashboard Statistics"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
   - task: "Gamification - Award Points Endpoint"
