@@ -104,6 +104,24 @@ async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(secur
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+# Global Exception Handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Gestisce tutte le eccezioni non catturate"""
+    import traceback
+    error_trace = traceback.format_exc()
+    
+    # Log dell'errore
+    logging.error(f"Unhandled exception: {str(exc)}")
+    logging.error(f"Traceback: {error_trace}")
+    
+    # Risposta consistente per errori interni
+    return {
+        "detail": "Si è verificato un errore interno. Riprova più tardi.",
+        "error_type": type(exc).__name__,
+        "status_code": 500
+    }
+
 # Auth Models
 class UserRegister(BaseModel):
     email: EmailStr
