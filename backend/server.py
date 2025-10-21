@@ -972,17 +972,17 @@ async def get_config_value(key: str, admin_email: str = Depends(verify_admin)):
 @api_router.get("/pricing")
 async def get_pricing():
     """Endpoint pubblico per ottenere solo i prezzi Premium"""
-    config = await db.app_config.find_one({"id": "app_config"})
+    config = await db.config.find_one({})
     if not config:
         # Return default prices if no config exists
         return {
-            "monthly_price": 5.99,
-            "yearly_price": 49.99
+            "monthly_price": 6.99,
+            "yearly_price": 59.99
         }
     
     return {
-        "monthly_price": config.get("premium_monthly_price", 5.99),
-        "yearly_price": config.get("premium_yearly_price", 49.99)
+        "monthly_price": config.get("premium_monthly_price", 6.99),
+        "yearly_price": config.get("premium_yearly_price", 59.99)
     }
 
 @api_router.post("/admin/change-password")
