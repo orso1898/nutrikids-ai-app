@@ -48,6 +48,14 @@ const slides: Slide[] = [
     titleKey: 'onboarding.slide4.title',
     descriptionKey: 'onboarding.slide4.description',
     imageUrl: 'https://images.unsplash.com/photo-1758743871361-bd24138a0cb7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwZWF0aW5nfGVufDB8fHx8MTc2MDQzMDAxOHww&ixlib=rb-4.1.0&q=85'
+  },
+  {
+    id: 5,
+    icon: 'trophy',
+    iconColor: '#fbbf24',
+    titleKey: 'onboarding.slide5.title',
+    descriptionKey: 'onboarding.slide5.description',
+    imageUrl: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxraWRzJTIwd2lubmVyJTIwdHJvcGh5fGVufDB8fHx8MTc2MDQzMDAwMXww&ixlib=rb-4.1.0&q=85'
   }
 ];
 
