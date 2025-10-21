@@ -162,6 +162,15 @@ async def get_user_usage(user_email: str):
 # HTTP Bearer security scheme
 security = HTTPBearer()
 
+def get_current_user(authorization: HTTPAuthorizationCredentials = Depends(security)):
+    """Verifica il token JWT e restituisce l'email dell'utente"""
+    try:
+        token = authorization.credentials
+        payload = verify_token(token)
+        return payload.get("sub")  # sub contiene l'email
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
 # Admin authentication dependency (JWT-based)
 async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Verifica che l'utente sia admin tramite JWT token"""
