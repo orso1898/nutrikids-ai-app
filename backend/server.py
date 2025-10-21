@@ -1030,16 +1030,24 @@ async def change_admin_password(
 async def create_checkout_session(request: Request, checkout_request: CreateCheckoutRequest, user_email: str = Header(..., alias="X-User-Email")):
     """
     Create a Stripe Checkout Session for Premium subscription.
-    Security: Amount is defined server-side only
+    Security: Amount is loaded from admin config (server-side only)
     """
     # Validate plan type
-    if checkout_request.plan_type not in PREMIUM_PLANS:
-        raise HTTPException(status_code=400, detail="Invalid plan type")
+    if checkout_request.plan_type not in ["monthly", "yearly"]:
+        raise HTTPException(status_code=400, detail="Invalid plan type. Must be 'monthly' or 'yearly'")
     
-    # Get amount from server-side definition (prevent price manipulation)
-    plan_data = PREMIUM_PLANS[checkout_request.plan_type]
-    amount = plan_data["amount"]
-    currency = plan_data["currency"]
+    # Get prices from admin config in database (server-side only - prevent price manipulation)
+    config = await db.config.find_one({})
+    if not config:
+        raise HTTPException(status_code=500, detail="App configuration not found")
+    
+    # Get amount based on plan type
+    if checkout_request.plan_type == "monthly":
+        amount = float(config.get("premium_monthly_price", 9.99))
+    else:  # yearly
+        amount = float(config.get("premium_yearly_price", 99.99))
+    
+    currency = "eur"
     
     # Build success and cancel URLs using frontend origin
     origin_url = checkout_request.origin_url
