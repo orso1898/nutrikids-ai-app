@@ -113,37 +113,35 @@ export default function LanguageSelection() {
             </Text>
           </View>
 
-          {/* Language Options - centrate */}
-          <View style={styles.languagesContainer}>
-            {(['it', 'en', 'es'] as Language[]).map((lang) => (
-              <TouchableOpacity
-                key={lang}
-                style={[
-                  styles.languageButton,
-                  selectedLanguage === lang && styles.languageButtonActive
-                ]}
-                onPress={() => setSelectedLanguage(lang)}
+          {/* Modern Dropdown Language Selector */}
+          <View style={styles.dropdownContainer}>
+            <View style={styles.pickerWrapper}>
+              <Ionicons name="language" size={24} color="#10b981" style={styles.pickerIcon} />
+              <Picker
+                selectedValue={selectedLanguage}
+                onValueChange={(itemValue) => setSelectedLanguage(itemValue as Language)}
+                style={styles.picker}
+                dropdownIconColor="#10b981"
+                mode="dropdown"
               >
-                <View style={styles.languageContent}>
-                  <View style={styles.languageFlag}>
-                    <Text style={styles.flagText}>
-                      {lang === 'it' && '🇮🇹'}
-                      {lang === 'en' && '🇬🇧'}
-                      {lang === 'es' && '🇪🇸'}
-                    </Text>
-                  </View>
-                  <Text style={[
-                    styles.languageName,
-                    selectedLanguage === lang && styles.languageNameActive
-                  ]}>
-                    {languageNames[lang]}
-                  </Text>
-                  {selectedLanguage === lang && (
-                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
+                {languageOptions.map((lang) => (
+                  <Picker.Item 
+                    key={lang.code} 
+                    label={lang.name} 
+                    value={lang.code}
+                  />
+                ))}
+              </Picker>
+            </View>
+            
+            {/* Preview Selected Language */}
+            <View style={styles.selectedPreview}>
+              <Text style={styles.selectedPreviewText}>
+                {languageOptions.find(l => l.code === selectedLanguage)?.flag} {' '}
+                {languageOptions.find(l => l.code === selectedLanguage)?.name}
+              </Text>
+              <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+            </View>
           </View>
 
           {/* Continue Button */}
