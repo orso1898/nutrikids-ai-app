@@ -28,6 +28,8 @@ export default function Profilo() {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [testModalVisible, setTestModalVisible] = useState(false);
   const [selectedTestChild, setSelectedTestChild] = useState<Child | null>(null);
+  const [levelUpModalVisible, setLevelUpModalVisible] = useState(false);
+  const [levelUpData, setLevelUpData] = useState<{childName: string, newLevel: number, newBadges: string[]}>({childName: '', newLevel: 0, newBadges: []});
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [loading, setLoading] = useState(false);
