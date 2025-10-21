@@ -600,6 +600,9 @@ async def coach_maya(chat_msg: ChatMessage):
 @api_router.post("/analyze-photo", response_model=PhotoAnalysisResponse)
 async def analyze_photo(request: PhotoAnalysisRequest):
     try:
+        # Check usage limits (Free users: 3 scans/day)
+        await check_and_increment_usage(request.user_email, "scans")
+        
         # Get children allergies
         children_cursor = db.children.find({"parent_email": request.user_email})
         children = await children_cursor.to_list(length=100)
