@@ -165,43 +165,81 @@ export default function Premium() {
             <Text style={styles.heroSubtitle}>{t('premium.heroSubtitle')}</Text>
           </View>
 
-          {loading ? (
+          {loading || processingPayment ? (
             <View style={styles.loadingCard}>
               <ActivityIndicator size="large" color="#fff" />
-              <Text style={styles.loadingText}>Caricamento prezzi...</Text>
+              <Text style={styles.loadingText}>
+                {processingPayment ? 'Elaborazione pagamento...' : 'Caricamento prezzi...'}
+              </Text>
             </View>
           ) : (
             <>
-              <View style={styles.pricingCard}>
-                <View style={styles.pricingHeader}>
-                  <Text style={styles.pricingLabel}>{t('premium.monthlyPlan')}</Text>
-                  <View style={styles.pricingBadge}>
-                    <Text style={styles.badgeText}>{t('premium.popular')}</Text>
-                  </View>
-                </View>
-                <View style={styles.pricingRow}>
-                  <Text style={styles.pricingPrice}>€{monthlyPrice.toFixed(2)}</Text>
-                  <Text style={styles.pricingPeriod}>{t('premium.perMonth')}</Text>
-                </View>
-                <Text style={styles.pricingSubtext}>{t('premium.cancelAnytime')}</Text>
-              </View>
-
-              <View style={styles.pricingCard}>
+              {/* Yearly Plan - Selected by default */}
+              <TouchableOpacity 
+                style={[styles.pricingCard, selectedPlan === 'yearly' && styles.selectedPlan]}
+                onPress={() => setSelectedPlan('yearly')}
+              >
                 <View style={styles.pricingHeader}>
                   <Text style={styles.pricingLabel}>{t('premium.yearlyPlan')}</Text>
                   <View style={[styles.pricingBadge, styles.savingBadge]}>
-                    <Text style={styles.badgeText}>{t('premium.savePercent')}</Text>
+                    <Text style={styles.badgeText}>🔥 RISPARMIA {Math.round((1 - yearlyPrice / (monthlyPrice * 12)) * 100)}%</Text>
                   </View>
                 </View>
                 <View style={styles.pricingRow}>
                   <Text style={styles.pricingPrice}>€{yearlyPrice.toFixed(2)}</Text>
                   <Text style={styles.pricingPeriod}>{t('premium.perYear')}</Text>
                 </View>
-                <Text style={styles.pricingSubtext}>{t('premium.billedYearly')}</Text>
-                <Text style={styles.savingsText}>
-                  💰 Risparmio annuale: €{((monthlyPrice * 12) - yearlyPrice).toFixed(2)}
+                <Text style={styles.pricingSubtext}>
+                  Solo €{(yearlyPrice / 12).toFixed(2)}/mese
                 </Text>
-              </View>
+                <Text style={styles.savingsText}>
+                  💰 Risparmio: €{((monthlyPrice * 12) - yearlyPrice).toFixed(2)}/anno
+                </Text>
+                {selectedPlan === 'yearly' && (
+                  <View style={styles.selectedIndicator}>
+                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              {/* Monthly Plan */}
+              <TouchableOpacity 
+                style={[styles.pricingCard, selectedPlan === 'monthly' && styles.selectedPlan]}
+                onPress={() => setSelectedPlan('monthly')}
+              >
+                <View style={styles.pricingHeader}>
+                  <Text style={styles.pricingLabel}>{t('premium.monthlyPlan')}</Text>
+                </View>
+                <View style={styles.pricingRow}>
+                  <Text style={styles.pricingPrice}>€{monthlyPrice.toFixed(2)}</Text>
+                  <Text style={styles.pricingPeriod}>{t('premium.perMonth')}</Text>
+                </View>
+                <Text style={styles.pricingSubtext}>{t('premium.cancelAnytime')}</Text>
+                {selectedPlan === 'monthly' && (
+                  <View style={styles.selectedIndicator}>
+                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              {/* Subscribe Button */}
+              <TouchableOpacity 
+                style={styles.subscribeButton}
+                onPress={handleSubscribe}
+                disabled={processingPayment}
+              >
+                <LinearGradient
+                  colors={['#10b981', '#059669']}
+                  style={styles.subscribeGradient}
+                >
+                  <Text style={styles.subscribeButtonText}>
+                    💳 Iscriviti a Premium
+                  </Text>
+                  <Text style={styles.subscribeButtonSubtext}>
+                    Pagamento sicuro con Stripe
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </>
           )}
 
