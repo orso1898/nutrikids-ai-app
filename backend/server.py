@@ -948,7 +948,24 @@ Formato richiesto:
         
     except Exception as e:
         logging.error(f"Error generating shopping list: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Errore nella generazione: {str(e)}")
+        error_msg = str(e)
+        
+        # Provide user-friendly error messages
+        if "Authentication" in error_msg or "proxy" in error_msg.lower():
+            raise HTTPException(
+                status_code=503, 
+                detail="Servizio AI temporaneamente non disponibile. Riprova tra qualche minuto."
+            )
+        elif "rate limit" in error_msg.lower():
+            raise HTTPException(
+                status_code=429,
+                detail="Troppe richieste. Attendi qualche secondo e riprova."
+            )
+        else:
+            raise HTTPException(
+                status_code=500, 
+                detail="Errore nella generazione della lista spesa. Riprova più tardi."
+            )
 
 # Admin - App Configuration
 @api_router.get("/admin/config", response_model=AppConfig)
