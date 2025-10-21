@@ -66,15 +66,6 @@ def verify_token(token: str):
             detail="Token non valido."
         )
 
-def get_current_user(authorization: HTTPAuthorizationCredentials = Depends(security)):
-    """Verifica il token JWT e restituisce l'email dell'utente"""
-    try:
-        token = authorization.credentials
-        payload = verify_token(token)
-        return payload.get("sub")  # sub contiene l'email
-    except:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-
 # Usage Limits Helper Functions
 async def check_and_increment_usage(user_email: str, usage_type: str):
     """
