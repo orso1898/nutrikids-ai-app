@@ -554,6 +554,26 @@ async def reset_password(request: ResetPasswordRequest):
     
     return {"message": "Password reset successfully"}
 
+# Usage Status Endpoint
+@api_router.get("/usage/{user_email}")
+async def get_usage_status(user_email: str):
+    """Get current usage for dashboard"""
+    usage = await get_user_usage(user_email)
+    
+    # Get limits from config
+    config = await db.config.find_one({})
+    limits = {
+        "free_scans_limit": config.get("free_scans_daily_limit", 3) if config else 3,
+        "free_coach_limit": config.get("free_coach_messages_daily_limit", 5) if config else 5
+    }
+    
+    return {
+        **usage,
+        "limits": limits,
+        "scans_remaining": max(0, limits["free_scans_limit"] - usage["scans_used"]) if not usage["is_premium"] else -1,
+        "coach_messages_remaining": max(0, limits["free_coach_limit"] - usage["coach_messages_used"]) if not usage["is_premium"] else -1
+    }
+
 # Coach Maya - AI Chat
 @api_router.post("/coach-maya", response_model=ChatResponse)
 async def coach_maya(chat_msg: ChatMessage):
