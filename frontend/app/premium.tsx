@@ -387,4 +387,41 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  selectedPlan: {
+    borderWidth: 3,
+    borderColor: '#10b981',
+    shadowColor: '#10b981',
+    shadowOpacity: 0.3,
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+  },
+  subscribeButton: {
+    marginHorizontal: 16,
+    marginTop: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  subscribeGradient: {
+    paddingVertical: 20,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  subscribeButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  subscribeButtonSubtext: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
 });
