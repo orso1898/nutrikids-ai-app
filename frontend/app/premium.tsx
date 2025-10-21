@@ -37,13 +37,97 @@ export default function Premium() {
     try {
       // Carica i prezzi dall'endpoint pubblico
       const response = await axios.get(`${BACKEND_URL}/api/pricing`);
-      setMonthlyPrice(response.data.monthly_price || 5.99);
-      setYearlyPrice(response.data.yearly_price || 49.99);
+      setMonthlyPrice(response.data.monthly_price || 6.99);
+      setYearlyPrice(response.data.yearly_price || 59.99);
     } catch (error) {
       // Se fallisce, usa i prezzi di default
       console.log('Using default prices');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    if (!userEmail) {
+      Alert.alert('Errore', 'Devi effettuare il login per sottoscrivere Premium');
+      return;
+    }
+
+    setProcessingPayment(true);
+    try {
+      // Get current origin URL (for web) or use deep linking (for mobile)
+      const originUrl = typeof window !== 'undefined' ? window.location.origin : 'nutrikids://';
+      
+      // Create checkout session
+      const response = await axios.post(
+        `${BACKEND_URL}/api/checkout/create-session`,
+        {
+          plan_type: selectedPlan,
+          origin_url: originUrl
+        },
+        {
+          headers: {
+            'X-User-Email': userEmail
+          }
+        }
+      );
+
+      // Redirect to Stripe Checkout
+      const checkoutUrl = response.data.url;
+      if (typeof window !== 'undefined') {
+        window.location.href = checkoutUrl;
+      } else {
+        await Linking.openURL(checkoutUrl);
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      Alert.alert(
+        'Errore Pagamento', 
+        error.response?.data?.detail || 'Impossibile avviare il pagamento. Riprova più tardi.'
+      );
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  const checkPaymentStatus = async (sessionId: string) => {
+    setProcessingPayment(true);
+    try {
+      // Poll for payment status
+      let attempts = 0;
+      const maxAttempts = 5;
+      
+      const pollStatus = async (): Promise<void> => {
+        if (attempts >= maxAttempts) {
+          Alert.alert('Info', 'Verifica del pagamento in corso. Controlla la tua email per la conferma.');
+          setProcessingPayment(false);
+          return;
+        }
+
+        const response = await axios.get(`${BACKEND_URL}/api/checkout/status/${sessionId}`);
+        
+        if (response.data.payment_status === 'paid') {
+          Alert.alert(
+            '✅ Pagamento Completato!', 
+            'Benvenuto in NutriKids Premium! Il tuo account è stato aggiornato.',
+            [{ text: 'OK', onPress: () => router.replace('/home') }]
+          );
+          setProcessingPayment(false);
+        } else if (response.data.status === 'expired') {
+          Alert.alert('Pagamento Scaduto', 'La sessione di pagamento è scaduta. Riprova.');
+          setProcessingPayment(false);
+        } else {
+          // Continue polling
+          attempts++;
+          setTimeout(pollStatus, 2000);
+        }
+      };
+
+      await pollStatus();
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      Alert.alert('Errore', 'Impossibile verificare lo stato del pagamento.');
+      setProcessingPayment(false);
     }
   };
 
