@@ -317,6 +317,10 @@ export const translations = {
       slide4: {
         title: 'Healthy Growth',
         description: 'Monitor the growth and development of your children'
+      },
+      slide5: {
+        title: '🎮 Fun Gamification',
+        description: 'Earn points, level up, and unlock special badges while eating healthy!'
       }
     },
 
