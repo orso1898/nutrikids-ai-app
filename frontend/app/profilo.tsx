@@ -33,6 +33,14 @@ export default function Profilo() {
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Animation values for each child
+  const [childAnimations, setChildAnimations] = useState<{[key: string]: {
+    progressAnim: Animated.Value,
+    pointsAnim: Animated.Value,
+    scaleAnim: Animated.Value
+  }}>({});
+  
   const router = useRouter();
   const { userEmail, isAdmin, logout } = useAuth();
   const { t } = useLanguage();
