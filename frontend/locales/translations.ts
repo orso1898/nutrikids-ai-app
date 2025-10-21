@@ -34,6 +34,10 @@ export const translations = {
       slide4: {
         title: 'Crescita Sana',
         description: 'Monitora la crescita e lo sviluppo dei tuoi bambini'
+      },
+      slide5: {
+        title: '🎮 Gamification Divertente',
+        description: 'Guadagna punti, sali di livello e sblocca badge speciali mentre mangi sano!'
       }
     },
 
