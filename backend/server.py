@@ -162,6 +162,10 @@ class UserInDB(BaseModel):
     reset_code: Optional[str] = None
     reset_code_expires: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    # Usage tracking for Free tier limits
+    scans_used_today: int = 0
+    coach_messages_used_today: int = 0
+    last_usage_reset: Optional[datetime] = None  # Per reset giornaliero
 
 # Models
 class ChatMessage(BaseModel):
