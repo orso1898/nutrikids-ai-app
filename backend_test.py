@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """
-NutriKids AI Backend Testing Suite
-Tests all backend endpoints for the nutrition app
+Backend Test Suite for NutriKids AI - GPT-4o Vision Photo Analysis
+Testing the upgraded /api/analyze-photo endpoint with advanced vision capabilities
 """
 
 import requests
 import json
-import sys
+import time
+import base64
 from datetime import datetime
+import sys
 
-# Backend URL from frontend .env
+# Configuration
 BACKEND_URL = "https://nutriplay-2.preview.emergentagent.com/api"
-TEST_USER_EMAIL = "admin@nutrikids.com"
+TEST_USER_EMAIL = "test@nutrikids.com"
+
+# Sample base64 image of pasta (small test image)
+PASTA_IMAGE_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
 
 class NutriKidsBackendTester:
     def __init__(self):
