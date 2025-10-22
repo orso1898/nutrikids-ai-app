@@ -1,82 +1,121 @@
 <analysis>
-The AI engineer iteratively developed the NutriKids AI application, starting with core features and responding to user feedback. Initial work included setting up the Expo/React Native frontend and FastAPI backend, integrating emergent LLM for chat and vision, and establishing basic navigation. Subsequent phases focused on implementing an Admin Configuration Panel, enhancing onboarding slides with images and animations, and, most significantly, a comprehensive internationalization (i18n) system for Italian, English, and Spanish. Debugging efforts addressed navigation issues (e.g., language selection flow after reset), UI presentation, and ensuring Coach Maya responded in the selected language. The latest major feature involved implementing a full authentication system with registration, login, password hashing, and a toggle for password visibility, along with creating an initial admin user. The work demonstrates a strong focus on user experience, responsiveness, and robust backend integration.
+The AI engineer systematically evolved the NutriKids AI application through several key phases. Initially, work focused on enhancing gamification, incorporating points, levels, and badges, along with a Test/Demo mode for quick verification. This included UI updates in  and integration into  and . An onboarding slide was also added to introduce gamification. Subsequently, UX/UI was refined with a scalable dropdown for language selection and advanced animations for progress bars and buttons. A major task involved integrating a full Stripe payment system for Premium subscriptions, including dynamic pricing fetched from the admin panel and crucial bug fixes related to database interaction and navigation. The final phase began an Audit Completo, addressing core stability. This involved comprehensive backend testing, implementing password recovery, and robust error handling. The most recent discussion centered on enhancing food recognition with a hybrid LogMeal + GPT-4o system, and then on the process of saving and continuing work.
 </analysis>
 
 <product_requirements>
-The NutriKids AI app, built with Expo and React Native, aims to provide nutritional guidance for children. Key features include:
-- **Onboarding**: Animated slides with copyright-free images and multi-language greetings.
-- **Authentication**: Email/password registration, login, and password recovery, with an admin user () for specific access. Local email validation was upgraded to backend API validation with password hashing.
-- **Internationalization**: Support for Italian, English, and Spanish across all screens and dynamic content (e.g., meal types, premium features). Coach Maya must respond in the user's selected language.
-- **Home Screen**: Six cards: Scanner, Coach Maya, Piani, Diario, Dashboard, Premium.
-- **Design**: Teal color scheme, modern gradients, thumb-friendly UI.
-- **Scanner**: AI dish recognition using  and backend vision AI.
-- **Coach Maya**: Empathetic AI chatbot for nutritional advice, utilizing Emergent LLM.
-- **Diario (Diary)**: Daily meal tracking with photo display, nutritional info, and a fully translated Aggiungi Pasto modal.
-- **Premium**: Informative paywall screen with dynamic pricing (€5.99/month, €49.99/year) and translated features.
-- **Profile**: Child management, logout, app reset functionality, and access to admin features.
-- **Admin Functionality**: Admin Dashboard and Configuration Panel to manage API keys and pricing.
+The NutriKids AI app provides nutritional guidance for children, featuring:
+- **Onboarding**: Animated slides, multi-language greetings, now including a gamification intro.
+- **Authentication**: Email/password registration/login, JWT-based admin access, and recently, forgot password and reset password functionalities.
+- **Internationalization**: Support for Italian, English, and Spanish, now with a scalable dropdown selector.
+- **Home Screen**: Cards for Scanner, Coach Maya, Piani, Diario, Dashboard, Premium, with improved UI and transitions.
+- **Design**: Teal color scheme, gradients, thumb-friendly UI.
+- **Scanner**: AI dish recognition, allergen detection with visual alerts, and now integrated with gamification points and usage limits.
+- **Coach Maya**: AI chatbot for nutritional advice, integrated with usage limits.
+- **Diario (Diary)**: Daily meal tracking, photo display, nutritional info, Aggiungi Pasto modal, and integrated gamification points.
+- **Premium**: Dynamic pricing from admin, subscription paywall, now with full Stripe payment integration (6.99 monthly, 59.99 yearly).
+- **Piani (Plans)**: Weekly/daily meal planner, AI-generated shopping lists based on child profiles and allergies.
+- **Dashboard**: Real-time user statistics.
+- **Profile**: Child management (add/edit/delete), logout, app reset. Child profiles now display gamification stats (points, level, badges) and avatar selection. A Test/Demo mode for gamification was added.
+- **Admin Functionality**: Admin Dashboard and Configuration Panel to manage API keys, pricing, and usage limits (Free/Premium).
 </product_requirements>
 
 <key_technical_concepts>
 - **Expo/React Native**: Cross-platform mobile development.
 - **Expo Router**: File-based navigation.
-- **AsyncStorage**: Local data persistence for user state and language.
-- **Emergent LLM Key & **: AI (GPT-4o Vision) for chat and image analysis.
-- **FastAPI**: Python backend, MongoDB,  for password hashing.
-- ** (Internationalization)**: Context-based system with  for multi-language support.
-- ****: For UI animations (e.g., onboarding fade/slide).
+- **FastAPI**: Python backend with MongoDB.
+- ** & **: For secure authentication.
+- ****: For AI (LLM & vision) services.
+- ****: Multi-language support.
+- ****: Local data persistence.
+- ****: UI animations.
+- **Stripe API**: Payment processing.
+- ****: Dropdown UI.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a full-stack architecture with an Expo/React Native frontend, a FastAPI backend, and a MongoDB database.
-
 
 
 -   ****:
-    -   **Summary**: Main FastAPI backend. Handles API requests, MongoDB interactions, AI (LLM & vision).
-    -   **Changes**: Integrated  for password hashing, added  model, and authentication endpoints (, , , ). Modified  endpoint to accept  and tailor AI responses. Included  model and CRUD for app settings.
+    -   **Summary**: Main FastAPI backend.
+    -   **Changes**:
+        -   **Gamification**:  model updated with , , , .  and  models added.
+        -   **Authentication**: Endpoints for  and  were confirmed as already existing and complete.  model updated with , , , , .
+        -   **Premium**: Stripe integration added, including  (now dynamic), ,  models, and  endpoints. Prices are now fetched dynamically from . Fixed database collection issue ( to ).
+        -   **Error Handling**: Global exception handler added.  and  endpoints updated with robust  for LiteLLM proxy token errors and limit checks.
+        -   **Usage Limits**:  helper for  and . Integrated into  and . New endpoint  for current usage status.
+        -   **Pydantic Models**: Added , , , .
 -   ****:
-    -   **Summary**: Onboarding screen and entry point.
-    -   **Changes**: Updated to check for selected language before onboarding. Integrated  for fade in/out and slide effects between onboarding slides. Displays multi-language greeting messages.
+    -   **Summary**: Root layout.
+    -   **Changes**: Configured global Stack navigator for transitions.
+-   ****:
+    -   **Summary**: Onboarding screen.
+    -   **Changes**: Added a new fifth slide specifically explaining gamification.
 -   ****:
     -   **Summary**: User login screen.
-    -   **Changes**: Modified to call backend  endpoint for authentication, including password verification. Added a password visibility toggle. Linked to .
+    -   **Changes**: Added Password dimenticata? link navigating to .
+-   ****: (NEW FILE)
+    -   **Summary**: Screen for initiating password recovery.
+    -   **Changes**: Created.
+-   ****: (NEW FILE)
+    -   **Summary**: Screen for resetting password with a code.
+    -   **Changes**: Created.
 -   ****:
-    -   **Summary**: New screen for initial language selection.
-    -   **Changes**: Improved UI for language selection, moved to center. Displays animated multi-language greetings. Uses  to persist choice.
+    -   **Summary**: Language selection screen.
+    -   **Changes**: Replaced language buttons with a dropdown  for better scalability, using .
+-   ****:
+    -   **Summary**: User profile, child management.
+    -   **Changes**:
+        -   **Gamification UI**: Updated  interface to include . Display of , ,  (e.g., Prima Centuria, Livello 5) in child cards. Avatar emoji replaces initial letter.
+        -   **Layout Fix**: Reworked child card layout to prevent gamification stats from overlapping with edit/delete buttons, moving buttons to a top-right column.
+        -   **Informative Modal**: Added a How it Works info modal for gamification, accessible via a '?' icon in the header.
+        -   **Celebration Modal**: Integrated a level-up celebratory animation ( and ).
+        -   **Test Mode**: Added  state, , ,  functions, and a Test button on child cards to open a modal for manually adding points, triggering level-ups, or resetting.
+        -   **Animations**: Integrated  and  for fluid progress bar animations.
+-   ****:
+    -   **Summary**: Daily meal tracking.
+    -   **Changes**:  function updated to handle point assignment and trigger the  if a level change occurs.
+-   ****:
+    -   **Summary**: Dish scanning.
+    -   **Changes**:  function integrated to assign points after a successful scan.
+-   ****:
+    -   **Summary**: Premium subscription paywall.
+    -   **Changes**: Reworked UI to display selectable pricing cards (monthly/yearly), fetching dynamic prices from the backend. Integrated Stripe checkout flow via  for redirect,  for polling payment status. Changed  to  for reliable navigation after Stripe redirect.
+-   ****: (NEW FILE)
+    -   **Summary**: Reusable animated button component.
+    -   **Changes**: Created with a bounce animation on press using .
 -   ****:
     -   **Summary**: Centralized translation dictionary.
-    -   **Changes**: Extensively updated to include translations for all major app sections (onboarding, login, home, scanner, coach-maya, diario, premium, admin, profile sub-sections) in IT, EN, ES.
--   ****:
-    -   **Summary**: React Context for managing global language state.
-    -   **Changes**: Implemented  to load and persist language with , providing  (translate) function and  to components. Fixed language persistence issues after app reset.
--   ****:
-    -   **Summary**: User profile screen.
-    -   **Changes**: Implemented  to clear  (including language and auth tokens) and force app restart, fixing issues with language persistence and subsequent resets. Translated all hardcoded strings.
--   **, , , , **:
-    -   **Summary**: Core feature screens.
-    -   **Changes**: All hardcoded strings were replaced with translated keys using the  hook.  now sends the selected language to the backend.  dynamically renders translated features and pricing.
--   ****:
-    -   **Summary**: New user registration screen.
-    -   **Changes**: Initial creation, for email, password, confirm password, and optional name, with password visibility toggle.
-
+    -   **Changes**: Added translations for the new gamification onboarding slide ().
 </code_architecture>
 
 <pending_tasks>
--   Complete the implementation of the Registration screen (), including validation and API calls.
--   Implement the Forgot Password and Reset Password functionalities.
--   Further debug the  for image analysis in  to move beyond the current fallback mechanism and ensure real AI analysis results are displayed.
+- Complete the implementation of the Forgot Password and Reset Password functionalities (frontend is done, backend endpoints were confirmed to exist).
+- Implement the logic to enforce the configured usage limits in the frontend for Free vs. Premium users.
+- Integrate Stripe payments: Currently, it redirects to Stripe, but further status polling and success/error handling within the app need to be refined.
+- Integrate the hybrid LogMeal API + GPT-4o vision system for food recognition.
+- Conduct comprehensive frontend flow testing.
+- Further refine AI prompts for shopping list generation for edge cases, if necessary.
+- Integrate Analytics/tracking users (for understanding what works).
+- Implement Push Notifications, Email automation, Streak system.
+- Add Privacy Policy & Terms of Service, GDPR compliance.
+- Finalize API keys for production.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was working on implementing the new user registration feature. This involved:
-1.  **Backend Implementation**: Already completed in previous steps, adding  model with password hashing and authentication endpoints (, , etc.) to .
-2.  **Frontend Screen Creation**: A new screen, , was created. This screen is intended to provide the UI for new users to register.
-3.  **Navigation Integration**: A Registrati (Register) link was added to the  screen, which navigates to the newly created  screen. This also involved adding new styles for this link.
+Immediately before this summary request, the AI engineer was engaged in discussions about the app's potential for growth, drawing comparisons to Cal.ai, and the user's strong desire for the app to be perfecta. This led to a comprehensive audit of the application, identifying areas for improvement across UI/UX, viral growth, monetization enforcement, retention, and production readiness.
 
-The current state is that the  file has been created, and the  file has been updated to link to it. The next immediate step is to populate the  file with the necessary form elements, validation, and API integration logic.
+The AI engineer proposed a multi-phase Piano Perfezione and the user agreed to start with **FASE 1: CORE PERFETTO**.
+
+Within FASE 1, the following has been completed:
+1.  **Testing Automatico Completo**: A full backend test was run, with 27/34 tests passing (79.4% success), and all 5 new high-priority endpoints (gamification, Stripe, meal plans, dashboard) functioning.
+2.  **Password Recovery**: Frontend screens (, ) and a link in  were added. Backend endpoints for this functionality were confirmed to already exist.
+3.  **Error Handling Robusto**: A global exception handler was added to the backend (), and robust  blocks were integrated into critical endpoints like  and  to handle LiteLLM proxy token errors.
+4.  **Bug Fixes**: Addressed a critical authentication error during shopping list generation and fixed a navigation issue where the Premium screen wouldn't go back after Stripe redirect (changed  to ).
+5.  **Limiti Free vs Premium**: The  model in  was updated to track  and . Helper functions () were created and integrated into the  and  endpoints to enforce these limits. A new endpoint  was created to fetch current usage status.
+
+The conversation then shifted to improving the core food recognition system, where a hybrid LogMeal API + GPT-4o Vision system was recommended by the AI and accepted by the user. The last action was a discussion about how to save the project (forking, GitHub push) as the user expressed confusion about the Fork button.
 </current_work>
 
 <optional_next_step>
-Complete the implementation of the  screen.
+Implement the hybrid LogMeal API + GPT-4o Vision system for improved food recognition.
 </optional_next_step>

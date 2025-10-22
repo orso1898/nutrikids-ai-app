@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from frontend .env
-BACKEND_URL = "https://kidsfood-helper.preview.emergentagent.com/api"
+BACKEND_URL = "https://nutriplay-2.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "admin@nutrikids.com"
 
 class NutriKidsBackendTester:
