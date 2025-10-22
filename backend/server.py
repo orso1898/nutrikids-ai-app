@@ -691,36 +691,43 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
 
 ⚠️ RISPONDI SEMPRE E SOLO CON JSON VALIDO - NESSUN TESTO AGGIUNTIVO"""
         
-        # MOCK RESPONSE per testing - GPT-4o Vision system upgrade
-        # Simula una risposta realistica del sistema GPT-4o Vision avanzato
-        logging.info(f"Photo analysis requested for user: {request.user_email}")
+        # Uso API OpenAI diretta per migliore supporto vision
+        openai.api_key = EMERGENT_LLM_KEY
+        openai.base_url = "https://llm-proxy.onrender.com/v1"
         
-        # Basic validation for image format
-        if not request.image_base64 or len(request.image_base64) < 50:
-            raise ValueError("Invalid or too short base64 image data")
-        
-        # Check if it's valid base64 (basic check)
-        try:
-            import base64
-            base64.b64decode(request.image_base64, validate=True)
-        except Exception:
-            raise ValueError("Invalid base64 image format")
-        
-        # Simula analisi avanzata basata su immagine
-        response_text = """{
-            "foods": ["Pasta al pomodoro (~120g)", "Salsa di pomodoro (~80g)", "Olio extravergine d'oliva (~15ml)", "Basilico fresco (~5g)", "Parmigiano grattugiato (~20g)"],
-            "nutrition": {
-                "calories": 420,
-                "proteins": 16.8,
-                "carbs": 68.5,
-                "fats": 11.2,
-                "fiber": 4.1
+        # Prepara il messaggio con l'immagine per GPT-4o Vision
+        messages = [
+            {
+                "role": "system",
+                "content": system_message
             },
-            "suggestions": "🍝 Piatto mediterraneo ben bilanciato! Il pomodoro fornisce licopene antiossidante e la pasta carboidrati complessi per energia. Consiglio: aggiungi verdure come zucchine o spinaci per aumentare vitamine e fibre. Ottima scelta per bambini in crescita!",
-            "health_score": 8,
-            "allergens": ["glutine", "lattosio"],
-            "cooking_method": "Pasta bollita e mantecata con sugo di pomodoro fresco"
-        }"""
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Analizza questo piatto in dettaglio e fornisci l'analisi nutrizionale completa in formato JSON."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{request.image_base64}",
+                            "detail": "high"  # Usa analisi ad alta risoluzione
+                        }
+                    }
+                ]
+            }
+        ]
+        
+        # Chiamata a GPT-4o Vision
+        chat_completion = openai.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=0.3,  # Temperatura bassa per risultati più consistenti
+            max_tokens=1000
+        )
+        
+        response_text = chat_completion.choices[0].message.content
         
         # Parse JSON response con pulizia avanzata
         import json
