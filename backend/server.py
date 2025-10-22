@@ -691,43 +691,27 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
 
 ⚠️ RISPONDI SEMPRE E SOLO CON JSON VALIDO - NESSUN TESTO AGGIUNTIVO"""
         
-        # Uso API OpenAI diretta per migliore supporto vision
-        openai.api_key = EMERGENT_LLM_KEY
-        openai.base_url = "https://llm-proxy.onrender.com/v1"
+        # Uso emergentintegrations con supporto vision
+        from emergentintegrations.llm.chat import ImageContent
         
-        # Prepara il messaggio con l'immagine per GPT-4o Vision
-        messages = [
-            {
-                "role": "system",
-                "content": system_message
-            },
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "Analizza questo piatto in dettaglio e fornisci l'analisi nutrizionale completa in formato JSON."
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{request.image_base64}",
-                            "detail": "high"  # Usa analisi ad alta risoluzione
-                        }
-                    }
-                ]
-            }
-        ]
+        # Prepara l'immagine per l'analisi
+        image_content = ImageContent(image_base64=request.image_base64)
         
-        # Chiamata a GPT-4 Vision
-        chat_completion = openai.chat.completions.create(
-            model="gpt-4-vision-preview",
-            messages=messages,
-            temperature=0.3,  # Temperatura bassa per risultati più consistenti
-            max_tokens=1000
+        # Crea chat con modello che supporta vision
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"photo_{request.user_email}_{datetime.utcnow().timestamp()}",
+            system_message=system_message
+        ).with_model("openai", "gpt-4o")
+        
+        # Crea messaggio con immagine
+        user_message = UserMessage(
+            text="Analizza questo piatto in dettaglio e fornisci l'analisi nutrizionale completa in formato JSON.",
+            file_contents=[image_content]
         )
         
-        response_text = chat_completion.choices[0].message.content
+        # Invia messaggio e ottieni risposta
+        response_text = await chat.send_message(user_message)
         
         # Parse JSON response con pulizia avanzata
         import json
