@@ -800,16 +800,22 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
             allergen_warning=allergen_warning
         )
         
-    except openai.RateLimitError:
-        raise HTTPException(
-            status_code=429, 
-            detail="Limite giornaliero raggiunto. Passa a Premium per analisi illimitate! 🌟"
-        )
-    except openai.AuthenticationError:
-        raise HTTPException(
-            status_code=500, 
-            detail="Errore di autenticazione AI. Contatta il supporto."
-        )
+    except Exception as openai_error:
+        # Handle OpenAI specific errors
+        error_str = str(openai_error)
+        if "rate limit" in error_str.lower() or "429" in error_str:
+            raise HTTPException(
+                status_code=429, 
+                detail="Limite giornaliero raggiunto. Passa a Premium per analisi illimitate! 🌟"
+            )
+        elif "authentication" in error_str.lower() or "401" in error_str:
+            raise HTTPException(
+                status_code=500, 
+                detail="Errore di autenticazione AI. Contatta il supporto."
+            )
+        else:
+            # Re-raise for general exception handler
+            raise openai_error
     except Exception as e:
         logging.error(f"Errore in analyze-photo: {str(e)}")
         raise HTTPException(
