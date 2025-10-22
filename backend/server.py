@@ -692,9 +692,11 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
 ⚠️ RISPONDI SEMPRE E SOLO CON JSON VALIDO - NESSUN TESTO AGGIUNTIVO"""
         
         # Uso API OpenAI diretta per migliore supporto vision
-        import openai
-        openai.api_key = EMERGENT_LLM_KEY
-        openai.base_url = "https://llm-proxy.onrender.com/v1"
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=EMERGENT_LLM_KEY,
+            base_url="https://llm-proxy.onrender.com/v1"
+        )
         
         # Prepara il messaggio con l'immagine per GPT-4o Vision
         messages = [
