@@ -53,34 +53,143 @@ def create_test_user():
     except Exception as e:
         print_result(False, f"Error creating user: {str(e)}")
         return False
+def test_photo_analysis_basic():
+    """Test basic photo analysis functionality"""
+    print_test_header("Photo Analysis - Basic Functionality")
     
-    def test_coach_maya(self):
-        """Test POST /api/coach-maya - AI chatbot"""
-        try:
-            payload = {
-                "message": "Come posso migliorare l'alimentazione di mio figlio?",
-                "session_id": "test1"
-            }
-            response = self.session.post(f"{BACKEND_URL}/coach-maya", json=payload)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "response" in data and "session_id" in data:
-                    if len(data["response"]) > 10 and "session_id" in data:
-                        self.log_result("Coach Maya AI", True, "AI responded correctly in Italian")
-                        return True
-                    else:
-                        self.log_result("Coach Maya AI", False, "Response too short or missing session_id", {"response": data})
-                        return False
-                else:
-                    self.log_result("Coach Maya AI", False, "Invalid response format", {"response": data})
-                    return False
-            else:
-                self.log_result("Coach Maya AI", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Coach Maya AI", False, f"Request error: {str(e)}")
+    payload = {
+        "user_email": TEST_USER_EMAIL,
+        "image_base64": PASTA_IMAGE_BASE64
+    }
+    
+    try:
+        start_time = time.time()
+        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=15)
+        end_time = time.time()
+        response_time = end_time - start_time
+        
+        print(f"⏱️ Response time: {response_time:.2f} seconds")
+        
+        # Check response time
+        if response_time > 10:
+            print_result(False, f"Response time too slow: {response_time:.2f}s > 10s")
             return False
+        else:
+            print_result(True, f"Response time acceptable: {response_time:.2f}s < 10s")
+        
+        # Check status code
+        if response.status_code != 200:
+            print_result(False, f"Wrong status code: {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
+        
+        print_result(True, "Status code 200 OK")
+        
+        # Parse JSON response
+        try:
+            data = response.json()
+        except json.JSONDecodeError as e:
+            print_result(False, f"Invalid JSON response: {e}")
+            return False
+        
+        print_result(True, "Valid JSON response")
+        
+        # Check required fields
+        required_fields = [
+            "foods_detected", 
+            "nutritional_info", 
+            "suggestions", 
+            "health_score", 
+            "allergens_detected"
+        ]
+        
+        missing_fields = []
+        for field in required_fields:
+            if field not in data:
+                missing_fields.append(field)
+        
+        if missing_fields:
+            print_result(False, f"Missing required fields: {missing_fields}")
+            return False
+        
+        print_result(True, "All required fields present")
+        
+        # Check foods_detected
+        foods = data.get("foods_detected", [])
+        if not isinstance(foods, list) or len(foods) == 0:
+            print_result(False, f"foods_detected should be non-empty list, got: {foods}")
+            return False
+        
+        print_result(True, f"foods_detected valid: {len(foods)} items detected")
+        print(f"   Foods: {foods}")
+        
+        # Check nutritional_info
+        nutrition = data.get("nutritional_info", {})
+        if not isinstance(nutrition, dict):
+            print_result(False, f"nutritional_info should be dict, got: {type(nutrition)}")
+            return False
+        
+        nutrition_fields = ["calories", "proteins", "carbs", "fats", "fiber"]
+        for field in nutrition_fields:
+            if field not in nutrition:
+                print_result(False, f"Missing nutrition field: {field}")
+                return False
+            
+            value = nutrition[field]
+            if not isinstance(value, (int, float)) or value < 0:
+                print_result(False, f"Invalid {field} value: {value} (should be positive number)")
+                return False
+        
+        print_result(True, f"nutritional_info valid: {nutrition}")
+        
+        # Check health_score
+        health_score = data.get("health_score")
+        if not isinstance(health_score, int) or health_score < 1 or health_score > 10:
+            print_result(False, f"health_score should be 1-10, got: {health_score}")
+            return False
+        
+        print_result(True, f"health_score valid: {health_score}/10")
+        
+        # Check suggestions
+        suggestions = data.get("suggestions", "")
+        if not isinstance(suggestions, str) or len(suggestions.strip()) == 0:
+            print_result(False, f"suggestions should be non-empty string")
+            return False
+        
+        print_result(True, f"suggestions valid: {len(suggestions)} characters")
+        
+        # Check allergens_detected
+        allergens = data.get("allergens_detected", [])
+        if not isinstance(allergens, list):
+            print_result(False, f"allergens_detected should be list, got: {type(allergens)}")
+            return False
+        
+        print_result(True, f"allergens_detected valid: {len(allergens)} allergens")
+        
+        # Check for new cooking_method field (if present)
+        if "cooking_method" in data:
+            cooking_method = data["cooking_method"]
+            if isinstance(cooking_method, str):
+                print_result(True, f"cooking_method field present: {cooking_method}")
+            else:
+                print_result(False, f"cooking_method should be string, got: {type(cooking_method)}")
+        else:
+            print("ℹ️  cooking_method field not present (optional)")
+        
+        print(f"\n📊 Full Response:")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        
+        return True
+        
+    except requests.exceptions.Timeout:
+        print_result(False, "Request timeout (>15s)")
+        return False
+    except requests.exceptions.RequestException as e:
+        print_result(False, f"Request error: {str(e)}")
+        return False
+    except Exception as e:
+        print_result(False, f"Unexpected error: {str(e)}")
+        return False
     
     def test_create_diary_entry(self):
         """Test POST /api/diary - Create diary entry"""
