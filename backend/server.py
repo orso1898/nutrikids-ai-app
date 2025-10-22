@@ -15,7 +15,6 @@ from emergentintegrations.payments.stripe.checkout import StripeCheckout, Checko
 from passlib.context import CryptContext
 import secrets
 import jwt
-import openai
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
