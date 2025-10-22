@@ -1497,6 +1497,130 @@ async def stripe_webhook(request: Request):
         print(f"Webhook error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
+
+# ===== PUSH NOTIFICATIONS ENDPOINTS =====
+
+@api_router.post("/push-token/register")
+async def register_push_token(token_data: PushTokenRequest):
+    """Registra il push token dell'utente per ricevere notifiche"""
+    try:
+        # Verifica che l'utente esista
+        user = await db.users.find_one({"email": token_data.user_email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Salva o aggiorna il push token
+        await db.push_tokens.update_one(
+            {"user_email": token_data.user_email},
+            {
+                "$set": {
+                    "push_token": token_data.push_token,
+                    "device_type": token_data.device_type,
+                    "language": token_data.language,
+                    "updated_at": datetime.utcnow()
+                }
+            },
+            upsert=True
+        )
+        
+        # Inizializza preferenze notifiche di default se non esistono
+        existing_prefs = await db.notification_preferences.find_one({"user_email": token_data.user_email})
+        if not existing_prefs:
+            await db.notification_preferences.insert_one({
+                "user_email": token_data.user_email,
+                "enabled": True,
+                "lunch_time": "12:30",
+                "dinner_time": "19:30",
+                "evening_reminder": "21:00",
+                "weekly_report_day": 6,
+                "weekly_report_time": "20:00",
+                "max_daily_notifications": 4,
+                "created_at": datetime.utcnow()
+            })
+        
+        return {"status": "success", "message": "Push token registered successfully"}
+    
+    except Exception as e:
+        logging.error(f"Error registering push token: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/push-token/preferences/{user_email}")
+async def get_notification_preferences(user_email: str):
+    """Ottiene le preferenze notifiche dell'utente"""
+    prefs = await db.notification_preferences.find_one({"user_email": user_email})
+    
+    if not prefs:
+        # Restituisci preferenze di default
+        return {
+            "enabled": True,
+            "lunch_time": "12:30",
+            "dinner_time": "19:30",
+            "evening_reminder": "21:00",
+            "weekly_report_day": 6,
+            "weekly_report_time": "20:00",
+            "max_daily_notifications": 4
+        }
+    
+    # Rimuovi _id prima di restituire
+    prefs.pop("_id", None)
+    prefs.pop("created_at", None)
+    return prefs
+
+@api_router.put("/push-token/preferences")
+async def update_notification_preferences(prefs: NotificationPreferences):
+    """Aggiorna le preferenze notifiche dell'utente"""
+    try:
+        await db.notification_preferences.update_one(
+            {"user_email": prefs.user_email},
+            {"$set": prefs.dict()},
+            upsert=True
+        )
+        return {"status": "success", "message": "Preferences updated"}
+    except Exception as e:
+        logging.error(f"Error updating preferences: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/push-token/send")
+async def send_push_notification(notification: SendNotificationRequest):
+    """Invia una notifica push a un utente specifico"""
+    try:
+        # Ottieni il push token dell'utente
+        token_doc = await db.push_tokens.find_one({"user_email": notification.user_email})
+        
+        if not token_doc:
+            raise HTTPException(status_code=404, detail="Push token not found for user")
+        
+        push_token = token_doc.get("push_token")
+        
+        # Verifica che le notifiche siano abilitate
+        prefs = await db.notification_preferences.find_one({"user_email": notification.user_email})
+        if prefs and not prefs.get("enabled", True):
+            return {"status": "skipped", "message": "Notifications disabled for user"}
+        
+        # Invia notifica tramite Expo Push API
+        import requests
+        
+        expo_push_url = "https://exp.host/--/api/v2/push/send"
+        message = {
+            "to": push_token,
+            "title": notification.title,
+            "body": notification.body,
+            "data": notification.data or {},
+            "sound": "default",
+            "priority": "high"
+        }
+        
+        response = requests.post(expo_push_url, json=message, headers={"Content-Type": "application/json"})
+        
+        if response.status_code == 200:
+            return {"status": "success", "message": "Notification sent", "response": response.json()}
+        else:
+            raise HTTPException(status_code=500, detail=f"Failed to send notification: {response.text}")
+    
+    except Exception as e:
+        logging.error(f"Error sending push notification: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include router
 app.include_router(api_router)
 
