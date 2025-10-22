@@ -784,22 +784,26 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
     except HTTPException:
         # Re-raise HTTP exceptions (from check_and_increment_usage, etc.)
         raise
-    except openai.RateLimitError:
-        raise HTTPException(
-            status_code=429, 
-            detail="Limite giornaliero raggiunto. Passa a Premium per analisi illimitate! 🌟"
-        )
-    except openai.AuthenticationError:
-        raise HTTPException(
-            status_code=500, 
-            detail="Errore di autenticazione AI. Contatta il supporto."
-        )
     except Exception as e:
+        error_str = str(e).lower()
         logging.error(f"Errore in analyze-photo: {str(e)}")
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Errore nell'analisi dell'immagine. Riprova con una foto più chiara. Dettagli: {str(e)[:100]}"
-        )
+        
+        # Gestione errori specifici
+        if "rate limit" in error_str or "429" in error_str:
+            raise HTTPException(
+                status_code=429, 
+                detail="Limite giornaliero raggiunto. Passa a Premium per analisi illimitate! 🌟"
+            )
+        elif "authentication" in error_str or "unauthorized" in error_str:
+            raise HTTPException(
+                status_code=500, 
+                detail="Errore di autenticazione AI. Contatta il supporto."
+            )
+        else:
+            raise HTTPException(
+                status_code=500, 
+                detail=f"Errore nell'analisi dell'immagine. Riprova con una foto più chiara."
+            )
 
 # Diario - Diary Entries
 @api_router.post("/diary", response_model=DiaryEntry)
