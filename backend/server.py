@@ -723,7 +723,7 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
         ]
         
         # Chiamata a GPT-4o Vision
-        chat_completion = openai.chat.completions.create(
+        chat_completion = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
             temperature=0.3,  # Temperatura bassa per risultati più consistenti
