@@ -697,11 +697,12 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
         image_content = ImageContent(image_base64=request.image_base64)
         
         # Crea chat con modello che supporta vision
+        # Uso gemini-2.0-flash che ha ottimo supporto vision ed è più economico
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"photo_{request.user_email}_{datetime.utcnow().timestamp()}",
             system_message=system_message
-        ).with_model("openai", "gpt-4o")
+        ).with_model("gemini", "gemini-2.0-flash")
         
         # Crea messaggio con immagine
         user_message = UserMessage(
