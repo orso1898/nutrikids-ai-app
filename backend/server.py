@@ -695,6 +695,17 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
         # Simula una risposta realistica del sistema GPT-4o Vision avanzato
         logging.info(f"Photo analysis requested for user: {request.user_email}")
         
+        # Basic validation for image format
+        if not request.image_base64 or len(request.image_base64) < 50:
+            raise ValueError("Invalid or too short base64 image data")
+        
+        # Check if it's valid base64 (basic check)
+        try:
+            import base64
+            base64.b64decode(request.image_base64, validate=True)
+        except Exception:
+            raise ValueError("Invalid base64 image format")
+        
         # Simula analisi avanzata basata su immagine
         response_text = """{
             "foods": ["Pasta al pomodoro (~120g)", "Salsa di pomodoro (~80g)", "Olio extravergine d'oliva (~15ml)", "Basilico fresco (~5g)", "Parmigiano grattugiato (~20g)"],
