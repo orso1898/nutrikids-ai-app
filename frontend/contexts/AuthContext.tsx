@@ -62,6 +62,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUserEmail(email);
       setIsAdmin(email === 'admin@nutrikids.com');
       setAuthToken(token || null);
+
+      // Registra per le notifiche push
+      registerForPushNotificationsAsync(email, language).catch(err => 
+        console.error('Failed to register push notifications:', err)
+      );
     } catch (error) {
       console.error('Error during login:', error);
       throw error;
