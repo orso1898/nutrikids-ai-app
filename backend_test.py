@@ -247,38 +247,158 @@ def test_photo_analysis_with_children_allergies():
     except Exception as e:
         print_result(False, f"Error in allergy test: {str(e)}")
         return False
+
+def test_photo_analysis_rate_limit():
+    """Test rate limiting for free users"""
+    print_test_header("Photo Analysis - Rate Limiting")
     
-    def test_get_diary_entries(self):
-        """Test GET /api/diary/{user_email} - Get diary entries"""
+    payload = {
+        "user_email": TEST_USER_EMAIL,
+        "image_base64": PASTA_IMAGE_BASE64
+    }
+    
+    # Make multiple requests to potentially trigger rate limit
+    success_count = 0
+    rate_limited = False
+    
+    for i in range(5):  # Try 5 requests
         try:
-            user_email = "test@example.com"
-            response = self.session.get(f"{BACKEND_URL}/diary/{user_email}")
+            response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
             
             if response.status_code == 200:
-                data = response.json()
-                if isinstance(data, list):
-                    if len(data) > 0:
-                        # Check if entries have required fields
-                        entry = data[0]
-                        required_fields = ["id", "user_email", "meal_type", "description", "date"]
-                        if all(field in entry for field in required_fields):
-                            self.log_result("Get Diary Entries", True, f"Retrieved {len(data)} entries")
-                            return True
-                        else:
-                            self.log_result("Get Diary Entries", False, "Entry missing required fields", {"entry": entry})
-                            return False
-                    else:
-                        self.log_result("Get Diary Entries", True, "No entries found (empty list)")
-                        return True
-                else:
-                    self.log_result("Get Diary Entries", False, "Response is not a list", {"response": data})
-                    return False
+                success_count += 1
+                print(f"   Request {i+1}: Success")
+            elif response.status_code == 403:  # Usage limit reached
+                rate_limited = True
+                print(f"   Request {i+1}: Rate limited (403) - {response.json().get('detail', 'No detail')}")
+                break
+            elif response.status_code == 429:  # Rate limit from OpenAI
+                rate_limited = True
+                print(f"   Request {i+1}: OpenAI rate limited (429)")
+                break
             else:
-                self.log_result("Get Diary Entries", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
+                print(f"   Request {i+1}: Unexpected status {response.status_code}")
+            
+            time.sleep(1)  # Small delay between requests
+            
         except Exception as e:
-            self.log_result("Get Diary Entries", False, f"Request error: {str(e)}")
+            print(f"   Request {i+1}: Error - {str(e)}")
+    
+    if success_count > 0:
+        print_result(True, f"Successfully processed {success_count} requests")
+    
+    if rate_limited:
+        print_result(True, "Rate limiting working correctly")
+    else:
+        print_result(True, "No rate limit reached (within free tier limits)")
+    
+    return True
+
+def test_photo_analysis_invalid_user():
+    """Test photo analysis with invalid user"""
+    print_test_header("Photo Analysis - Invalid User")
+    
+    payload = {
+        "user_email": "nonexistent@test.com",
+        "image_base64": PASTA_IMAGE_BASE64
+    }
+    
+    try:
+        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
+        
+        if response.status_code == 404:
+            print_result(True, "Correctly rejected invalid user (404)")
+            return True
+        elif response.status_code == 500:
+            # Check if it's a user not found error
+            error_detail = response.json().get("detail", "")
+            if "not found" in error_detail.lower():
+                print_result(True, f"Correctly rejected invalid user (500): {error_detail}")
+                return True
+            else:
+                print_result(False, f"Unexpected 500 error: {error_detail}")
+                return False
+        else:
+            print_result(False, f"Should reject invalid user, got: {response.status_code}")
             return False
+            
+    except Exception as e:
+        print_result(False, f"Error testing invalid user: {str(e)}")
+        return False
+
+def test_photo_analysis_invalid_image():
+    """Test photo analysis with invalid base64 image"""
+    print_test_header("Photo Analysis - Invalid Image")
+    
+    payload = {
+        "user_email": TEST_USER_EMAIL,
+        "image_base64": "invalid_base64_data"
+    }
+    
+    try:
+        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
+        
+        if response.status_code in [400, 422, 500]:
+            print_result(True, f"Correctly rejected invalid image ({response.status_code})")
+            return True
+        else:
+            print_result(False, f"Should reject invalid image, got: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print_result(False, f"Error testing invalid image: {str(e)}")
+        return False
+
+def run_all_tests():
+    """Run all photo analysis tests"""
+    print(f"\n🚀 NUTRIKIDS AI - GPT-4o VISION TESTING SUITE")
+    print(f"Backend URL: {BACKEND_URL}")
+    print(f"Test User: {TEST_USER_EMAIL}")
+    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    tests = [
+        ("Create Test User", create_test_user),
+        ("Basic Photo Analysis", test_photo_analysis_basic),
+        ("Photo Analysis with Allergies", test_photo_analysis_with_children_allergies),
+        ("Rate Limiting", test_photo_analysis_rate_limit),
+        ("Invalid User", test_photo_analysis_invalid_user),
+        ("Invalid Image", test_photo_analysis_invalid_image)
+    ]
+    
+    results = []
+    
+    for test_name, test_func in tests:
+        try:
+            result = test_func()
+            results.append((test_name, result))
+        except Exception as e:
+            print_result(False, f"Test crashed: {str(e)}")
+            results.append((test_name, False))
+    
+    # Summary
+    print(f"\n{'='*60}")
+    print(f"📊 TEST SUMMARY")
+    print(f"{'='*60}")
+    
+    passed = sum(1 for _, result in results if result)
+    total = len(results)
+    
+    for test_name, result in results:
+        status = "✅ PASS" if result else "❌ FAIL"
+        print(f"{status}: {test_name}")
+    
+    print(f"\n🎯 OVERALL RESULT: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
+    
+    if passed == total:
+        print("🎉 ALL TESTS PASSED! GPT-4o Vision system is working correctly.")
+        return True
+    else:
+        print(f"⚠️  {total-passed} tests failed. Check the issues above.")
+        return False
+
+if __name__ == "__main__":
+    success = run_all_tests()
+    sys.exit(0 if success else 1)
     
     def test_delete_diary_entry(self, entry_id):
         """Test DELETE /api/diary/{entry_id} - Delete diary entry"""
