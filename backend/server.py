@@ -423,6 +423,30 @@ class AppConfigUpdate(BaseModel):
     max_free_coach_messages_daily: Optional[int] = None
     max_free_children: Optional[int] = None
     max_premium_scans_daily: Optional[int] = None
+
+# Push Notification Models
+class PushTokenRequest(BaseModel):
+    user_email: EmailStr
+    push_token: str
+    device_type: str = "mobile"  # mobile, web, tablet
+    language: str = "it"  # it, en, es
+
+class NotificationPreferences(BaseModel):
+    user_email: EmailStr
+    enabled: bool = True
+    lunch_time: str = "12:30"  # HH:MM format
+    dinner_time: str = "19:30"
+    evening_reminder: str = "21:00"
+    weekly_report_day: int = 6  # 0=Monday, 6=Sunday
+    weekly_report_time: str = "20:00"
+    max_daily_notifications: int = 4
+
+class SendNotificationRequest(BaseModel):
+    user_email: EmailStr
+    title: str
+    body: str
+    data: Optional[Dict] = None
+
     max_premium_coach_messages_daily: Optional[int] = None
     max_premium_children: Optional[int] = None
 
