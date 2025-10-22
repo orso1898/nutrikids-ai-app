@@ -18,45 +18,41 @@ TEST_USER_EMAIL = "test@nutrikids.com"
 # Sample base64 image of pasta (small test image)
 PASTA_IMAGE_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
 
-class NutriKidsBackendTester:
-    def __init__(self):
-        self.session = requests.Session()
-        self.test_results = []
-        self.created_entries = []  # Track created entries for cleanup
-        self.created_children = []  # Track created children for cleanup
-        
-    def log_result(self, test_name, success, message, details=None):
-        """Log test result"""
-        result = {
-            "test": test_name,
-            "success": success,
-            "message": message,
-            "details": details or {}
-        }
-        self.test_results.append(result)
-        status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status} {test_name}: {message}")
-        if details and not success:
-            print(f"   Details: {details}")
+def print_test_header(test_name):
+    """Print formatted test header"""
+    print(f"\n{'='*60}")
+    print(f"🧪 TEST: {test_name}")
+    print(f"{'='*60}")
+
+def print_result(success, message):
+    """Print formatted test result"""
+    status = "✅ PASS" if success else "❌ FAIL"
+    print(f"{status}: {message}")
+
+def create_test_user():
+    """Create test user if not exists"""
+    print_test_header("Creating Test User")
     
-    def test_health_check(self):
-        """Test GET /api/ - Health check"""
-        try:
-            response = self.session.get(f"{BACKEND_URL}/")
-            if response.status_code == 200:
-                data = response.json()
-                if "message" in data and "NutriKids" in data["message"]:
-                    self.log_result("Health Check", True, "Backend is running correctly")
-                    return True
-                else:
-                    self.log_result("Health Check", False, "Unexpected response format", {"response": data})
-                    return False
-            else:
-                self.log_result("Health Check", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Health Check", False, f"Connection error: {str(e)}")
+    user_data = {
+        "email": TEST_USER_EMAIL,
+        "password": "testpass123",
+        "name": "Test User"
+    }
+    
+    try:
+        response = requests.post(f"{BACKEND_URL}/register", json=user_data, timeout=10)
+        if response.status_code == 201:
+            print_result(True, f"Test user created: {TEST_USER_EMAIL}")
+            return True
+        elif response.status_code == 400 and "already registered" in response.text:
+            print_result(True, f"Test user already exists: {TEST_USER_EMAIL}")
+            return True
+        else:
+            print_result(False, f"Failed to create user: {response.status_code} - {response.text}")
             return False
+    except Exception as e:
+        print_result(False, f"Error creating user: {str(e)}")
+        return False
     
     def test_coach_maya(self):
         """Test POST /api/coach-maya - AI chatbot"""
