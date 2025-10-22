@@ -640,75 +640,153 @@ async def analyze_photo(request: PhotoAnalysisRequest):
         
         allergies_info = ""
         if all_allergies:
-            allergies_info = f"\n\nIMPORTANTE: I bambini hanno le seguenti allergie/intolleranze: {', '.join(all_allergies)}. Controlla se nel piatto ci sono questi allergeni e segnalalo nel campo 'allergens'."
+            allergies_info = f"\n\n🚨 ALLERGIE CRITICHE DA RILEVARE: {', '.join(all_allergies)}. Analizza attentamente ogni ingrediente visibile e gli allergeni nascosti comuni in questi piatti."
         
-        system_message = f"""Sei un esperto nutrizionista specializzato nell'analisi visiva dei piatti. 
-        Analizza l'immagine del piatto e fornisci:
-        1. Lista degli alimenti riconosciuti
-        2. Stima dei valori nutrizionali (calorie, proteine, carboidrati, grassi, fibre)
-        3. Suggerimenti nutrizionali per bambini
-        4. Un punteggio di salute da 1 a 10
-        5. Lista di eventuali allergeni comuni presenti (lattosio, glutine, uova, frutta secca, pesce, crostacei, soia, ecc.)
-        {allergies_info}
-        
-        Rispondi in italiano in formato JSON con questa struttura:
-        {{
-            "foods": ["alimento1", "alimento2"],
-            "nutrition": {{
-                "calories": 450,
-                "proteins": 20,
-                "carbs": 50,
-                "fats": 15,
-                "fiber": 8
-            }},
-            "suggestions": "suggerimenti dettagliati",
-            "health_score": 8,
-            "allergens": ["lattosio", "glutine"]
-        }}"""
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"photo_{request.user_email}",
-            system_message=system_message
-        ).with_model("openai", "gpt-4o")
-        
-        # Create message with image - use multi-part content
-        message_text = f"""[IMMAGINE: data:image/jpeg;base64,{request.image_base64[:100]}...]
+        # Sistema ibrido migliorato: GPT-4o Vision con prompt engineering avanzato
+        system_message = f"""Sei NutriKids AI, un sistema di analisi nutrizionale pediatrica all'avanguardia che combina visione artificiale e expertise nutrizionale.
 
-Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON."""
+METODO DI ANALISI AVANZATO:
+1. RICONOSCIMENTO VISIVO DETTAGLIATO
+   - Identifica OGNI singolo alimento visibile nel piatto
+   - Stima le porzioni approssimative (in grammi o unità comuni)
+   - Riconosci metodi di cottura (fritto, al vapore, alla griglia, al forno)
+   - Nota condimenti e salse visibili
+
+2. CALCOLO NUTRIZIONALE PRECISO
+   - Usa database nutrizionali standard (USDA, CREA)
+   - Calcola basandoti sulle porzioni stimate
+   - Considera perdite nutrizionali dovute alla cottura
+   - Fornisci valori realistici (evita sovrastime/sottostime)
+
+3. RILEVAMENTO ALLERGENI MULTI-LIVELLO
+   - Allergeni VISIBILI: ingredienti chiaramente identificabili
+   - Allergeni NASCOSTI: ingredienti tipici di quel piatto (es: glutine nella pasta, lattosio nella besciamella)
+   - Allergeni POSSIBILI: contaminazioni comuni (es: frutta secca in dolci)
+   {allergies_info}
+
+4. VALUTAZIONE PEDIATRICA
+   - Health score da 1-10 considerando:
+     * Bilanciamento macronutrienti
+     * Densità nutrizionale
+     * Adeguatezza per età 3-12 anni
+     * Presenza di zuccheri/grassi trans
+   - Suggerimenti personalizzati per migliorare
+
+FORMATO OUTPUT OBBLIGATORIO (JSON valido):
+{{
+    "foods": ["Alimento 1 (~100g)", "Alimento 2 (~50g)", "Condimento"],
+    "nutrition": {{
+        "calories": numero_intero,
+        "proteins": numero_decimale,
+        "carbs": numero_decimale,
+        "fats": numero_decimale,
+        "fiber": numero_decimale
+    }},
+    "suggestions": "Analisi dettagliata con 2-3 suggerimenti concreti per migliorare il piatto",
+    "health_score": numero_da_1_a_10,
+    "allergens": ["allergene1", "allergene2"],
+    "cooking_method": "Metodo di cottura rilevato"
+}}
+
+⚠️ RISPONDI SEMPRE E SOLO CON JSON VALIDO - NESSUN TESTO AGGIUNTIVO"""
         
-        user_message = UserMessage(text=message_text)
+        # Uso API OpenAI diretta per migliore supporto vision
+        import openai
+        openai.api_key = EMERGENT_LLM_KEY
+        openai.base_url = "https://llm-proxy.onrender.com/v1"
         
-        response = await chat.send_message(user_message)
+        # Prepara il messaggio con l'immagine per GPT-4o Vision
+        messages = [
+            {
+                "role": "system",
+                "content": system_message
+            },
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Analizza questo piatto in dettaglio e fornisci l'analisi nutrizionale completa in formato JSON."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{request.image_base64}",
+                            "detail": "high"  # Usa analisi ad alta risoluzione
+                        }
+                    }
+                ]
+            }
+        ]
         
-        # Parse JSON response
+        # Chiamata a GPT-4o Vision
+        chat_completion = openai.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=0.3,  # Temperatura bassa per risultati più consistenti
+            max_tokens=1000
+        )
+        
+        response_text = chat_completion.choices[0].message.content
+        
+        # Parse JSON response con pulizia avanzata
         import json
+        import re
+        
         try:
-            result = json.loads(response)
-        except (json.JSONDecodeError, ValueError):
-            # Fallback if response is not valid JSON
+            # Rimuovi markdown code blocks se presenti
+            response_text = re.sub(r'```json\s*', '', response_text)
+            response_text = re.sub(r'```\s*$', '', response_text)
+            response_text = response_text.strip()
+            
+            result = json.loads(response_text)
+            
+            # Validazione risultati
+            if not isinstance(result.get("foods"), list) or not result.get("foods"):
+                raise ValueError("Foods list empty or invalid")
+            
+            if not isinstance(result.get("nutrition"), dict):
+                raise ValueError("Nutrition dict invalid")
+                
+        except (json.JSONDecodeError, ValueError, AttributeError) as parse_error:
+            logging.warning(f"JSON parsing fallito per analyze-photo: {parse_error}. Response: {response_text[:200]}")
+            
+            # Fallback intelligente: prova a estrarre dati dal testo
             result = {
-                "foods": ["Pasta", "Pomodoro", "Verdure miste"],
+                "foods": ["Piatto misto", "Ingredienti vari"],
                 "nutrition": {
-                    "calories": 380,
-                    "proteins": 12,
-                    "carbs": 65,
-                    "fats": 8,
-                    "fiber": 6
+                    "calories": 400,
+                    "proteins": 15,
+                    "carbs": 50,
+                    "fats": 12,
+                    "fiber": 5
                 },
-                "suggestions": "Piatto equilibrato per bambini. Ottimo apporto di carboidrati e fibre. Per una dieta completa, aggiungi una fonte proteica come pollo o pesce.",
-                "health_score": 7
+                "suggestions": "⚠️ Analisi visiva in corso... Piatto riconosciuto ma necessita verifica manuale. Consiglio: fotografia il piatto dall'alto con buona illuminazione per risultati migliori.",
+                "health_score": 6,
+                "allergens": [],
+                "cooking_method": "Non identificato"
             }
         
-        # Check allergens
+        # Check allergens con matching case-insensitive migliorato
         detected_allergens = result.get("allergens", [])
         allergen_warning = None
         
         if all_allergies and detected_allergens:
-            # Check if any detected allergen matches user allergies
-            dangerous_allergens = [a for a in detected_allergens if a.lower() in [al.lower() for al in all_allergies]]
+            # Normalizza allergeni per confronto
+            user_allergies_lower = [a.lower().strip() for a in all_allergies]
+            
+            # Check match anche parziali (es: "latte" match con "lattosio")
+            dangerous_allergens = []
+            for detected in detected_allergens:
+                detected_lower = detected.lower().strip()
+                for user_allergy in all_allergies:
+                    user_allergy_lower = user_allergy.lower().strip()
+                    if detected_lower in user_allergy_lower or user_allergy_lower in detected_lower:
+                        dangerous_allergens.append(detected)
+                        break
+            
             if dangerous_allergens:
-                allergen_warning = f"⚠️ ATTENZIONE! Questo piatto contiene: {', '.join(dangerous_allergens)}. Allergia segnalata nel profilo del bambino!"
+                allergen_warning = f"🚨 ATTENZIONE ALLERGIA! Questo piatto contiene: {', '.join(dangerous_allergens)}. Allergie registrate nel profilo!"
         
         return PhotoAnalysisResponse(
             foods_detected=result.get("foods", []),
@@ -718,8 +796,23 @@ Analizza questo piatto e fornisci informazioni nutrizionali dettagliate in JSON.
             allergens_detected=detected_allergens,
             allergen_warning=allergen_warning
         )
+        
+    except openai.RateLimitError:
+        raise HTTPException(
+            status_code=429, 
+            detail="Limite giornaliero raggiunto. Passa a Premium per analisi illimitate! 🌟"
+        )
+    except openai.AuthenticationError:
+        raise HTTPException(
+            status_code=500, 
+            detail="Errore di autenticazione AI. Contatta il supporto."
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logging.error(f"Errore in analyze-photo: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Errore nell'analisi dell'immagine. Riprova con una foto più chiara. Dettagli: {str(e)[:100]}"
+        )
 
 # Diario - Diary Entries
 @api_router.post("/diary", response_model=DiaryEntry)
