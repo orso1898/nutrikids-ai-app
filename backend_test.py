@@ -190,34 +190,63 @@ def test_photo_analysis_basic():
     except Exception as e:
         print_result(False, f"Unexpected error: {str(e)}")
         return False
+def test_photo_analysis_with_children_allergies():
+    """Test photo analysis with children allergies"""
+    print_test_header("Photo Analysis - With Children Allergies")
     
-    def test_create_diary_entry(self):
-        """Test POST /api/diary - Create diary entry"""
-        try:
-            payload = {
-                "user_email": "test@example.com",
-                "meal_type": "colazione",
-                "description": "Latte e cereali integrali con frutta fresca",
-                "date": "2025-01-15"
-            }
-            response = self.session.post(f"{BACKEND_URL}/diary", json=payload)
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ["id", "user_email", "meal_type", "description", "date", "timestamp"]
-                if all(field in data for field in required_fields):
-                    self.created_entries.append(data["id"])
-                    self.log_result("Create Diary Entry", True, f"Entry created with ID: {data['id']}")
-                    return data["id"]
-                else:
-                    self.log_result("Create Diary Entry", False, "Missing required fields", {"response": data})
-                    return None
+    # First create a child with allergies
+    child_data = {
+        "parent_email": TEST_USER_EMAIL,
+        "name": "Test Child",
+        "age": 5,
+        "allergies": ["glutine", "lattosio", "uova"]
+    }
+    
+    try:
+        # Create child
+        child_response = requests.post(f"{BACKEND_URL}/children", json=child_data, timeout=10)
+        if child_response.status_code == 200:
+            print_result(True, "Test child with allergies created")
+        else:
+            print_result(False, f"Failed to create child: {child_response.status_code}")
+            return False
+        
+        # Now test photo analysis
+        payload = {
+            "user_email": TEST_USER_EMAIL,
+            "image_base64": PASTA_IMAGE_BASE64
+        }
+        
+        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=15)
+        
+        if response.status_code != 200:
+            print_result(False, f"Photo analysis failed: {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Check if allergen warning is present when allergens detected
+        allergens = data.get("allergens_detected", [])
+        allergen_warning = data.get("allergen_warning")
+        
+        if allergens and any("glutine" in a.lower() or "gluten" in a.lower() for a in allergens):
+            if allergen_warning:
+                print_result(True, f"Allergen warning correctly generated: {allergen_warning}")
             else:
-                self.log_result("Create Diary Entry", False, f"HTTP {response.status_code}", {"response": response.text})
-                return None
-        except Exception as e:
-            self.log_result("Create Diary Entry", False, f"Request error: {str(e)}")
-            return None
+                print_result(False, "Allergen warning missing despite gluten detection")
+                return False
+        else:
+            print_result(True, "No critical allergens detected or warning appropriately absent")
+        
+        print(f"Detected allergens: {allergens}")
+        if allergen_warning:
+            print(f"Warning: {allergen_warning}")
+        
+        return True
+        
+    except Exception as e:
+        print_result(False, f"Error in allergy test: {str(e)}")
+        return False
     
     def test_get_diary_entries(self):
         """Test GET /api/diary/{user_email} - Get diary entries"""
