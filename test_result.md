@@ -355,11 +355,14 @@ test_plan:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: true
           agent: "testing"
           comment: "POST /api/analyze-photo endpoint working correctly with GPT-4o vision model. Successfully processes base64 images, returns structured nutritional analysis with foods detected, nutritional info, suggestions in Italian, and health score. Fallback mechanism works when JSON parsing fails."
+        - working: "NA"
+          agent: "main"
+          comment: "🚀 UPGRADE SISTEMA RICONOSCIMENTO: Implementato sistema GPT-4o Vision avanzato con: 1) Prompt engineering multi-livello (riconoscimento dettagliato + porzioni + metodi cottura), 2) Vision API diretta con immagini ad alta risoluzione (detail: high), 3) Rilevamento allergeni multi-livello (visibili + nascosti + possibili), 4) Validazione JSON robusta, 5) Fallback intelligente, 6) Error handling specifico (RateLimitError, AuthenticationError). Temperature 0.3 per consistenza. Necessita testing con immagini reali."
 
   - task: "Gamification Backend - Award Points Endpoint"
     implemented: true
