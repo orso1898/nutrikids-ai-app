@@ -501,6 +501,55 @@ async def register(user: UserRegister):
         
         await db.users.insert_one(user_doc)
         
+        # Se c'è un codice referral, processa l'invito
+        if user.referral_code:
+            try:
+                referrer = await db.referrals.find_one({"referral_code": user.referral_code.upper()})
+                
+                if referrer and referrer["user_email"] != user.email:
+                    # Aggiungi l'utente agli inviti completati
+                    await db.referrals.update_one(
+                        {"referral_code": user.referral_code.upper()},
+                        {
+                            "$inc": {"invites_count": 1},
+                            "$push": {"successful_invites": user.email}
+                        }
+                    )
+                    
+                    # Controlla se il referrer ha raggiunto 3 inviti
+                    updated_referrer = await db.referrals.find_one({"referral_code": user.referral_code.upper()})
+                    successful_count = len(updated_referrer.get("successful_invites", []))
+                    rewards_claimed = updated_referrer.get("rewards_claimed", 0)
+                    
+                    # Auto-assegna premio ogni 3 inviti
+                    if successful_count >= 3 and (successful_count // 3) > rewards_claimed:
+                        premium_start = datetime.utcnow()
+                        premium_end = premium_start + timedelta(days=30)
+                        
+                        await db.users.update_one(
+                            {"email": referrer["user_email"]},
+                            {
+                                "$set": {
+                                    "is_premium": True,
+                                    "premium_start_date": premium_start,
+                                    "premium_end_date": premium_end
+                                }
+                            }
+                        )
+                        
+                        await db.referrals.update_one(
+                            {"referral_code": user.referral_code.upper()},
+                            {
+                                "$inc": {"rewards_claimed": 1},
+                                "$set": {"last_reward_at": datetime.utcnow()}
+                            }
+                        )
+                        
+                        logging.info(f"Premium awarded to {referrer['user_email']} via referral from {user.email}")
+            except Exception as ref_error:
+                logging.error(f"Error processing referral: {str(ref_error)}")
+                # Non bloccare la registrazione se il referral fallisce
+        
         return UserResponse(
             email=user.email,
             name=user.name,
