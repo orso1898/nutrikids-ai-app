@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for NutriKids AI - GPT-4o Vision Photo Analysis
-Testing the upgraded /api/analyze-photo endpoint with advanced vision capabilities
+NutriKids AI Backend Testing Suite - MVP READY CHECK
+Comprehensive testing of all critical flows before launch
 """
 
 import requests
 import json
-import time
 import base64
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
+import uuid
 import sys
 
 # Configuration
-BACKEND_URL = "https://nutriplay-2.preview.emergentagent.com/api"
-TEST_USER_EMAIL = "premium@nutrikids.com"
+BASE_URL = "https://nutriplay-2.preview.emergentagent.com/api"
+TEST_USER_EMAIL = "test.parent@nutrikids.com"
+TEST_USER_PASSWORD = "testpass123"
+TEST_ADMIN_EMAIL = "admin@nutrikids.com"
+TEST_ADMIN_PASSWORD = "admin123"
 
 # Sample base64 image of pasta (small test image)
 PASTA_IMAGE_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
