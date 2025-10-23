@@ -13,7 +13,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "NutriKids AI ha bisogno di accedere alla fotocamera per scansionare le etichette alimentari.",
         "NSPhotoLibraryUsageDescription": "NutriKids AI ha bisogno di accedere alla galleria per selezionare le foto."
-      }
+      },
+      "bundleIdentifier": "com.nutrikids.ai"
     },
     "android": {
       "adaptiveIcon": {
