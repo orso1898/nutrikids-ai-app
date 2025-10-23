@@ -62,7 +62,7 @@ export default function InvitaAmiciScreen() {
   const copyCode = async () => {
     if (stats) {
       await Clipboard.setString(stats.referral_code);
-      Alert.alert('✅', t.referral.codeCopied);
+      Alert.alert('✅', t('referral.codeCopied'));
     }
   };
 
