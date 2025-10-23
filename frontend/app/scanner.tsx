@@ -629,6 +629,10 @@ const styles = StyleSheet.create({
     color: '#1e293b',
     lineHeight: 24,
   },
+  actionButtons: {
+    gap: 12,
+    marginTop: 8,
+  },
   saveButton: {
     flexDirection: 'row',
     backgroundColor: '#10b981',
@@ -638,9 +642,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    marginTop: 8,
   },
   saveButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  shareButton: {
+    flexDirection: 'row',
+    backgroundColor: '#3b82f6',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  shareButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
