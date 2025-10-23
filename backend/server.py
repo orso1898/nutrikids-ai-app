@@ -1265,8 +1265,11 @@ Formato richiesto:
 """
     
     try:
+        # Ottieni API key dal database admin
+        api_key = await get_api_key_from_config("emergent_llm_key")
+        
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=api_key,
             session_id=f"shopping_{user_email}_{week_start_date}",
             system_message="Sei un nutrizionista pediatrico esperto in alimentazione infantile (6 mesi - 10 anni). Crei liste della spesa con porzioni appropriate per bambini, considerando sicurezza alimentare e sviluppo."
         ).with_model("openai", "gpt-4o-mini")
