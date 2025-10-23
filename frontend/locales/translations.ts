@@ -581,6 +581,30 @@ export const translations = {
     error: 'Error',
     success: 'Success',
     confirm: 'Confirm'
+,
+
+    // Referral System
+    referral: {
+      title: 'Invite Friends',
+      subtitle: 'Invite 3 friends and get 1 month Premium FREE!',
+      yourCode: 'Your invite code',
+      copyCode: 'Copy Code',
+      codeCopied: 'Code copied!',
+      shareLink: 'Share Link',
+      howItWorks: 'How it works?',
+      step1: '1️⃣ Share your code with friends',
+      step2: '2️⃣ Friends sign up with your code',
+      step3: '3️⃣ After 3 friends sign up → 1 month Premium FREE!',
+      stats: 'Your stats',
+      totalInvites: 'Total invites',
+      successfulInvites: 'Completed invites',
+      pendingInvites: 'Pending',
+      rewardsEarned: 'Rewards earned',
+      nextReward: 'Next reward in',
+      invites: 'invites',
+      claimReward: 'Claim Reward!',
+      shareMessage: '🎉 Join NutriKids AI! Use my code {code} to start your nutrition journey! 🥗'
+    }
   },
 
   es: {
