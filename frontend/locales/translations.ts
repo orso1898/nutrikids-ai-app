@@ -280,6 +280,30 @@ export const translations = {
     error: 'Errore',
     success: 'Successo',
     confirm: 'Conferma'
+,
+
+    // Referral System
+    referral: {
+      title: 'Invita Amici',
+      subtitle: 'Invita 3 amici e ottieni 1 mese Premium GRATIS!',
+      yourCode: 'Il tuo codice invito',
+      copyCode: 'Copia Codice',
+      codeCopied: 'Codice copiato!',
+      shareLink: 'Condividi Link',
+      howItWorks: 'Come funziona?',
+      step1: '1️⃣ Condividi il tuo codice con gli amici',
+      step2: '2️⃣ Gli amici si registrano con il tuo codice',
+      step3: '3️⃣ Dopo 3 amici registrati → 1 mese Premium GRATIS!',
+      stats: 'Le tue statistiche',
+      totalInvites: 'Inviti totali',
+      successfulInvites: 'Inviti completati',
+      pendingInvites: 'In attesa',
+      rewardsEarned: 'Premi ottenuti',
+      nextReward: 'Prossimo premio tra',
+      invites: 'inviti',
+      claimReward: 'Rivendica Premio!',
+      shareMessage: '🎉 Unisciti a NutriKids AI! Usa il mio codice {code} per iniziare il tuo percorso nutrizionale! 🥗'
+    }
   },
 
   en: {
