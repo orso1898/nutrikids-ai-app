@@ -67,6 +67,13 @@ const cards: CardData[] = [
     gradient: ['#ec4899', '#db2777'],
     route: '/premium',
   },
+  {
+    id: '7',
+    titleKey: 'referral.title',
+    icon: 'gift',
+    gradient: ['#FFD700', '#FFA500'],
+    route: '/invita-amici',
+  },
 ];
 
 export default function Home() {
