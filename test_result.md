@@ -385,6 +385,66 @@ test_plan:
           agent: "testing"
           comment: "🎮 GAMIFICATION SYSTEM FULLY TESTED AND WORKING: All 7 test cases passed (100% success rate). ✅ Basic point assignment (10 points diary) working correctly. ✅ Scanner point assignment (5 points) with cumulative tracking working. ✅ Level up system functioning perfectly (100 points = 1 level, reached level 2 at 100 points, level 6 at 500 points, level 11 at 1000 points). ✅ Badge system working: first_century badge awarded at 100 points, level_5 badge at level 5, level_10 badge at level 10. ✅ All validation working: negative points rejected (422), zero points rejected (422), non-existent child returns 404. ✅ Response format correct with all required fields: child_id, points, level, level_up, new_badges. Sistema gamification completamente funzionale e pronto per produzione."
 
+  - task: "Password Recovery System"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSWORD RECOVERY SYSTEM TESTED: POST /api/forgot-password generates 6-digit reset code, POST /api/reset-password validates code and updates password. Full flow tested successfully with proper validation and security."
+
+  - task: "User Usage Limits System"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ USAGE LIMITS SYSTEM TESTED: GET /api/usage/{user_email} returns current usage status. Free users limited to 3 scans/day and 5 coach messages/day. Premium users have unlimited access. Limits properly enforced across photo analysis and coach maya endpoints."
+
+  - task: "Referral System Complete"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ REFERRAL SYSTEM TESTED: GET /api/referral/code/{email} generates unique referral codes. Registration with referral_code properly tracks invites. Auto-premium assignment after 3 successful invites working correctly."
+
+  - task: "Push Notification System"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PUSH NOTIFICATION SYSTEM TESTED: POST /api/push-token/register registers device tokens. GET/PUT /api/push-token/preferences manages notification settings. Scheduler active for meal reminders and weekly reports. All endpoints working correctly."
+
+  - task: "Coach Maya AI Chat System"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ COACH MAYA SYSTEM TESTED: POST /api/coach-maya provides AI nutrition advice in Italian. Usage limits properly enforced (5 messages/day for free users, unlimited for premium). Multi-language support (it, en, es). Fixed ChatMessage model to include user_email field."
+
 frontend:
   - task: "Gamification UI - Profilo Visualization"
     implemented: true
