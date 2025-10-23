@@ -1641,6 +1641,196 @@ async def send_push_notification(notification: SendNotificationRequest):
         logging.error(f"Error sending push notification: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+
+# ===== REFERRAL SYSTEM ENDPOINTS =====
+
+def generate_referral_code(email: str) -> str:
+    """Genera un codice referral unico basato sull'email"""
+    import hashlib
+    hash_obj = hashlib.md5(email.encode())
+    return hash_obj.hexdigest()[:8].upper()
+
+@api_router.get("/referral/code/{user_email}")
+async def get_referral_code(user_email: str):
+    """Ottiene o crea il codice referral dell'utente"""
+    try:
+        # Verifica che l'utente esista
+        user = await db.users.find_one({"email": user_email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Controlla se ha già un codice referral
+        referral = await db.referrals.find_one({"user_email": user_email})
+        
+        if not referral:
+            # Crea nuovo codice referral
+            code = generate_referral_code(user_email)
+            referral = {
+                "user_email": user_email,
+                "referral_code": code,
+                "invites_count": 0,
+                "successful_invites": [],
+                "rewards_claimed": 0,
+                "created_at": datetime.utcnow(),
+                "last_reward_at": None
+            }
+            await db.referrals.insert_one(referral)
+        
+        # Calcola statistiche
+        successful_count = len(referral.get("successful_invites", []))
+        pending_count = referral.get("invites_count", 0) - successful_count
+        next_reward_at = 3 - (successful_count % 3)
+        can_claim = successful_count >= 3 and (successful_count // 3) > referral.get("rewards_claimed", 0)
+        
+        return {
+            "referral_code": referral["referral_code"],
+            "invites_count": referral.get("invites_count", 0),
+            "successful_invites": successful_count,
+            "pending_invites": pending_count,
+            "next_reward_at": next_reward_at,
+            "total_rewards": referral.get("rewards_claimed", 0),
+            "can_claim_reward": can_claim,
+            "share_link": f"https://nutrikids.ai/register?ref={referral['referral_code']}"
+        }
+    
+    except Exception as e:
+        logging.error(f"Error getting referral code: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/referral/register")
+async def register_with_referral(user_email: EmailStr, referral_code: str):
+    """Registra un nuovo utente con codice referral"""
+    try:
+        # Trova il referral del referrer
+        referrer = await db.referrals.find_one({"referral_code": referral_code.upper()})
+        
+        if not referrer:
+            return {"status": "error", "message": "Invalid referral code"}
+        
+        referrer_email = referrer["user_email"]
+        
+        # Verifica che l'utente non stia usando il proprio codice
+        if referrer_email == user_email:
+            return {"status": "error", "message": "Cannot use your own referral code"}
+        
+        # Verifica che questo utente non sia già stato invitato
+        if user_email in referrer.get("successful_invites", []):
+            return {"status": "error", "message": "Already registered with this code"}
+        
+        # Incrementa il contatore e aggiungi alla lista
+        await db.referrals.update_one(
+            {"referral_code": referral_code.upper()},
+            {
+                "$inc": {"invites_count": 1},
+                "$push": {"successful_invites": user_email}
+            }
+        )
+        
+        # Controlla se il referrer ha raggiunto 3 inviti
+        updated_referrer = await db.referrals.find_one({"referral_code": referral_code.upper()})
+        successful_count = len(updated_referrer.get("successful_invites", []))
+        rewards_claimed = updated_referrer.get("rewards_claimed", 0)
+        
+        # Se ha completato 3 inviti e non ha ancora rivendicato il premio
+        if successful_count >= 3 and (successful_count // 3) > rewards_claimed:
+            # Auto-assegna 1 mese Premium
+            premium_start = datetime.utcnow()
+            premium_end = premium_start + timedelta(days=30)
+            
+            await db.users.update_one(
+                {"email": referrer_email},
+                {
+                    "$set": {
+                        "is_premium": True,
+                        "premium_start_date": premium_start,
+                        "premium_end_date": premium_end
+                    }
+                }
+            )
+            
+            # Aggiorna rewards_claimed
+            await db.referrals.update_one(
+                {"referral_code": referral_code.upper()},
+                {
+                    "$inc": {"rewards_claimed": 1},
+                    "$set": {"last_reward_at": datetime.utcnow()}
+                }
+            )
+            
+            return {
+                "status": "success",
+                "message": "Referral registered successfully",
+                "reward_granted": True,
+                "referrer_email": referrer_email
+            }
+        
+        return {
+            "status": "success",
+            "message": "Referral registered successfully",
+            "reward_granted": False
+        }
+    
+    except Exception as e:
+        logging.error(f"Error registering referral: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/referral/claim-reward/{user_email}")
+async def claim_referral_reward(user_email: str):
+    """Rivendica il premio referral (1 mese Premium gratis)"""
+    try:
+        # Trova il referral dell'utente
+        referral = await db.referrals.find_one({"user_email": user_email})
+        
+        if not referral:
+            raise HTTPException(status_code=404, detail="No referral data found")
+        
+        successful_count = len(referral.get("successful_invites", []))
+        rewards_claimed = referral.get("rewards_claimed", 0)
+        
+        # Verifica che ci siano premi da rivendicare
+        available_rewards = (successful_count // 3) - rewards_claimed
+        
+        if available_rewards <= 0:
+            return {
+                "status": "error",
+                "message": "No rewards available. Invite more friends!"
+            }
+        
+        # Assegna 1 mese Premium
+        premium_start = datetime.utcnow()
+        premium_end = premium_start + timedelta(days=30)
+        
+        await db.users.update_one(
+            {"email": user_email},
+            {
+                "$set": {
+                    "is_premium": True,
+                    "premium_start_date": premium_start,
+                    "premium_end_date": premium_end
+                }
+            }
+        )
+        
+        # Aggiorna rewards_claimed
+        await db.referrals.update_one(
+            {"user_email": user_email},
+            {
+                "$inc": {"rewards_claimed": 1},
+                "$set": {"last_reward_at": datetime.utcnow()}
+            }
+        )
+        
+        return {
+            "status": "success",
+            "message": "Premium activated for 30 days!",
+            "premium_end_date": premium_end.isoformat()
+        }
+    
+    except Exception as e:
+        logging.error(f"Error claiming reward: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include router
 app.include_router(api_router)
 
