@@ -61,8 +61,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAdmin(email === 'admin@nutrikids.com');
       setAuthToken(token || null);
 
-      // Registra per le notifiche push
-      registerForPushNotificationsAsync(email, language).catch(err => 
+      // Registra per le notifiche push - ottieni la lingua da AsyncStorage
+      const savedLanguage = await AsyncStorage.getItem('language') || 'it';
+      registerForPushNotificationsAsync(email, savedLanguage).catch(err => 
         console.error('Failed to register push notifications:', err)
       );
     } catch (error) {
