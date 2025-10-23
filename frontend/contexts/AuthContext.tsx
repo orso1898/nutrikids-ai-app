@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { registerForPushNotificationsAsync, setupNotificationListeners, removeNotificationListeners } from '../utils/pushNotifications';
+import { registerForPushNotificationsAsync } from '../utils/pushNotifications';
 
 interface AuthContextType {
   isAuthenticated: boolean;
