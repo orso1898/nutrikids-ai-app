@@ -26,7 +26,26 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # LLM Key
-EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')  # Fallback per sviluppo
+
+# Helper per ottenere API keys dal database admin
+async def get_api_key_from_config(key_name: str = "emergent_llm_key") -> str:
+    """Ottiene API key dal database config admin"""
+    config = await db.app_config.find_one({"id": "app_config"})
+    
+    if not config:
+        # Fallback to environment variable if config not found
+        if key_name == "emergent_llm_key":
+            return EMERGENT_LLM_KEY
+        return ""
+    
+    key_value = config.get(key_name)
+    
+    # Se la chiave non è nel database, usa variabile d'ambiente come fallback
+    if not key_value and key_name == "emergent_llm_key":
+        return EMERGENT_LLM_KEY
+    
+    return key_value or ""
 
 # Stripe Key
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
