@@ -68,7 +68,7 @@ export default function InvitaAmiciScreen() {
 
   const shareReferral = async () => {
     if (stats) {
-      const message = t.referral.shareMessage.replace('{code}', stats.referral_code);
+      const message = t('referral.shareMessage').replace('{code}', stats.referral_code);
       try {
         await Share.share({
           message: message + `\n\n${stats.share_link}`,
