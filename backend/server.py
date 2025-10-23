@@ -447,6 +447,26 @@ class SendNotificationRequest(BaseModel):
     body: str
     data: Optional[Dict] = None
 
+# Referral System Models
+class ReferralCode(BaseModel):
+    user_email: EmailStr
+    referral_code: str
+    invites_count: int = 0
+    successful_invites: List[str] = []  # Lista email degli invitati
+    rewards_claimed: int = 0
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    last_reward_at: Optional[datetime] = None
+
+class ReferralStats(BaseModel):
+    referral_code: str
+    invites_count: int
+    successful_invites: int
+    pending_invites: int
+    next_reward_at: int  # Numero di inviti per prossimo premio
+    total_rewards: int
+    can_claim_reward: bool
+
+
     max_premium_coach_messages_daily: Optional[int] = None
     max_premium_children: Optional[int] = None
 
