@@ -435,6 +435,36 @@ class NutriKidsBackendTester:
                 "lunch": "Riso con verdure",
                 "dinner": "Pesce al vapore",
                 "snack": "Yogurt"
+            },
+            "wednesday": {
+                "breakfast": "Pancake",
+                "lunch": "Insalata",
+                "dinner": "Carne",
+                "snack": "Frutta"
+            },
+            "thursday": {
+                "breakfast": "Yogurt",
+                "lunch": "Zuppa",
+                "dinner": "Tacchino",
+                "snack": "Smoothie"
+            },
+            "friday": {
+                "breakfast": "Avocado toast",
+                "lunch": "Pasta integrale",
+                "dinner": "Pesce bianco",
+                "snack": "Frutta"
+            },
+            "saturday": {
+                "breakfast": "Uova",
+                "lunch": "Quinoa",
+                "dinner": "Pollo",
+                "snack": "Yogurt"
+            },
+            "sunday": {
+                "breakfast": "French toast",
+                "lunch": "Minestrone",
+                "dinner": "Pesce",
+                "snack": "Frutta"
             }
         }
         
