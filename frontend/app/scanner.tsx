@@ -380,10 +380,15 @@ export default function Scanner() {
                     <Text style={styles.suggestionsText}>{result.suggestions}</Text>
                   </Animated.View>
 
-                  <Animated.View entering={FadeInUp.delay(700).springify()}>
+                  <Animated.View entering={FadeInUp.delay(700).springify()} style={styles.actionButtons}>
                     <TouchableOpacity style={styles.saveButton} onPress={saveToDiario}>
                       <Ionicons name="bookmark" size={20} color="#fff" />
                       <Text style={styles.saveButtonText}>Salva nel Diario</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.shareButton} onPress={shareResult}>
+                      <Ionicons name="share-social" size={20} color="#fff" />
+                      <Text style={styles.shareButtonText}>{t('scanner.shareButton')}</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 </Animated.View>
