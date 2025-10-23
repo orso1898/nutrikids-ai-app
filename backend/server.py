@@ -814,10 +814,13 @@ FORMATO OUTPUT OBBLIGATORIO (JSON valido):
         # Prepara l'immagine per l'analisi
         image_content = ImageContent(image_base64=request.image_base64)
         
+        # Ottieni API key dal database admin
+        api_key = await get_api_key_from_config("emergent_llm_key")
+        
         # Crea chat con modello che supporta vision
         # Uso gemini-2.0-flash che ha ottimo supporto vision ed è più economico
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=api_key,
             session_id=f"photo_{request.user_email}_{datetime.utcnow().timestamp()}",
             system_message=system_message
         ).with_model("gemini", "gemini-2.0-flash")
