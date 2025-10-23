@@ -749,7 +749,10 @@ export const translations = {
       fats: 'Grasas',
       fiber: 'Fibra',
       suggestions: 'Sugerencias',
-      healthScore: 'Puntuación de Salud'
+      healthScore: 'Puntuación de Salud',
+      shareButton: 'Compartir Resultado',
+      shareTitle: '¡Mira mi comida saludable!',
+      shareMessage: '🍽️ ¡Escaneé un plato con NutriKids AI!\n\n✅ Alimentos: {foods}\n⭐ Puntuación de Salud: {score}/10\n🔥 Calorías: {calories} kcal\n\n#NutriKidsAI #ComerSano #Nutrición'
     },
 
     // Coach Maya
