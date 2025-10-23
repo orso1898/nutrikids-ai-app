@@ -445,7 +445,10 @@ export const translations = {
       fats: 'Fats',
       fiber: 'Fiber',
       suggestions: 'Suggestions',
-      healthScore: 'Health Score'
+      healthScore: 'Health Score',
+      shareButton: 'Share Result',
+      shareTitle: 'Check out my healthy meal!',
+      shareMessage: '🍽️ I scanned a dish with NutriKids AI!\n\n✅ Foods: {foods}\n⭐ Health Score: {score}/10\n🔥 Calories: {calories} kcal\n\n#NutriKidsAI #HealthyEating #Nutrition'
     },
 
     // Coach Maya
