@@ -163,6 +163,27 @@ export default function Scanner() {
     }
   };
 
+  const shareResult = async () => {
+    if (!result) return;
+
+    try {
+      // Prepara il messaggio condivisibile
+      const foods = result.foods_detected.slice(0, 3).join(', ');
+      const message = t('scanner.shareMessage')
+        .replace('{foods}', foods)
+        .replace('{score}', result.health_score.toString())
+        .replace('{calories}', result.nutritional_info.calories.toString());
+
+      await Share.share({
+        message: message,
+        title: t('scanner.shareTitle'),
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
+
   const reset = () => {
     setPhotoUri(null);
     setPhotoBase64(null);
