@@ -19,1328 +19,599 @@ TEST_USER_PASSWORD = "testpass123"
 TEST_ADMIN_EMAIL = "admin@nutrikids.com"
 TEST_ADMIN_PASSWORD = "admin123"
 
-# Sample base64 image of pasta (small test image)
-PASTA_IMAGE_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-
-def print_test_header(test_name):
-    """Print formatted test header"""
-    print(f"\n{'='*60}")
-    print(f"🧪 TEST: {test_name}")
-    print(f"{'='*60}")
-
-def print_result(success, message):
-    """Print formatted test result"""
-    status = "✅ PASS" if success else "❌ FAIL"
-    print(f"{status}: {message}")
-
-def create_test_user():
-    """Create test user if not exists"""
-    print_test_header("Creating Test User")
-    
-    user_data = {
-        "email": TEST_USER_EMAIL,
-        "password": "testpass123",
-        "name": "Test User"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/register", json=user_data, timeout=10)
-        if response.status_code == 201:
-            print_result(True, f"Test user created: {TEST_USER_EMAIL}")
-            return True
-        elif response.status_code == 400 and "already registered" in response.text:
-            print_result(True, f"Test user already exists: {TEST_USER_EMAIL}")
-            return True
-        else:
-            print_result(False, f"Failed to create user: {response.status_code} - {response.text}")
-            return False
-    except Exception as e:
-        print_result(False, f"Error creating user: {str(e)}")
-        return False
-def test_photo_analysis_basic():
-    """Test basic photo analysis functionality"""
-    print_test_header("Photo Analysis - Basic Functionality")
-    
-    payload = {
-        "user_email": TEST_USER_EMAIL,
-        "image_base64": PASTA_IMAGE_BASE64
-    }
-    
-    try:
-        start_time = time.time()
-        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=15)
-        end_time = time.time()
-        response_time = end_time - start_time
+class NutriKidsBackendTester:
+    def __init__(self):
+        self.session = requests.Session()
+        self.user_token = None
+        self.admin_token = None
+        self.test_child_id = None
+        self.test_diary_id = None
+        self.referral_code = None
+        self.checkout_session_id = None
         
-        print(f"⏱️ Response time: {response_time:.2f} seconds")
-        
-        # Check response time
-        if response_time > 10:
-            print_result(False, f"Response time too slow: {response_time:.2f}s > 10s")
-            return False
-        else:
-            print_result(True, f"Response time acceptable: {response_time:.2f}s < 10s")
-        
-        # Check status code
-        if response.status_code != 200:
-            print_result(False, f"Wrong status code: {response.status_code}")
-            print(f"Response: {response.text}")
-            return False
-        
-        print_result(True, "Status code 200 OK")
-        
-        # Parse JSON response
-        try:
-            data = response.json()
-        except json.JSONDecodeError as e:
-            print_result(False, f"Invalid JSON response: {e}")
-            return False
-        
-        print_result(True, "Valid JSON response")
-        
-        # Check required fields
-        required_fields = [
-            "foods_detected", 
-            "nutritional_info", 
-            "suggestions", 
-            "health_score", 
-            "allergens_detected"
-        ]
-        
-        missing_fields = []
-        for field in required_fields:
-            if field not in data:
-                missing_fields.append(field)
-        
-        if missing_fields:
-            print_result(False, f"Missing required fields: {missing_fields}")
-            return False
-        
-        print_result(True, "All required fields present")
-        
-        # Check foods_detected
-        foods = data.get("foods_detected", [])
-        if not isinstance(foods, list) or len(foods) == 0:
-            print_result(False, f"foods_detected should be non-empty list, got: {foods}")
-            return False
-        
-        print_result(True, f"foods_detected valid: {len(foods)} items detected")
-        print(f"   Foods: {foods}")
-        
-        # Check nutritional_info
-        nutrition = data.get("nutritional_info", {})
-        if not isinstance(nutrition, dict):
-            print_result(False, f"nutritional_info should be dict, got: {type(nutrition)}")
-            return False
-        
-        nutrition_fields = ["calories", "proteins", "carbs", "fats", "fiber"]
-        for field in nutrition_fields:
-            if field not in nutrition:
-                print_result(False, f"Missing nutrition field: {field}")
-                return False
-            
-            value = nutrition[field]
-            if not isinstance(value, (int, float)) or value < 0:
-                print_result(False, f"Invalid {field} value: {value} (should be positive number)")
-                return False
-        
-        print_result(True, f"nutritional_info valid: {nutrition}")
-        
-        # Check health_score
-        health_score = data.get("health_score")
-        if not isinstance(health_score, int) or health_score < 1 or health_score > 10:
-            print_result(False, f"health_score should be 1-10, got: {health_score}")
-            return False
-        
-        print_result(True, f"health_score valid: {health_score}/10")
-        
-        # Check suggestions
-        suggestions = data.get("suggestions", "")
-        if not isinstance(suggestions, str) or len(suggestions.strip()) == 0:
-            print_result(False, f"suggestions should be non-empty string")
-            return False
-        
-        print_result(True, f"suggestions valid: {len(suggestions)} characters")
-        
-        # Check allergens_detected
-        allergens = data.get("allergens_detected", [])
-        if not isinstance(allergens, list):
-            print_result(False, f"allergens_detected should be list, got: {type(allergens)}")
-            return False
-        
-        print_result(True, f"allergens_detected valid: {len(allergens)} allergens")
-        
-        # Check for new cooking_method field (if present)
-        if "cooking_method" in data:
-            cooking_method = data["cooking_method"]
-            if isinstance(cooking_method, str):
-                print_result(True, f"cooking_method field present: {cooking_method}")
-            else:
-                print_result(False, f"cooking_method should be string, got: {type(cooking_method)}")
-        else:
-            print("ℹ️  cooking_method field not present (optional)")
-        
-        print(f"\n📊 Full Response:")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        
-        return True
-        
-    except requests.exceptions.Timeout:
-        print_result(False, "Request timeout (>15s)")
-        return False
-    except requests.exceptions.RequestException as e:
-        print_result(False, f"Request error: {str(e)}")
-        return False
-    except Exception as e:
-        print_result(False, f"Unexpected error: {str(e)}")
-        return False
-def test_photo_analysis_with_children_allergies():
-    """Test photo analysis with children allergies"""
-    print_test_header("Photo Analysis - With Children Allergies")
-    
-    # First create a child with allergies
-    child_data = {
-        "parent_email": TEST_USER_EMAIL,
-        "name": "Test Child",
-        "age": 5,
-        "allergies": ["glutine", "lattosio", "uova"]
-    }
-    
-    try:
-        # Create child
-        child_response = requests.post(f"{BACKEND_URL}/children", json=child_data, timeout=10)
-        if child_response.status_code == 200:
-            print_result(True, "Test child with allergies created")
-        else:
-            print_result(False, f"Failed to create child: {child_response.status_code}")
-            return False
-        
-        # Now test photo analysis
-        payload = {
-            "user_email": TEST_USER_EMAIL,
-            "image_base64": PASTA_IMAGE_BASE64
+        # Test results tracking
+        self.results = {
+            "total_tests": 0,
+            "passed": 0,
+            "failed": 0,
+            "errors": []
         }
-        
-        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=15)
-        
-        if response.status_code != 200:
-            print_result(False, f"Photo analysis failed: {response.status_code}")
-            return False
-        
-        data = response.json()
-        
-        # Check if allergen warning is present when allergens detected
-        allergens = data.get("allergens_detected", [])
-        allergen_warning = data.get("allergen_warning")
-        
-        if allergens and any("glutine" in a.lower() or "gluten" in a.lower() for a in allergens):
-            if allergen_warning:
-                print_result(True, f"Allergen warning correctly generated: {allergen_warning}")
-            else:
-                print_result(False, "Allergen warning missing despite gluten detection")
-                return False
+    
+    def log_test(self, test_name, success, details=""):
+        """Log test result"""
+        self.results["total_tests"] += 1
+        if success:
+            self.results["passed"] += 1
+            print(f"✅ {test_name}")
         else:
-            print_result(True, "No critical allergens detected or warning appropriately absent")
+            self.results["failed"] += 1
+            self.results["errors"].append(f"{test_name}: {details}")
+            print(f"❌ {test_name}: {details}")
+    
+    def make_request(self, method, endpoint, data=None, headers=None, expected_status=200):
+        """Make HTTP request with error handling"""
+        url = f"{BASE_URL}{endpoint}"
         
-        print(f"Detected allergens: {allergens}")
-        if allergen_warning:
-            print(f"Warning: {allergen_warning}")
-        
-        return True
-        
-    except Exception as e:
-        print_result(False, f"Error in allergy test: {str(e)}")
-        return False
-
-def test_photo_analysis_rate_limit():
-    """Test rate limiting for free users"""
-    print_test_header("Photo Analysis - Rate Limiting")
-    
-    payload = {
-        "user_email": TEST_USER_EMAIL,
-        "image_base64": PASTA_IMAGE_BASE64
-    }
-    
-    # Make multiple requests to potentially trigger rate limit
-    success_count = 0
-    rate_limited = False
-    
-    for i in range(5):  # Try 5 requests
         try:
-            response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
+            if method.upper() == "GET":
+                response = self.session.get(url, headers=headers)
+            elif method.upper() == "POST":
+                response = self.session.post(url, json=data, headers=headers)
+            elif method.upper() == "PUT":
+                response = self.session.put(url, json=data, headers=headers)
+            elif method.upper() == "DELETE":
+                response = self.session.delete(url, headers=headers)
             
-            if response.status_code == 200:
-                success_count += 1
-                print(f"   Request {i+1}: Success")
-            elif response.status_code == 403:  # Usage limit reached
-                rate_limited = True
-                print(f"   Request {i+1}: Rate limited (403) - {response.json().get('detail', 'No detail')}")
-                break
-            elif response.status_code == 429:  # Rate limit from OpenAI
-                rate_limited = True
-                print(f"   Request {i+1}: OpenAI rate limited (429)")
-                break
+            if response.status_code == expected_status:
+                try:
+                    return True, response.json()
+                except:
+                    return True, response.text
             else:
-                print(f"   Request {i+1}: Unexpected status {response.status_code}")
-            
-            time.sleep(1)  # Small delay between requests
-            
-        except Exception as e:
-            print(f"   Request {i+1}: Error - {str(e)}")
-    
-    if success_count > 0:
-        print_result(True, f"Successfully processed {success_count} requests")
-    
-    if rate_limited:
-        print_result(True, "Rate limiting working correctly")
-    else:
-        print_result(True, "No rate limit reached (within free tier limits)")
-    
-    return True
-
-def test_photo_analysis_invalid_user():
-    """Test photo analysis with invalid user"""
-    print_test_header("Photo Analysis - Invalid User")
-    
-    payload = {
-        "user_email": "nonexistent@test.com",
-        "image_base64": PASTA_IMAGE_BASE64
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
-        
-        if response.status_code == 404:
-            print_result(True, "Correctly rejected invalid user (404)")
-            return True
-        elif response.status_code == 500:
-            # Check if it's a user not found error
-            error_detail = response.json().get("detail", "")
-            if "not found" in error_detail.lower():
-                print_result(True, f"Correctly rejected invalid user (500): {error_detail}")
-                return True
-            else:
-                print_result(False, f"Unexpected 500 error: {error_detail}")
-                return False
-        else:
-            print_result(False, f"Should reject invalid user, got: {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print_result(False, f"Error testing invalid user: {str(e)}")
-        return False
-
-def test_photo_analysis_invalid_image():
-    """Test photo analysis with invalid base64 image"""
-    print_test_header("Photo Analysis - Invalid Image")
-    
-    payload = {
-        "user_email": TEST_USER_EMAIL,
-        "image_base64": "invalid_base64_data"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/analyze-photo", json=payload, timeout=10)
-        
-        if response.status_code in [400, 422, 500]:
-            print_result(True, f"Correctly rejected invalid image ({response.status_code})")
-            return True
-        else:
-            print_result(False, f"Should reject invalid image, got: {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print_result(False, f"Error testing invalid image: {str(e)}")
-        return False
-
-def run_all_tests():
-    """Run all photo analysis tests"""
-    print(f"\n🚀 NUTRIKIDS AI - GPT-4o VISION TESTING SUITE")
-    print(f"Backend URL: {BACKEND_URL}")
-    print(f"Test User: {TEST_USER_EMAIL}")
-    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    tests = [
-        ("Create Test User", create_test_user),
-        ("Basic Photo Analysis", test_photo_analysis_basic),
-        ("Photo Analysis with Allergies", test_photo_analysis_with_children_allergies),
-        ("Rate Limiting", test_photo_analysis_rate_limit),
-        ("Invalid User", test_photo_analysis_invalid_user),
-        ("Invalid Image", test_photo_analysis_invalid_image)
-    ]
-    
-    results = []
-    
-    for test_name, test_func in tests:
-        try:
-            result = test_func()
-            results.append((test_name, result))
-        except Exception as e:
-            print_result(False, f"Test crashed: {str(e)}")
-            results.append((test_name, False))
-    
-    # Summary
-    print(f"\n{'='*60}")
-    print(f"📊 TEST SUMMARY")
-    print(f"{'='*60}")
-    
-    passed = sum(1 for _, result in results if result)
-    total = len(results)
-    
-    for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status}: {test_name}")
-    
-    print(f"\n🎯 OVERALL RESULT: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
-    
-    if passed == total:
-        print("🎉 ALL TESTS PASSED! GPT-4o Vision system is working correctly.")
-        return True
-    else:
-        print(f"⚠️  {total-passed} tests failed. Check the issues above.")
-        return False
-
-if __name__ == "__main__":
-    success = run_all_tests()
-    sys.exit(0 if success else 1)
-    
-    def test_delete_diary_entry(self, entry_id):
-        """Test DELETE /api/diary/{entry_id} - Delete diary entry"""
-        if not entry_id:
-            self.log_result("Delete Diary Entry", False, "No entry ID provided for deletion")
-            return False
-            
-        try:
-            response = self.session.delete(f"{BACKEND_URL}/diary/{entry_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "message" in data and "deleted" in data["message"].lower():
-                    self.log_result("Delete Diary Entry", True, f"Entry {entry_id} deleted successfully")
-                    return True
-                else:
-                    self.log_result("Delete Diary Entry", False, "Unexpected response format", {"response": data})
-                    return False
-            elif response.status_code == 404:
-                self.log_result("Delete Diary Entry", True, "Entry not found (404) - expected behavior")
-                return True
-            else:
-                self.log_result("Delete Diary Entry", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Delete Diary Entry", False, f"Request error: {str(e)}")
-            return False
-    
-    def test_create_child(self):
-        """Test POST /api/children - Add child"""
-        try:
-            payload = {
-                "parent_email": "test@example.com",
-                "name": "Marco",
-                "age": 5
-            }
-            response = self.session.post(f"{BACKEND_URL}/children", json=payload)
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ["id", "parent_email", "name", "age", "timestamp"]
-                if all(field in data for field in required_fields):
-                    self.created_children.append(data["id"])
-                    self.log_result("Create Child", True, f"Child created with ID: {data['id']}")
-                    return data["id"]
-                else:
-                    self.log_result("Create Child", False, "Missing required fields", {"response": data})
-                    return None
-            else:
-                self.log_result("Create Child", False, f"HTTP {response.status_code}", {"response": response.text})
-                return None
-        except Exception as e:
-            self.log_result("Create Child", False, f"Request error: {str(e)}")
-            return None
-    
-    def test_get_children(self):
-        """Test GET /api/children/{parent_email} - Get children list"""
-        try:
-            parent_email = "test@example.com"
-            response = self.session.get(f"{BACKEND_URL}/children/{parent_email}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if isinstance(data, list):
-                    if len(data) > 0:
-                        # Check if children have required fields
-                        child = data[0]
-                        required_fields = ["id", "parent_email", "name", "age"]
-                        if all(field in child for field in required_fields):
-                            self.log_result("Get Children", True, f"Retrieved {len(data)} children")
-                            return True
-                        else:
-                            self.log_result("Get Children", False, "Child missing required fields", {"child": child})
-                            return False
-                    else:
-                        self.log_result("Get Children", True, "No children found (empty list)")
-                        return True
-                else:
-                    self.log_result("Get Children", False, "Response is not a list", {"response": data})
-                    return False
-            else:
-                self.log_result("Get Children", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Get Children", False, f"Request error: {str(e)}")
-            return False
-    
-    def test_delete_child(self, child_id):
-        """Test DELETE /api/children/{child_id} - Delete child"""
-        if not child_id:
-            self.log_result("Delete Child", False, "No child ID provided for deletion")
-            return False
-            
-        try:
-            response = self.session.delete(f"{BACKEND_URL}/children/{child_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "message" in data and "deleted" in data["message"].lower():
-                    self.log_result("Delete Child", True, f"Child {child_id} deleted successfully")
-                    return True
-                else:
-                    self.log_result("Delete Child", False, "Unexpected response format", {"response": data})
-                    return False
-            elif response.status_code == 404:
-                self.log_result("Delete Child", True, "Child not found (404) - expected behavior")
-                return True
-            else:
-                self.log_result("Delete Child", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Delete Child", False, f"Request error: {str(e)}")
-            return False
-    
-    def test_admin_config_get(self):
-        """Test GET /api/admin/config - Get all configurations"""
-        try:
-            response = self.session.get(f"{BACKEND_URL}/admin/config")
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ["id", "emergent_llm_key", "premium_monthly_price", "premium_yearly_price", 
-                                 "openai_model", "vision_model", "max_free_scans", "updated_at"]
+                return False, f"Status {response.status_code}: {response.text}"
                 
-                if all(field in data for field in required_fields):
-                    # Check default values
-                    defaults_correct = (
-                        data.get("premium_monthly_price") == 9.99 and
-                        data.get("premium_yearly_price") == 71.88 and
-                        data.get("openai_model") == "gpt-4o-mini" and
-                        data.get("vision_model") == "gpt-4o" and
-                        data.get("max_free_scans") == 5
-                    )
-                    
-                    if defaults_correct:
-                        self.log_result("Admin Config - GET All", True, "Retrieved config with correct default values")
-                        return True
-                    else:
-                        self.log_result("Admin Config - GET All", False, "Config retrieved but default values incorrect", {"config": data})
-                        return False
-                else:
-                    self.log_result("Admin Config - GET All", False, "Missing required fields", {"response": data})
-                    return False
-            else:
-                self.log_result("Admin Config - GET All", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
         except Exception as e:
-            self.log_result("Admin Config - GET All", False, f"Request error: {str(e)}")
-            return False
+            return False, f"Request error: {str(e)}"
     
-    def test_admin_config_update_single(self):
-        """Test PUT /api/admin/config - Update single field"""
-        try:
-            payload = {"premium_monthly_price": 11.99}
-            response = self.session.put(f"{BACKEND_URL}/admin/config", json=payload)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("premium_monthly_price") == 11.99:
-                    self.log_result("Admin Config - UPDATE Single", True, "Single field updated successfully")
-                    return True
-                else:
-                    self.log_result("Admin Config - UPDATE Single", False, f"Update failed, got {data.get('premium_monthly_price')}", {"response": data})
-                    return False
-            else:
-                self.log_result("Admin Config - UPDATE Single", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Admin Config - UPDATE Single", False, f"Request error: {str(e)}")
-            return False
+    def test_health_check(self):
+        """Test 1: Health Check API"""
+        success, result = self.make_request("GET", "/")
+        if success and "NutriKids AI Backend" in str(result):
+            self.log_test("Health Check API", True)
+        else:
+            self.log_test("Health Check API", False, str(result))
     
-    def test_admin_config_update_multiple(self):
-        """Test PUT /api/admin/config - Update multiple fields"""
-        try:
-            payload = {
-                "premium_monthly_price": 14.99,
-                "max_free_scans": 10
-            }
-            response = self.session.put(f"{BACKEND_URL}/admin/config", json=payload)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if (data.get("premium_monthly_price") == 14.99 and 
-                    data.get("max_free_scans") == 10):
-                    self.log_result("Admin Config - UPDATE Multiple", True, "Multiple fields updated successfully")
-                    return True
-                else:
-                    self.log_result("Admin Config - UPDATE Multiple", False, "Multiple field update failed", {"response": data})
-                    return False
-            else:
-                self.log_result("Admin Config - UPDATE Multiple", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Admin Config - UPDATE Multiple", False, f"Request error: {str(e)}")
-            return False
-    
-    def test_admin_config_get_single_value(self):
-        """Test GET /api/admin/config/{key} - Get single configuration value"""
-        try:
-            # Test existing key
-            response = self.session.get(f"{BACKEND_URL}/admin/config/premium_monthly_price")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if (data.get("key") == "premium_monthly_price" and 
-                    "value" in data):
-                    self.log_result("Admin Config - GET Single Value", True, f"Retrieved single value: {data['value']}")
-                    
-                    # Test another key
-                    response2 = self.session.get(f"{BACKEND_URL}/admin/config/openai_model")
-                    if response2.status_code == 200:
-                        data2 = response2.json()
-                        if data2.get("key") == "openai_model" and data2.get("value") == "gpt-4o-mini":
-                            self.log_result("Admin Config - GET Single Value (openai_model)", True, "Retrieved openai_model correctly")
-                        else:
-                            self.log_result("Admin Config - GET Single Value (openai_model)", False, "openai_model retrieval failed", {"response": data2})
-                    
-                    return True
-                else:
-                    self.log_result("Admin Config - GET Single Value", False, "Invalid response format", {"response": data})
-                    return False
-            else:
-                self.log_result("Admin Config - GET Single Value", False, f"HTTP {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Admin Config - GET Single Value", False, f"Request error: {str(e)}")
-            return False
-    
-    def test_admin_config_get_nonexistent_key(self):
-        """Test GET /api/admin/config/{key} - Non-existent key should return 404"""
-        try:
-            response = self.session.get(f"{BACKEND_URL}/admin/config/nonexistent_key")
-            
-            if response.status_code == 404:
-                data = response.json()
-                if "not found" in data.get("detail", "").lower():
-                    self.log_result("Admin Config - GET Nonexistent Key", True, "Correctly returns 404 for non-existent key")
-                    return True
-                else:
-                    self.log_result("Admin Config - GET Nonexistent Key", False, "404 returned but unexpected error message", {"response": data})
-                    return False
-            else:
-                self.log_result("Admin Config - GET Nonexistent Key", False, f"Expected 404, got {response.status_code}", {"response": response.text})
-                return False
-        except Exception as e:
-            self.log_result("Admin Config - GET Nonexistent Key", False, f"Request error: {str(e)}")
-            return False
-
-    def test_gamification_setup(self):
-        """Setup test data for gamification tests"""
-        print("\n=== Setting up Gamification Test Data ===")
-        
-        # Create a test user and child for gamification
-        import uuid
-        self.test_user_email = f"gamification_test_{uuid.uuid4().hex[:8]}@example.com"
-        
-        # Register test user
+    def test_user_registration(self):
+        """Test 2: User Registration"""
+        # Test normal registration
         user_data = {
-            "email": self.test_user_email,
-            "password": "testpass123",
-            "name": "Gamification Test Parent"
+            "email": TEST_USER_EMAIL,
+            "password": TEST_USER_PASSWORD,
+            "name": "Test Parent"
         }
         
-        try:
-            response = self.session.post(f"{BACKEND_URL}/register", json=user_data)
-            if response.status_code == 201:
-                self.log_result("Gamification Setup - User Registration", True, f"Created user: {self.test_user_email}")
-            elif response.status_code == 400 and "already registered" in response.text:
-                self.log_result("Gamification Setup - User Registration", True, "User already exists - continuing")
-            else:
-                self.log_result("Gamification Setup - User Registration", False, f"Status: {response.status_code}")
-                return None
-        except Exception as e:
-            self.log_result("Gamification Setup - User Registration", False, f"Exception: {str(e)}")
-            return None
+        success, result = self.make_request("POST", "/register", user_data, expected_status=201)
+        if success and "email" in result:
+            self.log_test("User Registration", True)
+        elif "already registered" in str(result):
+            self.log_test("User Registration", True, "User already exists")
+        else:
+            self.log_test("User Registration", False, str(result))
+        
+        # Test duplicate registration (should fail)
+        success, result = self.make_request("POST", "/register", user_data, expected_status=400)
+        if not success or "already registered" in str(result):
+            self.log_test("Duplicate Registration Validation", True)
+        else:
+            self.log_test("Duplicate Registration Validation", False, "Should reject duplicate email")
+    
+    def test_user_login(self):
+        """Test 3: User Login"""
+        login_data = {
+            "email": TEST_USER_EMAIL,
+            "password": TEST_USER_PASSWORD
+        }
+        
+        success, result = self.make_request("POST", "/login", login_data)
+        if success and "token" in result:
+            self.user_token = result["token"]
+            self.log_test("User Login", True)
+        else:
+            self.log_test("User Login", False, str(result))
+        
+        # Test invalid login
+        invalid_data = {
+            "email": TEST_USER_EMAIL,
+            "password": "wrongpassword"
+        }
+        success, result = self.make_request("POST", "/login", invalid_data, expected_status=401)
+        if not success:
+            self.log_test("Invalid Login Validation", True)
+        else:
+            self.log_test("Invalid Login Validation", False, "Should reject invalid password")
+    
+    def test_admin_login(self):
+        """Test 4: Admin Login"""
+        login_data = {
+            "email": TEST_ADMIN_EMAIL,
+            "password": TEST_ADMIN_PASSWORD
+        }
+        
+        success, result = self.make_request("POST", "/login", login_data)
+        if success and "token" in result:
+            self.admin_token = result["token"]
+            self.log_test("Admin Login", True)
+        else:
+            self.log_test("Admin Login", False, str(result))
+    
+    def test_forgot_reset_password(self):
+        """Test 5: Password Recovery Flow"""
+        # Test forgot password
+        forgot_data = {"email": TEST_USER_EMAIL}
+        success, result = self.make_request("POST", "/forgot-password", forgot_data)
+        
+        if success and "reset_code" in result:
+            reset_code = result["reset_code"]
+            self.log_test("Forgot Password", True)
             
-        # Create test child
+            # Test reset password
+            reset_data = {
+                "email": TEST_USER_EMAIL,
+                "reset_code": reset_code,
+                "new_password": "newpassword123"
+            }
+            success, result = self.make_request("POST", "/reset-password", reset_data)
+            if success:
+                self.log_test("Reset Password", True)
+                
+                # Update password for future tests
+                global TEST_USER_PASSWORD
+                TEST_USER_PASSWORD = "newpassword123"
+                
+                # Re-login with new password
+                login_data = {
+                    "email": TEST_USER_EMAIL,
+                    "password": TEST_USER_PASSWORD
+                }
+                success, result = self.make_request("POST", "/login", login_data)
+                if success and "token" in result:
+                    self.user_token = result["token"]
+            else:
+                self.log_test("Reset Password", False, str(result))
+        else:
+            self.log_test("Forgot Password", False, str(result))
+    
+    def test_user_usage_limits(self):
+        """Test 6: User Usage Limits"""
+        success, result = self.make_request("GET", f"/usage/{TEST_USER_EMAIL}")
+        if success and "scans_used" in result and "is_premium" in result:
+            self.log_test("User Usage Status", True)
+        else:
+            self.log_test("User Usage Status", False, str(result))
+    
+    def test_children_crud(self):
+        """Test 7: Children CRUD Operations"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Create child
         child_data = {
-            "parent_email": self.test_user_email,
-            "name": "Marco Rossi",
+            "parent_email": TEST_USER_EMAIL,
+            "name": "Test Child",
             "age": 8,
-            "allergies": ["lattosio"]
+            "allergies": ["glutine", "lattosio"]
         }
         
-        try:
-            response = self.session.post(f"{BACKEND_URL}/children", json=child_data)
-            if response.status_code == 200:
-                child_info = response.json()
-                self.test_child_id = child_info["id"]
-                self.created_children.append(self.test_child_id)
-                self.log_result("Gamification Setup - Child Creation", True, f"Created child: {child_info['name']} (ID: {self.test_child_id})")
-                return self.test_child_id
-            else:
-                self.log_result("Gamification Setup - Child Creation", False, f"Status: {response.status_code}")
-                return None
-        except Exception as e:
-            self.log_result("Gamification Setup - Child Creation", False, f"Exception: {str(e)}")
-            return None
-
-    def test_gamification_award_points_basic(self):
-        """Test gamification - Basic point assignment (10 points for diary)"""
-        if not hasattr(self, 'test_child_id') or not self.test_child_id:
-            self.log_result("Gamification - Basic Points", False, "No test child available")
-            return False
-            
-        try:
-            request_data = {"points": 10}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
-                json=request_data
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                expected_fields = ["child_id", "points", "level", "level_up", "new_badges"]
-                
-                # Check response structure
-                missing_fields = [field for field in expected_fields if field not in data]
-                if missing_fields:
-                    self.log_result("Gamification - Basic Points", False, f"Missing fields: {missing_fields}")
-                    return False
-                
-                # Validate values
-                if (data["child_id"] == self.test_child_id and 
-                    data["points"] == 10 and 
-                    data["level"] == 1 and 
-                    data["level_up"] == False):
-                    self.log_result("Gamification - Basic Points", True, f"Points: {data['points']}, Level: {data['level']}")
-                    return True
-                else:
-                    self.log_result("Gamification - Basic Points", False, f"Invalid values: {data}")
-                    return False
-            else:
-                self.log_result("Gamification - Basic Points", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Basic Points", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_award_points_scanner(self):
-        """Test gamification - Scanner point assignment (5 points)"""
-        if not hasattr(self, 'test_child_id') or not self.test_child_id:
-            self.log_result("Gamification - Scanner Points", False, "No test child available")
-            return False
-            
-        try:
-            request_data = {"points": 5}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
-                json=request_data
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Should now have 15 points total (10 + 5)
-                if data["points"] == 15 and data["level"] == 1:
-                    self.log_result("Gamification - Scanner Points", True, f"Cumulative points: {data['points']}, Level: {data['level']}")
-                    return True
-                else:
-                    self.log_result("Gamification - Scanner Points", False, f"Wrong cumulative points: {data['points']}, expected 15")
-                    return False
-            else:
-                self.log_result("Gamification - Scanner Points", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Scanner Points", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_level_up(self):
-        """Test gamification - Level up functionality (reach 100 points)"""
-        if not hasattr(self, 'test_child_id') or not self.test_child_id:
-            self.log_result("Gamification - Level Up", False, "No test child available")
-            return False
-            
-        try:
-            # Award 85 more points to reach 100 total (15 + 85 = 100)
-            request_data = {"points": 85}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
-                json=request_data
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Should now have 100 points and level 2
-                if (data["points"] == 100 and 
-                    data["level"] == 2 and 
-                    data["level_up"] == True):
-                    self.log_result("Gamification - Level Up", True, f"Points: {data['points']}, Level: {data['level']}, Level Up: {data['level_up']}")
-                    return True
-                else:
-                    self.log_result("Gamification - Level Up", False, f"Level up failed: {data}")
-                    return False
-            else:
-                self.log_result("Gamification - Level Up", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Level Up", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_badge_first_century(self):
-        """Test gamification - Badge system (first_century at 100 points)"""
-        if not hasattr(self, 'test_user_email') or not self.test_user_email:
-            self.log_result("Gamification - First Century Badge", False, "No test user available")
-            return False
-            
-        try:
-            # Get current child data to check badges
-            response = self.session.get(f"{BACKEND_URL}/children/{self.test_user_email}")
-            
-            if response.status_code == 200:
-                children = response.json()
-                child = next((c for c in children if c["id"] == self.test_child_id), None)
-                
-                if not child:
-                    self.log_result("Gamification - First Century Badge", False, "Child not found in children list")
-                    return False
-                
-                badges = child.get("badges", [])
-                
-                if "first_century" in badges:
-                    self.log_result("Gamification - First Century Badge", True, f"first_century badge awarded. All badges: {badges}")
-                    return True
-                else:
-                    self.log_result("Gamification - First Century Badge", False, f"Missing first_century badge. Current badges: {badges}")
-                    return False
-            else:
-                self.log_result("Gamification - First Century Badge", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - First Century Badge", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_validation_negative_points(self):
-        """Test gamification - Validation: negative points should fail"""
-        if not hasattr(self, 'test_child_id') or not self.test_child_id:
-            self.log_result("Gamification - Negative Points Validation", False, "No test child available")
-            return False
-            
-        try:
-            request_data = {"points": -5}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
-                json=request_data
-            )
-            
-            # Should fail with 422 (validation error)
-            if response.status_code == 422:
-                self.log_result("Gamification - Negative Points Validation", True, "Correctly rejected negative points")
-                return True
-            else:
-                self.log_result("Gamification - Negative Points Validation", False, f"Should have failed with 422, got {response.status_code}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Negative Points Validation", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_validation_zero_points(self):
-        """Test gamification - Validation: zero points should fail"""
-        if not hasattr(self, 'test_child_id') or not self.test_child_id:
-            self.log_result("Gamification - Zero Points Validation", False, "No test child available")
-            return False
-            
-        try:
-            request_data = {"points": 0}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{self.test_child_id}/award-points",
-                json=request_data
-            )
-            
-            # Should fail with 422 (validation error)
-            if response.status_code == 422:
-                self.log_result("Gamification - Zero Points Validation", True, "Correctly rejected zero points")
-                return True
-            else:
-                self.log_result("Gamification - Zero Points Validation", False, f"Should have failed with 422, got {response.status_code}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Zero Points Validation", False, f"Exception: {str(e)}")
-            return False
-
-    def test_gamification_validation_nonexistent_child(self):
-        """Test gamification - Validation: non-existent child should return 404"""
-        try:
-            import uuid
-            fake_child_id = str(uuid.uuid4())
-            request_data = {"points": 10}
-            response = self.session.post(
-                f"{BACKEND_URL}/children/{fake_child_id}/award-points",
-                json=request_data
-            )
-            
-            # Should fail with 404
-            if response.status_code == 404:
-                self.log_result("Gamification - Non-existent Child Validation", True, "Correctly returned 404 for non-existent child")
-                return True
-            else:
-                self.log_result("Gamification - Non-existent Child Validation", False, f"Should have failed with 404, got {response.status_code}")
-                return False
-                
-        except Exception as e:
-            self.log_result("Gamification - Non-existent Child Validation", False, f"Exception: {str(e)}")
-            return False
-
-    def test_stripe_checkout_session(self):
-        """Test Stripe Checkout Session Creation"""
-        print("\n=== Testing Stripe Checkout Session ===")
+        success, result = self.make_request("POST", "/children", child_data, headers)
+        if success and "id" in result:
+            self.test_child_id = result["id"]
+            self.log_test("Create Child Profile", True)
+        else:
+            self.log_test("Create Child Profile", False, str(result))
         
-        try:
-            # Test monthly plan
-            monthly_data = {
-                "plan_type": "monthly",
-                "origin_url": "http://localhost:3000"
-            }
-            headers = {"X-User-Email": TEST_USER_EMAIL}
-            
-            response = self.session.post(f"{BACKEND_URL}/checkout/create-session", 
-                                       json=monthly_data, headers=headers)
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Validate response structure
-                if "url" in data and "session_id" in data:
-                    self.session_id = data["session_id"]  # Store for status test
-                    
-                    # Check if URL is valid Stripe URL
-                    if "stripe.com" in data["url"] or "checkout.stripe.com" in data["url"]:
-                        self.log_result("Stripe Checkout Session (Monthly)", True, 
-                                      f"Session created successfully. Session ID: {data['session_id'][:20]}...")
-                    else:
-                        self.log_result("Stripe Checkout Session (Monthly)", False, 
-                                      f"Invalid Stripe URL format: {data['url']}")
-                else:
-                    self.log_result("Stripe Checkout Session (Monthly)", False, 
-                                  "Missing required fields in response")
-            else:
-                self.log_result("Stripe Checkout Session (Monthly)", False, 
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test yearly plan
-            yearly_data = {
-                "plan_type": "yearly", 
-                "origin_url": "http://localhost:3000"
-            }
-            
-            response = self.session.post(f"{BACKEND_URL}/checkout/create-session",
-                                       json=yearly_data, headers=headers)
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                if "url" in data and "session_id" in data:
-                    if "stripe.com" in data["url"] or "checkout.stripe.com" in data["url"]:
-                        self.log_result("Stripe Checkout Session (Yearly)", True,
-                                      f"Session created successfully. Session ID: {data['session_id'][:20]}...")
-                    else:
-                        self.log_result("Stripe Checkout Session (Yearly)", False,
-                                      f"Invalid Stripe URL format: {data['url']}")
-                else:
-                    self.log_result("Stripe Checkout Session (Yearly)", False,
-                                  "Missing required fields in response")
-            else:
-                self.log_result("Stripe Checkout Session (Yearly)", False,
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test invalid plan type
-            invalid_data = {
-                "plan_type": "invalid",
-                "origin_url": "http://localhost:3000"
-            }
-            
-            response = self.session.post(f"{BACKEND_URL}/checkout/create-session",
-                                       json=invalid_data, headers=headers)
-            
-            if response.status_code == 400:
-                self.log_result("Stripe Checkout Session (Invalid Plan Validation)", True,
-                              "Correctly rejected invalid plan type")
-            else:
-                self.log_result("Stripe Checkout Session (Invalid Plan Validation)", False,
-                              f"Should return 400 for invalid plan, got {response.status_code}")
-                    
-        except Exception as e:
-            self.log_result("Stripe Checkout Session", False, f"Exception: {str(e)}")
-
-    def test_stripe_checkout_status(self):
-        """Test Stripe Checkout Status Check"""
-        print("\n=== Testing Stripe Checkout Status ===")
+        # Get children list
+        success, result = self.make_request("GET", f"/children/{TEST_USER_EMAIL}", headers=headers)
+        if success and isinstance(result, list) and len(result) > 0:
+            self.log_test("Get Children List", True)
+        else:
+            self.log_test("Get Children List", False, str(result))
         
-        if not hasattr(self, 'session_id') or not self.session_id:
-            self.log_result("Stripe Checkout Status", False, "No session_id available from previous test")
+        # Update child
+        if self.test_child_id:
+            update_data = {
+                "parent_email": TEST_USER_EMAIL,
+                "name": "Updated Test Child",
+                "age": 9,
+                "allergies": ["glutine"]
+            }
+            success, result = self.make_request("PUT", f"/children/{self.test_child_id}", update_data, headers)
+            if success:
+                self.log_test("Update Child Profile", True)
+            else:
+                self.log_test("Update Child Profile", False, str(result))
+    
+    def test_gamification_points(self):
+        """Test 8: Gamification - Award Points"""
+        if not self.test_child_id:
+            self.log_test("Award Points (No Child)", False, "No child ID available")
             return
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/checkout/status/{self.session_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Validate response structure
-                required_fields = ["status", "payment_status", "amount_total", "currency"]
-                missing_fields = [field for field in required_fields if field not in data]
-                
-                if not missing_fields:
-                    self.log_result("Stripe Checkout Status", True,
-                                  f"Status retrieved successfully. Payment status: {data['payment_status']}, Amount: {data['amount_total']} {data['currency']}")
-                else:
-                    self.log_result("Stripe Checkout Status", False,
-                                  f"Missing required fields: {missing_fields}")
-            else:
-                self.log_result("Stripe Checkout Status", False,
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test with invalid session ID
-            fake_session_id = "cs_test_fake_session_id_12345"
-            response = self.session.get(f"{BACKEND_URL}/checkout/status/{fake_session_id}")
-            
-            if response.status_code == 404:
-                self.log_result("Stripe Checkout Status (Invalid Session Validation)", True,
-                              "Correctly returned 404 for non-existent session")
-            else:
-                self.log_result("Stripe Checkout Status (Invalid Session Validation)", False,
-                              f"Should return 404 for invalid session, got {response.status_code}")
-                    
-        except Exception as e:
-            self.log_result("Stripe Checkout Status", False, f"Exception: {str(e)}")
-
-    def test_meal_plan_generation(self):
-        """Test Meal Plan Generation"""
-        print("\n=== Testing Meal Plan Generation ===")
+        headers = {"Authorization": f"Bearer {self.user_token}"}
         
-        try:
-            from datetime import datetime, timedelta
-            
-            # Test creating a new meal plan
-            week_start = (datetime.now() - timedelta(days=datetime.now().weekday())).strftime("%Y-%m-%d")
-            
-            meal_plan_data = {
-                "user_email": TEST_USER_EMAIL,
-                "week_start_date": week_start,
-                "num_people": 2,
-                "monday": {
-                    "breakfast": "Cereali integrali con latte",
-                    "lunch": "Pasta al pomodoro con verdure",
-                    "dinner": "Pollo alla griglia con patate",
-                    "snack": "Frutta fresca"
-                },
-                "tuesday": {
-                    "breakfast": "Toast integrale con marmellata",
-                    "lunch": "Risotto ai funghi",
-                    "dinner": "Pesce al vapore con broccoli",
-                    "snack": "Yogurt greco"
-                },
-                "wednesday": {
-                    "breakfast": "Pancake integrali",
-                    "lunch": "Insalata di pollo",
-                    "dinner": "Salmone con verdure",
-                    "snack": "Frutta secca"
-                },
-                "thursday": {
-                    "breakfast": "Yogurt con cereali",
-                    "lunch": "Zuppa di legumi",
-                    "dinner": "Tacchino con patate dolci",
-                    "snack": "Smoothie"
-                },
-                "friday": {
-                    "breakfast": "Avocado toast",
-                    "lunch": "Pasta integrale",
-                    "dinner": "Pesce bianco con riso",
-                    "snack": "Frutta fresca"
-                },
-                "saturday": {
-                    "breakfast": "Uova strapazzate",
-                    "lunch": "Quinoa con verdure",
-                    "dinner": "Pollo al forno",
-                    "snack": "Yogurt"
-                },
-                "sunday": {
-                    "breakfast": "French toast",
-                    "lunch": "Minestrone",
-                    "dinner": "Pesce alla griglia",
-                    "snack": "Frutta"
-                }
+        # Award points for diary entry
+        points_data = {"points": 10}
+        success, result = self.make_request("POST", f"/children/{self.test_child_id}/award-points", points_data, headers)
+        if success and "level" in result and "points" in result:
+            self.log_test("Award Points - Diary", True)
+        else:
+            self.log_test("Award Points - Diary", False, str(result))
+        
+        # Award points for scanner
+        points_data = {"points": 5}
+        success, result = self.make_request("POST", f"/children/{self.test_child_id}/award-points", points_data, headers)
+        if success:
+            self.log_test("Award Points - Scanner", True)
+        else:
+            self.log_test("Award Points - Scanner", False, str(result))
+        
+        # Test level up (award 100 points)
+        points_data = {"points": 100}
+        success, result = self.make_request("POST", f"/children/{self.test_child_id}/award-points", points_data, headers)
+        if success and result.get("level_up"):
+            self.log_test("Level Up System", True)
+        else:
+            self.log_test("Level Up System", False, "No level up detected")
+        
+        # Test badge system (should have first_century badge)
+        if success and "first_century" in result.get("new_badges", []):
+            self.log_test("Badge System", True)
+        else:
+            self.log_test("Badge System", False, "No badges awarded")
+    
+    def test_photo_analysis(self):
+        """Test 9: Photo Analysis with AI"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Create a simple base64 test image (1x1 pixel PNG)
+        test_image_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+        
+        analysis_data = {
+            "image_base64": test_image_b64,
+            "user_email": TEST_USER_EMAIL
+        }
+        
+        success, result = self.make_request("POST", "/analyze-photo", analysis_data, headers)
+        if success and "foods_detected" in result and "health_score" in result:
+            self.log_test("Photo Analysis API", True)
+        else:
+            self.log_test("Photo Analysis API", False, str(result))
+        
+        # Test free user limits (try multiple scans)
+        for i in range(4):  # Should hit limit at 3
+            success, result = self.make_request("POST", "/analyze-photo", analysis_data, headers)
+            if not success and "limite" in str(result).lower():
+                self.log_test("Free Scan Limits", True)
+                break
+        else:
+            self.log_test("Free Scan Limits", False, "No limit enforcement detected")
+    
+    def test_diary_operations(self):
+        """Test 10: Diary CRUD Operations"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Create diary entry
+        diary_data = {
+            "user_email": TEST_USER_EMAIL,
+            "meal_type": "pranzo",
+            "description": "Pasta al pomodoro con verdure",
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "nutritional_info": {
+                "calories": 350,
+                "proteins": 12,
+                "carbs": 65,
+                "fats": 8
+            }
+        }
+        
+        success, result = self.make_request("POST", "/diary", diary_data, headers)
+        if success and "id" in result:
+            self.test_diary_id = result["id"]
+            self.log_test("Create Diary Entry", True)
+        else:
+            self.log_test("Create Diary Entry", False, str(result))
+        
+        # Get diary entries
+        success, result = self.make_request("GET", f"/diary/{TEST_USER_EMAIL}", headers=headers)
+        if success and isinstance(result, list):
+            self.log_test("Get Diary Entries", True)
+        else:
+            self.log_test("Get Diary Entries", False, str(result))
+    
+    def test_coach_maya(self):
+        """Test 11: Coach Maya AI Chat"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        chat_data = {
+            "message": "Ciao Maya, che consigli hai per la colazione di un bambino di 8 anni?",
+            "session_id": "test_session",
+            "language": "it",
+            "user_email": TEST_USER_EMAIL
+        }
+        
+        success, result = self.make_request("POST", "/coach-maya", chat_data, headers)
+        if success and "response" in result:
+            self.log_test("Coach Maya Chat", True)
+        else:
+            self.log_test("Coach Maya Chat", False, str(result))
+        
+        # Test free user limits
+        for i in range(6):  # Should hit limit at 5
+            success, result = self.make_request("POST", "/coach-maya", chat_data, headers)
+            if not success and "limite" in str(result).lower():
+                self.log_test("Coach Maya Limits", True)
+                break
+        else:
+            self.log_test("Coach Maya Limits", False, "No limit enforcement detected")
+    
+    def test_referral_system(self):
+        """Test 12: Referral System"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Get referral code
+        success, result = self.make_request("GET", f"/referral/code/{TEST_USER_EMAIL}", headers=headers)
+        if success and "referral_code" in result:
+            self.referral_code = result["referral_code"]
+            self.log_test("Get Referral Code", True)
+        else:
+            self.log_test("Get Referral Code", False, str(result))
+        
+        # Test registration with referral code
+        if self.referral_code:
+            new_user_data = {
+                "email": "invited.user@nutrikids.com",
+                "password": "invitedpass123",
+                "name": "Invited User",
+                "referral_code": self.referral_code
             }
             
-            # Create meal plan
-            response = self.session.post(f"{BACKEND_URL}/meal-plan", json=meal_plan_data)
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Validate response structure
-                required_fields = ["id", "user_email", "week_start_date", "monday", "tuesday"]
-                missing_fields = [field for field in required_fields if field not in data]
-                
-                if not missing_fields:
-                    self.log_result("Meal Plan Generation (Create)", True,
-                                  f"Meal plan created successfully. ID: {data['id'][:20]}...")
-                else:
-                    self.log_result("Meal Plan Generation (Create)", False,
-                                  f"Missing required fields: {missing_fields}")
+            success, result = self.make_request("POST", "/register", new_user_data, expected_status=201)
+            if success or "already registered" in str(result):
+                self.log_test("Registration with Referral", True)
             else:
-                self.log_result("Meal Plan Generation (Create)", False,
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test retrieving the meal plan
-            response = self.session.get(f"{BACKEND_URL}/meal-plan/{TEST_USER_EMAIL}/{week_start}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Validate that we got the correct plan back
-                if (data["user_email"] == TEST_USER_EMAIL and 
-                    data["week_start_date"] == week_start and
-                    "monday" in data and "tuesday" in data):
-                    self.log_result("Meal Plan Generation (Retrieve)", True,
-                                  f"Meal plan retrieved successfully for week {week_start}")
-                else:
-                    self.log_result("Meal Plan Generation (Retrieve)", False,
-                                  "Retrieved meal plan data doesn't match expected values")
-            else:
-                self.log_result("Meal Plan Generation (Retrieve)", False,
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test retrieving non-existent meal plan (should return empty plan)
-            future_week = (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
-            response = self.session.get(f"{BACKEND_URL}/meal-plan/{TEST_USER_EMAIL}/{future_week}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Should return empty plan with default values
-                if (data["user_email"] == TEST_USER_EMAIL and 
-                    data["week_start_date"] == future_week):
-                    self.log_result("Meal Plan Generation (Empty Plan)", True,
-                                  "Correctly returned empty meal plan for non-existent week")
-                else:
-                    self.log_result("Meal Plan Generation (Empty Plan)", False,
-                                  "Empty meal plan response format incorrect")
-            else:
-                self.log_result("Meal Plan Generation (Empty Plan)", False,
-                              f"HTTP {response.status_code}: {response.text}")
-                    
-        except Exception as e:
-            self.log_result("Meal Plan Generation", False, f"Exception: {str(e)}")
-
-    def test_dashboard_statistics(self):
-        """Test Dashboard Statistics"""
-        print("\n=== Testing Dashboard Statistics ===")
+                self.log_test("Registration with Referral", False, str(result))
+    
+    def test_stripe_payments(self):
+        """Test 13: Stripe Payment System"""
+        headers = {
+            "Authorization": f"Bearer {self.user_token}",
+            "X-User-Email": TEST_USER_EMAIL
+        }
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/dashboard/stats/{TEST_USER_EMAIL}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Validate response structure
-                required_fields = [
-                    "total_meals_7days", "total_scans_7days", "coach_messages_7days",
-                    "avg_health_score", "daily_meals", "meal_types", "children_count", "period"
-                ]
-                missing_fields = [field for field in required_fields if field not in data]
-                
-                if not missing_fields:
-                    # Validate data types
-                    valid_types = (
-                        isinstance(data["total_meals_7days"], int) and
-                        isinstance(data["total_scans_7days"], int) and
-                        isinstance(data["coach_messages_7days"], int) and
-                        isinstance(data["avg_health_score"], (int, float)) and
-                        isinstance(data["daily_meals"], dict) and
-                        isinstance(data["meal_types"], dict) and
-                        isinstance(data["children_count"], int) and
-                        isinstance(data["period"], str)
-                    )
-                    
-                    if valid_types:
-                        self.log_result("Dashboard Statistics", True,
-                                      f"Dashboard stats retrieved successfully. Meals: {data['total_meals_7days']}, "
-                                      f"Scans: {data['total_scans_7days']}, Children: {data['children_count']}, "
-                                      f"Avg Health Score: {data['avg_health_score']}")
-                    else:
-                        self.log_result("Dashboard Statistics", False,
-                                      "Dashboard stats have incorrect data types")
-                else:
-                    self.log_result("Dashboard Statistics", False,
-                                  f"Missing required fields: {missing_fields}")
-            else:
-                self.log_result("Dashboard Statistics", False,
-                              f"HTTP {response.status_code}: {response.text}")
-            
-            # Test with non-existent user
-            fake_email = "nonexistent@test.com"
-            response = self.session.get(f"{BACKEND_URL}/dashboard/stats/{fake_email}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                # Should return stats with zero values for non-existent user
-                if (data["total_meals_7days"] == 0 and 
-                    data["children_count"] == 0):
-                    self.log_result("Dashboard Statistics (Non-existent User)", True,
-                                  "Correctly returned zero stats for non-existent user")
-                else:
-                    self.log_result("Dashboard Statistics (Non-existent User)", False,
-                                  "Should return zero stats for non-existent user")
-            else:
-                self.log_result("Dashboard Statistics (Non-existent User)", False,
-                              f"HTTP {response.status_code}: {response.text}")
-                    
-        except Exception as e:
-            self.log_result("Dashboard Statistics", False, f"Exception: {str(e)}")
-
-    def test_error_cases(self):
-        """Test error handling"""
-        print("\n=== Testing Error Cases ===")
+        # Test pricing endpoint
+        success, result = self.make_request("GET", "/pricing")
+        if success and "monthly_price" in result and "yearly_price" in result:
+            self.log_test("Get Pricing Config", True)
+        else:
+            self.log_test("Get Pricing Config", False, str(result))
         
-        # Test deleting non-existent diary entry
-        try:
-            response = self.session.delete(f"{BACKEND_URL}/diary/non-existent-id")
-            if response.status_code == 404:
-                self.log_result("Error Handling - Diary 404", True, "Correctly returns 404 for non-existent entry")
-            else:
-                self.log_result("Error Handling - Diary 404", False, f"Expected 404, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Error Handling - Diary 404", False, f"Request error: {str(e)}")
+        # Test checkout session creation
+        checkout_data = {
+            "plan_type": "monthly",
+            "origin_url": "https://nutriplay-2.preview.emergentagent.com"
+        }
         
-        # Test deleting non-existent child
-        try:
-            response = self.session.delete(f"{BACKEND_URL}/children/non-existent-id")
-            if response.status_code == 404:
-                self.log_result("Error Handling - Child 404", True, "Correctly returns 404 for non-existent child")
+        success, result = self.make_request("POST", "/checkout/create-session", checkout_data, headers)
+        if success and "session_id" in result and "url" in result:
+            self.checkout_session_id = result["session_id"]
+            self.log_test("Create Checkout Session", True)
+        else:
+            self.log_test("Create Checkout Session", False, str(result))
+        
+        # Test checkout status
+        if self.checkout_session_id:
+            success, result = self.make_request("GET", f"/checkout/status/{self.checkout_session_id}")
+            if success and "payment_status" in result:
+                self.log_test("Get Checkout Status", True)
             else:
-                self.log_result("Error Handling - Child 404", False, f"Expected 404, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Error Handling - Child 404", False, f"Request error: {str(e)}")
+                self.log_test("Get Checkout Status", False, str(result))
+    
+    def test_meal_plans(self):
+        """Test 14: Meal Plan Generation"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Create meal plan
+        week_start = datetime.now().strftime("%Y-%m-%d")
+        meal_plan_data = {
+            "user_email": TEST_USER_EMAIL,
+            "week_start_date": week_start,
+            "num_people": 2,
+            "monday": {
+                "breakfast": "Cereali integrali con latte",
+                "lunch": "Pasta al pomodoro",
+                "dinner": "Pollo con verdure",
+                "snack": "Frutta fresca"
+            },
+            "tuesday": {
+                "breakfast": "Toast integrale",
+                "lunch": "Riso con verdure",
+                "dinner": "Pesce al vapore",
+                "snack": "Yogurt"
+            }
+        }
+        
+        success, result = self.make_request("POST", "/meal-plan", meal_plan_data, headers)
+        if success and "id" in result:
+            self.log_test("Create Meal Plan", True)
+        else:
+            self.log_test("Create Meal Plan", False, str(result))
+        
+        # Get meal plan
+        success, result = self.make_request("GET", f"/meal-plan/{TEST_USER_EMAIL}/{week_start}", headers=headers)
+        if success and "monday" in result:
+            self.log_test("Get Meal Plan", True)
+        else:
+            self.log_test("Get Meal Plan", False, str(result))
+    
+    def test_dashboard_stats(self):
+        """Test 15: Dashboard Statistics"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        success, result = self.make_request("GET", f"/dashboard/stats/{TEST_USER_EMAIL}", headers=headers)
+        if success and "total_meals_7days" in result and "children_count" in result:
+            self.log_test("Dashboard Statistics", True)
+        else:
+            self.log_test("Dashboard Statistics", False, str(result))
+    
+    def test_push_notifications(self):
+        """Test 16: Push Notification System"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Register push token
+        token_data = {
+            "user_email": TEST_USER_EMAIL,
+            "push_token": "ExponentPushToken[test_token_123]",
+            "device_type": "mobile",
+            "language": "it"
+        }
+        
+        success, result = self.make_request("POST", "/push-token/register", token_data, headers)
+        if success:
+            self.log_test("Register Push Token", True)
+        else:
+            self.log_test("Register Push Token", False, str(result))
+        
+        # Get notification preferences
+        success, result = self.make_request("GET", f"/push-token/preferences/{TEST_USER_EMAIL}", headers=headers)
+        if success and "enabled" in result:
+            self.log_test("Get Notification Preferences", True)
+        else:
+            self.log_test("Get Notification Preferences", False, str(result))
+        
+        # Update preferences
+        prefs_data = {
+            "user_email": TEST_USER_EMAIL,
+            "enabled": True,
+            "lunch_time": "13:00",
+            "dinner_time": "20:00",
+            "evening_reminder": "21:30",
+            "weekly_report_day": 0,
+            "weekly_report_time": "19:00",
+            "max_daily_notifications": 3
+        }
+        
+        success, result = self.make_request("PUT", "/push-token/preferences", prefs_data, headers)
+        if success:
+            self.log_test("Update Notification Preferences", True)
+        else:
+            self.log_test("Update Notification Preferences", False, str(result))
+    
+    def test_admin_config(self):
+        """Test 17: Admin Configuration"""
+        if not self.admin_token:
+            self.log_test("Admin Config (No Token)", False, "Admin token not available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Get admin config
+        success, result = self.make_request("GET", "/admin/config", headers=headers)
+        if success and "premium_monthly_price" in result:
+            self.log_test("Get Admin Config", True)
+        else:
+            self.log_test("Get Admin Config", False, str(result))
+        
+        # Update config
+        config_update = {
+            "premium_monthly_price": 7.99,
+            "max_free_scans_daily": 5
+        }
+        
+        success, result = self.make_request("PUT", "/admin/config", config_update, headers)
+        if success:
+            self.log_test("Update Admin Config", True)
+        else:
+            self.log_test("Update Admin Config", False, str(result))
+    
+    def cleanup_test_data(self):
+        """Clean up test data"""
+        headers = {"Authorization": f"Bearer {self.user_token}"}
+        
+        # Delete test child
+        if self.test_child_id:
+            self.make_request("DELETE", f"/children/{self.test_child_id}", headers=headers)
+        
+        # Delete test diary entry
+        if self.test_diary_id:
+            self.make_request("DELETE", f"/diary/{self.test_diary_id}", headers=headers)
     
     def run_all_tests(self):
-        """Run all backend tests"""
-        print("🧪 Starting NutriKids AI Backend Tests")
-        print(f"🔗 Testing backend at: {BACKEND_URL}")
+        """Run comprehensive backend testing suite"""
+        print("🧪 NUTRIKIDS AI BACKEND TESTING - MVP READY CHECK")
         print("=" * 60)
         
-        # Test 1: Health Check
-        if not self.test_health_check():
-            print("❌ Backend is not accessible. Stopping tests.")
-            return False
+        # Core Authentication & Users
+        print("\n📋 TESTING: Authentication & Users")
+        self.test_health_check()
+        self.test_user_registration()
+        self.test_user_login()
+        self.test_admin_login()
+        self.test_forgot_reset_password()
+        self.test_user_usage_limits()
         
-        # Test 2: Coach Maya AI
+        # Children & Gamification
+        print("\n🎮 TESTING: Gamification & Children")
+        self.test_children_crud()
+        self.test_gamification_points()
+        
+        # AI & Scanner
+        print("\n🤖 TESTING: Scanner & AI")
+        self.test_photo_analysis()
+        
+        # Diary & Plans
+        print("\n📖 TESTING: Diary & Plans")
+        self.test_diary_operations()
+        self.test_meal_plans()
+        self.test_dashboard_stats()
+        
+        # Coach Maya
+        print("\n👩‍⚕️ TESTING: Coach Maya")
         self.test_coach_maya()
         
-        # Test 3: Create Diary Entry
-        entry_id = self.test_create_diary_entry()
+        # Referral System
+        print("\n🔗 TESTING: Referral System")
+        self.test_referral_system()
         
-        # Test 4: Get Diary Entries
-        self.test_get_diary_entries()
+        # Premium & Stripe
+        print("\n💳 TESTING: Premium & Stripe")
+        self.test_stripe_payments()
         
-        # Test 5: Delete Diary Entry
-        self.test_delete_diary_entry(entry_id)
+        # Push Notifications
+        print("\n🔔 TESTING: Push Notifications")
+        self.test_push_notifications()
         
-        # Test 6: Create Child
-        child_id = self.test_create_child()
+        # Admin Configuration
+        print("\n⚙️ TESTING: Admin Configuration")
+        self.test_admin_config()
         
-        # Test 7: Get Children
-        self.test_get_children()
+        # Cleanup
+        print("\n🧹 CLEANING UP TEST DATA")
+        self.cleanup_test_data()
         
-        # Test 8: Delete Child
-        self.test_delete_child(child_id)
-        
-        # Test 9: Admin Configuration Tests
-        print("\n=== Testing Admin Configuration Endpoints ===")
-        self.test_admin_config_get()
-        self.test_admin_config_update_single()
-        self.test_admin_config_update_multiple()
-        self.test_admin_config_get_single_value()
-        self.test_admin_config_get_nonexistent_key()
-        
-        # Test 10: Gamification System Tests
-        print("\n=== Testing Gamification System ===")
-        if self.test_gamification_setup():
-            self.test_gamification_award_points_basic()
-            self.test_gamification_award_points_scanner()
-            self.test_gamification_level_up()
-            self.test_gamification_badge_first_century()
-            self.test_gamification_validation_negative_points()
-            self.test_gamification_validation_zero_points()
-            self.test_gamification_validation_nonexistent_child()
-        else:
-            self.log_result("Gamification Tests", False, "Setup failed - skipping gamification tests")
-        
-        # Test 11: NEW HIGH PRIORITY TESTS - FASE 1 CORE PERFETTO
-        print("\n=== Testing NEW HIGH PRIORITY ENDPOINTS - FASE 1 ===")
-        self.test_stripe_checkout_session()
-        self.test_stripe_checkout_status()
-        self.test_meal_plan_generation()
-        self.test_dashboard_statistics()
-        
-        # Test 12: Error Cases
-        self.test_error_cases()
-        
-        # Summary
-        self.print_summary()
-        
-        return True
-    
-    def print_summary(self):
-        """Print test summary"""
+        # Final Results
         print("\n" + "=" * 60)
-        print("📊 TEST SUMMARY")
+        print("🏁 TESTING COMPLETE - RESULTS SUMMARY")
         print("=" * 60)
+        print(f"Total Tests: {self.results['total_tests']}")
+        print(f"✅ Passed: {self.results['passed']}")
+        print(f"❌ Failed: {self.results['failed']}")
+        print(f"Success Rate: {(self.results['passed']/self.results['total_tests']*100):.1f}%")
         
-        passed = sum(1 for result in self.test_results if result["success"])
-        total = len(self.test_results)
+        if self.results['errors']:
+            print("\n🚨 FAILED TESTS:")
+            for error in self.results['errors']:
+                print(f"  - {error}")
         
-        print(f"Total Tests: {total}")
-        print(f"Passed: {passed}")
-        print(f"Failed: {total - passed}")
-        print(f"Success Rate: {(passed/total)*100:.1f}%")
-        
-        if total - passed > 0:
-            print("\n❌ FAILED TESTS:")
-            for result in self.test_results:
-                if not result["success"]:
-                    print(f"  • {result['test']}: {result['message']}")
-        
-        print("\n✅ PASSED TESTS:")
-        for result in self.test_results:
-            if result["success"]:
-                print(f"  • {result['test']}: {result['message']}")
+        return self.results
 
 if __name__ == "__main__":
     tester = NutriKidsBackendTester()
-    success = tester.run_all_tests()
-    sys.exit(0 if success else 1)
+    results = tester.run_all_tests()
