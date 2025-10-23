@@ -1900,6 +1900,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+@app.on_event("startup")
+async def startup_event():
+    """Avvia lo scheduler notifiche all'avvio del server"""
+    start_scheduler()
+    logger.info("🚀 Server avviato con scheduler notifiche attivo")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
