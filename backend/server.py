@@ -718,8 +718,11 @@ async def coach_maya(chat_msg: ChatMessage):
         
         system_message = system_messages.get(language, system_messages['it'])
         
+        # Ottieni API key dal database admin
+        api_key = await get_api_key_from_config("emergent_llm_key")
+        
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=api_key,
             session_id=chat_msg.session_id,
             system_message=system_message
         ).with_model("openai", "gpt-4o-mini")
