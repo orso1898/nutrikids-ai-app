@@ -119,7 +119,7 @@ export default function InvitaAmiciScreen() {
           >
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t.referral.title}</Text>
+          <Text style={styles.headerTitle}>{t('referral.title')}</Text>
         </LinearGradient>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#00897B" />
@@ -137,7 +137,7 @@ export default function InvitaAmiciScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.referral.title}</Text>
+        <Text style={styles.headerTitle}>{t('referral.title')}</Text>
       </LinearGradient>
 
       <ScrollView style={styles.content}>
