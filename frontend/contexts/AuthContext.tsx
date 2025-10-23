@@ -25,14 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuthStatus();
   }, []);
 
-  // Setup notification listeners
-  useEffect(() => {
-    const listeners = setupNotificationListeners();
-    return () => {
-      removeNotificationListeners(listeners);
-    };
-  }, []);
-
   const checkAuthStatus = async () => {
     try {
       const email = await AsyncStorage.getItem('userEmail');
