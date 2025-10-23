@@ -276,6 +276,7 @@ class ChatMessage(BaseModel):
     message: str
     session_id: str = "default"
     language: str = "it"  # Default italiano
+    user_email: str
 
 class ChatResponse(BaseModel):
     response: str
