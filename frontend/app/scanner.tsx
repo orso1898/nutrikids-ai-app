@@ -39,9 +39,26 @@ export default function Scanner() {
   const [photoBase64, setPhotoBase64] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [usage, setUsage] = useState<{ scans_used: number; scans_limit: number; is_premium: boolean } | null>(null);
   const router = useRouter();
   const { userEmail } = useAuth();
   const { t } = useLanguage();
+
+  // Fetch usage limits on mount
+  useEffect(() => {
+    fetchUsage();
+  }, []);
+
+  const fetchUsage = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/user/usage?user_email=${encodeURIComponent(userEmail!)}`);
+      if (response.data) {
+        setUsage(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching usage:', error);
+    }
+  };
 
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
