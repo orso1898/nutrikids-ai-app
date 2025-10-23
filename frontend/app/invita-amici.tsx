@@ -144,17 +144,17 @@ export default function InvitaAmiciScreen() {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroEmoji}>🎁</Text>
-          <Text style={styles.heroTitle}>{t.referral.subtitle}</Text>
+          <Text style={styles.heroTitle}>{t('referral.subtitle')}</Text>
         </View>
 
         {/* Referral Code */}
         <View style={styles.codeSection}>
-          <Text style={styles.sectionLabel}>{t.referral.yourCode}</Text>
+          <Text style={styles.sectionLabel}>{t('referral.yourCode')}</Text>
           <View style={styles.codeContainer}>
             <Text style={styles.code}>{stats?.referral_code}</Text>
             <TouchableOpacity style={styles.copyButton} onPress={copyCode}>
               <Ionicons name="copy-outline" size={20} color="#00897B" />
-              <Text style={styles.copyText}>{t.referral.copyCode}</Text>
+              <Text style={styles.copyText}>{t('referral.copyCode')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -166,43 +166,43 @@ export default function InvitaAmiciScreen() {
             style={styles.shareGradient}
           >
             <Ionicons name="share-social" size={24} color="#fff" />
-            <Text style={styles.shareText}>{t.referral.shareLink}</Text>
+            <Text style={styles.shareText}>{t('referral.shareLink')}</Text>
           </LinearGradient>
         </TouchableOpacity>
 
         {/* How It Works */}
         <View style={styles.howItWorksSection}>
-          <Text style={styles.sectionTitle}>{t.referral.howItWorks}</Text>
+          <Text style={styles.sectionTitle}>{t('referral.howItWorks')}</Text>
           <View style={styles.step}>
-            <Text style={styles.stepText}>{t.referral.step1}</Text>
+            <Text style={styles.stepText}>{t('referral.step1')}</Text>
           </View>
           <View style={styles.step}>
-            <Text style={styles.stepText}>{t.referral.step2}</Text>
+            <Text style={styles.stepText}>{t('referral.step2')}</Text>
           </View>
           <View style={styles.step}>
-            <Text style={styles.stepText}>{t.referral.step3}</Text>
+            <Text style={styles.stepText}>{t('referral.step3')}</Text>
           </View>
         </View>
 
         {/* Statistics */}
         <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>{t.referral.stats}</Text>
+          <Text style={styles.sectionTitle}>{t('referral.stats')}</Text>
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats?.invites_count || 0}</Text>
-              <Text style={styles.statLabel}>{t.referral.totalInvites}</Text>
+              <Text style={styles.statLabel}>{t('referral.totalInvites')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats?.successful_invites || 0}</Text>
-              <Text style={styles.statLabel}>{t.referral.successfulInvites}</Text>
+              <Text style={styles.statLabel}>{t('referral.successfulInvites')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats?.total_rewards || 0}</Text>
-              <Text style={styles.statLabel}>{t.referral.rewardsEarned}</Text>
+              <Text style={styles.statLabel}>{t('referral.rewardsEarned')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats?.next_reward_at || 3}</Text>
-              <Text style={styles.statLabel}>{t.referral.nextReward}</Text>
+              <Text style={styles.statLabel}>{t('referral.nextReward')}</Text>
             </View>
           </View>
         </View>
@@ -223,7 +223,7 @@ export default function InvitaAmiciScreen() {
               ) : (
                 <>
                   <Ionicons name="gift" size={24} color="#fff" />
-                  <Text style={styles.claimText}>{t.referral.claimReward}</Text>
+                  <Text style={styles.claimText}>{t('referral.claimReward')}</Text>
                 </>
               )}
             </LinearGradient>
