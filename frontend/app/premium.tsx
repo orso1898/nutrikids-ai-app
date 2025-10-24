@@ -428,6 +428,27 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   ctaButtonText: { fontSize: 18, fontWeight: 'bold', color: '#eab308' },
+  orText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  subscribeButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#fff',
+    marginHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+  subscribeButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
   disclaimer: { fontSize: 12, color: 'rgba(255, 255, 255, 0.8)', textAlign: 'center', marginTop: 16, marginHorizontal: 32, lineHeight: 18 },
   loadingCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
