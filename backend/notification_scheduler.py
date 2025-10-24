@@ -247,6 +247,13 @@ def lunch_job():
     asyncio.run(send_lunch_reminders())
 
 def dinner_job():
+    asyncio.run(send_dinner_reminders())
+
+def evening_job():
+    asyncio.run(send_evening_recaps())
+
+def weekly_job():
+    asyncio.run(send_weekly_reports())
 
 async def check_trial_expiring_soon():
     """Controlla trial che scadono tra 24 ore e invia notifica"""
