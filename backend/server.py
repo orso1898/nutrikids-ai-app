@@ -1930,9 +1930,13 @@ async def claim_referral_reward(user_email: str):
 
 # ===== FREE TRIAL ENDPOINT =====
 
+class FreeTrialRequest(BaseModel):
+    user_email: EmailStr
+
 @api_router.post("/start-free-trial")
-async def start_free_trial(user_email: EmailStr):
+async def start_free_trial(request: FreeTrialRequest):
     """Attiva 7 giorni di prova gratuita Premium (solo una volta per utente)"""
+    user_email = request.user_email
     try:
         # Verifica che l'utente esista
         user = await db.users.find_one({"email": user_email})
