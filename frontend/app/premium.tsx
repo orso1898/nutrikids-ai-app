@@ -47,6 +47,43 @@ export default function Premium() {
     }
   };
 
+  const handleFreeTrial = async () => {
+    if (!userEmail) {
+      Alert.alert('Errore', 'Devi effettuare il login per attivare la prova gratuita');
+      return;
+    }
+
+    setProcessingPayment(true);
+    try {
+      // Attiva trial gratuito di 7 giorni
+      const response = await axios.post(
+        `${BACKEND_URL}/api/start-free-trial`,
+        { user_email: userEmail }
+      );
+
+      if (response.data.status === 'success') {
+        Alert.alert(
+          '🎉 Prova Gratuita Attivata!',
+          `Hai 7 giorni per provare tutte le funzionalità Premium!\n\nScadenza: ${new Date(response.data.trial_end_date).toLocaleDateString('it-IT')}`,
+          [
+            {
+              text: 'Inizia subito!',
+              onPress: () => router.push('/home')
+            }
+          ]
+        );
+      }
+    } catch (error: any) {
+      console.error('Free trial error:', error);
+      Alert.alert(
+        'Errore', 
+        error.response?.data?.detail || 'Impossibile attivare la prova gratuita. Riprova più tardi.'
+      );
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
   const handleSubscribe = async () => {
     if (!userEmail) {
       Alert.alert('Errore', 'Devi effettuare il login per sottoscrivere Premium');
