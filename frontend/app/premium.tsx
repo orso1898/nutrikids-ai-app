@@ -298,7 +298,7 @@ export default function Premium() {
 
           <TouchableOpacity 
             style={styles.ctaButton} 
-            onPress={handleSubscribe}
+            onPress={handleFreeTrial}
             disabled={processingPayment}
           >
             {processingPayment ? (
@@ -308,6 +308,20 @@ export default function Premium() {
                 <Text style={styles.ctaButtonText}>{t('premium.startFreeTrial')}</Text>
                 <Ionicons name="arrow-forward" size={20} color="#fff" />
               </>
+            )}
+          </TouchableOpacity>
+          
+          <Text style={styles.orText}>oppure</Text>
+          
+          <TouchableOpacity 
+            style={styles.subscribeButton} 
+            onPress={handleSubscribe}
+            disabled={processingPayment}
+          >
+            {processingPayment ? (
+              <ActivityIndicator color="#00897B" />
+            ) : (
+              <Text style={styles.subscribeButtonText}>Abbonati subito ({selectedPlan === 'monthly' ? '€' + monthlyPrice.toFixed(2) + '/mese' : '€' + yearlyPrice.toFixed(2) + '/anno'})</Text>
             )}
           </TouchableOpacity>
 
