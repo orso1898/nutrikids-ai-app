@@ -1928,6 +1928,66 @@ async def claim_referral_reward(user_email: str):
         logging.error(f"Error claiming reward: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ===== FREE TRIAL ENDPOINT =====
+
+@api_router.post("/start-free-trial")
+async def start_free_trial(user_email: EmailStr):
+    """Attiva 7 giorni di prova gratuita Premium (solo una volta per utente)"""
+    try:
+        # Verifica che l'utente esista
+        user = await db.users.find_one({"email": user_email})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Verifica se ha già usato la trial
+        if user.get("trial_used", False):
+            raise HTTPException(
+                status_code=400, 
+                detail="Hai già utilizzato la prova gratuita. Passa a Premium per continuare!"
+            )
+        
+        # Verifica se è già Premium
+        if user.get("is_premium", False):
+            # Controlla se è ancora valido
+            premium_end = user.get("premium_end_date")
+            if premium_end and premium_end > datetime.utcnow():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Sei già un utente Premium!"
+                )
+        
+        # Attiva 7 giorni di trial
+        trial_start = datetime.utcnow()
+        trial_end = trial_start + timedelta(days=7)
+        
+        await db.users.update_one(
+            {"email": user_email},
+            {
+                "$set": {
+                    "is_premium": True,
+                    "premium_start_date": trial_start,
+                    "premium_end_date": trial_end,
+                    "trial_used": True,
+                    "is_trial": True  # Flag per distinguere trial da abbonamento pagato
+                }
+            }
+        )
+        
+        logging.info(f"Free trial activated for {user_email} until {trial_end}")
+        
+        return {
+            "status": "success",
+            "message": "Prova gratuita di 7 giorni attivata!",
+            "trial_end_date": trial_end.isoformat(),
+            "days_remaining": 7
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error starting free trial: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include router
 app.include_router(api_router)
 
