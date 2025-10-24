@@ -393,6 +393,12 @@ def start_scheduler():
     # Report settimanale - ogni domenica alle 20:00
     scheduler.add_job(weekly_job, 'cron', day_of_week='sun', hour=20, minute=0, id='weekly_report')
     
+    # Controllo trial in scadenza - ogni giorno alle 10:00
+    scheduler.add_job(trial_expiring_job, 'cron', hour=10, minute=0, id='trial_expiring_check')
+    
+    # Controllo trial scaduti - ogni giorno alle 0:00 e 12:00
+    scheduler.add_job(trial_expired_job, 'cron', hour='0,12', minute=0, id='trial_expired_check')
+    
     scheduler.start()
     logger.info("✅ Scheduler notifiche avviato con successo!")
     logger.info("📅 Notifiche programmate:")
@@ -400,6 +406,8 @@ def start_scheduler():
     logger.info("   - Cena: ogni giorno 19:30")
     logger.info("   - Recap: ogni giorno 21:00")
     logger.info("   - Report: ogni domenica 20:00")
+    logger.info("   - Trial expiring: ogni giorno 10:00")
+    logger.info("   - Trial expired: ogni giorno 0:00 e 12:00")
 
 def stop_scheduler():
     """Ferma lo scheduler"""
