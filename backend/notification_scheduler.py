@@ -247,6 +247,129 @@ def lunch_job():
     asyncio.run(send_lunch_reminders())
 
 def dinner_job():
+
+async def check_trial_expiring_soon():
+    """Controlla trial che scadono tra 24 ore e invia notifica"""
+    logger.info("Controllo trial in scadenza...")
+    
+    try:
+        db = await get_db()
+        
+        # Calcola il range: tra 23 e 25 ore da ora
+        now = datetime.utcnow()
+        tomorrow_start = now + timedelta(hours=23)
+        tomorrow_end = now + timedelta(hours=25)
+        
+        # Trova utenti con trial in scadenza domani
+        async for user in db.users.find({
+            "is_trial": True,
+            "is_premium": True,
+            "premium_end_date": {
+                "$gte": tomorrow_start,
+                "$lte": tomorrow_end
+            }
+        }):
+            user_email = user.get("email")
+            premium_end = user.get("premium_end_date")
+            
+            # Ottieni token e lingua
+            token_doc = await db.push_tokens.find_one({"user_email": user_email})
+            if not token_doc:
+                continue
+            
+            language = token_doc.get("language", "it")
+            
+            # Messaggio basato su lingua
+            messages = {
+                "it": {
+                    "title": "⏰ Prova gratuita in scadenza!",
+                    "body": f"La tua prova Premium scade domani! Abbonati ora per continuare a godere di tutte le funzionalità illimitate. 🌟"
+                },
+                "en": {
+                    "title": "⏰ Free trial expiring soon!",
+                    "body": f"Your Premium trial expires tomorrow! Subscribe now to keep enjoying unlimited features. 🌟"
+                },
+                "es": {
+                    "title": "⏰ ¡Prueba gratuita por vencer!",
+                    "body": f"¡Tu prueba Premium vence mañana! Suscríbete ahora para seguir disfrutando de funciones ilimitadas. 🌟"
+                }
+            }
+            
+            msg = messages.get(language, messages["it"])
+            await send_push_to_user(user_email, msg["title"], msg["body"], {"type": "trial_expiring"})
+            
+            logger.info(f"Notifica trial expiring inviata a {user_email}")
+            
+    except Exception as e:
+        logger.error(f"Errore check_trial_expiring_soon: {str(e)}")
+
+async def check_trial_expired():
+    """Controlla trial scaduti e torna gli utenti a Free"""
+    logger.info("Controllo trial scaduti...")
+    
+    try:
+        db = await get_db()
+        
+        now = datetime.utcnow()
+        
+        # Trova utenti con trial scaduto
+        async for user in db.users.find({
+            "is_trial": True,
+            "is_premium": True,
+            "premium_end_date": {"$lte": now}
+        }):
+            user_email = user.get("email")
+            
+            # Torna l'utente a Free
+            await db.users.update_one(
+                {"email": user_email},
+                {
+                    "$set": {
+                        "is_premium": False,
+                        "is_trial": False
+                    }
+                }
+            )
+            
+            # Ottieni token e lingua
+            token_doc = await db.push_tokens.find_one({"user_email": user_email})
+            if not token_doc:
+                logger.info(f"Trial scaduto per {user_email} (nessun push token)")
+                continue
+            
+            language = token_doc.get("language", "it")
+            
+            # Messaggio basato su lingua
+            messages = {
+                "it": {
+                    "title": "😢 Prova gratuita terminata",
+                    "body": "La tua prova Premium è scaduta. Abbonati ora per continuare con scansioni e messaggi illimitati! 🚀"
+                },
+                "en": {
+                    "title": "😢 Free trial ended",
+                    "body": "Your Premium trial has expired. Subscribe now to continue with unlimited scans and messages! 🚀"
+                },
+                "es": {
+                    "title": "😢 Prueba gratuita terminada",
+                    "body": "Tu prueba Premium ha expirado. ¡Suscríbete ahora para continuar con escaneos y mensajes ilimitados! 🚀"
+                }
+            }
+            
+            msg = messages.get(language, messages["it"])
+            await send_push_to_user(user_email, msg["title"], msg["body"], {"type": "trial_expired"})
+            
+            logger.info(f"Trial scaduto per {user_email} - tornato a Free")
+            
+    except Exception as e:
+        logger.error(f"Errore check_trial_expired: {str(e)}")
+
+# Wrapper sincroni per trial jobs
+def trial_expiring_job():
+    asyncio.run(check_trial_expiring_soon())
+
+def trial_expired_job():
+    asyncio.run(check_trial_expired())
+
     asyncio.run(send_dinner_reminders())
 
 def evening_job():
