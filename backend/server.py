@@ -37,13 +37,18 @@ async def get_api_key_from_config(key_name: str = "emergent_llm_key") -> str:
         # Fallback to environment variable if config not found
         if key_name == "emergent_llm_key":
             return EMERGENT_LLM_KEY
+        elif key_name == "stripe_secret_key":
+            return STRIPE_API_KEY
         return ""
     
     key_value = config.get(key_name)
     
     # Se la chiave non è nel database, usa variabile d'ambiente come fallback
-    if not key_value and key_name == "emergent_llm_key":
-        return EMERGENT_LLM_KEY
+    if not key_value:
+        if key_name == "emergent_llm_key":
+            return EMERGENT_LLM_KEY
+        elif key_name == "stripe_secret_key":
+            return STRIPE_API_KEY
     
     return key_value or ""
 
