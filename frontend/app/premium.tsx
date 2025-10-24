@@ -259,9 +259,19 @@ export default function Premium() {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.ctaButton}>
-            <Text style={styles.ctaButtonText}>{t('premium.startFreeTrial')}</Text>
-            <Ionicons name="arrow-forward" size={20} color="#fff" />
+          <TouchableOpacity 
+            style={styles.ctaButton} 
+            onPress={handleSubscribe}
+            disabled={processingPayment}
+          >
+            {processingPayment ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Text style={styles.ctaButtonText}>{t('premium.startFreeTrial')}</Text>
+                <Ionicons name="arrow-forward" size={20} color="#fff" />
+              </>
+            )}
           </TouchableOpacity>
 
           <Text style={styles.disclaimer}>{t('premium.disclaimer')}</Text>
