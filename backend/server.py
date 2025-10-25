@@ -479,8 +479,10 @@ class ReferralCode(BaseModel):
     user_email: EmailStr
     referral_code: str
     invites_count: int = 0
-    successful_invites: List[str] = []  # Lista email degli invitati
+    pending_invites: List[str] = []  # Inviti in attesa di diventare Premium
+    successful_invites: List[str] = []  # Inviti che sono diventati Premium
     rewards_claimed: int = 0
+    rewards_year_start: Optional[datetime] = None  # Inizio periodo annuale per tracking premi
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_reward_at: Optional[datetime] = None
 
