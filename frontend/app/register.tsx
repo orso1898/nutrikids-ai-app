@@ -386,4 +386,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
+  referralHint: {
+    fontSize: 12,
+    color: '#eab308',
+    marginTop: -8,
+    marginBottom: 8,
+    marginLeft: 40,
+    fontStyle: 'italic',
+  },
 });
