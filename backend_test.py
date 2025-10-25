@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-NutriKids AI - Test Completo Finale
-Test end-to-end di TUTTE le funzionalità prima del deployment finale
+NutriKids AI - CRITICAL BUG FIX TESTING
+Focus on meal plan creation and user registration performance fixes
 """
 
 import requests
