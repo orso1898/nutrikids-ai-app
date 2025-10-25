@@ -234,8 +234,8 @@ def test_2_referral_system():
             error_msg = response.json().get("detail", "Unknown error") if response else "No response"
             log_test(f"Register User {i} with Referral", False, error=error_msg)
     
-    # Test 2.3: Check referral stats (should show pending invites)
-    response = make_request("GET", f"/referral/stats/{user1['email']}")
+    # Test 2.3: Check referral stats (stats are included in referral code response)
+    response = make_request("GET", f"/referral/code/{user1['email']}")
     if response and response.status_code == 200:
         stats = response.json()
         pending_invites = stats.get("pending_invites", 0)
