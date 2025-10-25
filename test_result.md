@@ -460,6 +460,18 @@ test_plan:
           agent: "testing"
           comment: "✅ PUSH NOTIFICATION SYSTEM TESTED: POST /api/push-token/register registers device tokens. GET/PUT /api/push-token/preferences manages notification settings. Scheduler active for meal reminders and weekly reports. All endpoints working correctly."
 
+  - task: "Free Trial System"
+    implemented: true
+    working: false
+    file: "backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ FREE TRIAL TIMEOUT: Final comprehensive test revealed timeout issues with /api/start-free-trial endpoint. Both start trial and prevent double trial tests failed due to no response. Needs investigation of free trial activation logic."
+
   - task: "Coach Maya AI Chat System"
     implemented: true
     working: true
@@ -471,6 +483,9 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "✅ COACH MAYA SYSTEM TESTED: POST /api/coach-maya provides AI nutrition advice in Italian. Usage limits properly enforced (5 messages/day for free users, unlimited for premium). Multi-language support (it, en, es). Fixed ChatMessage model to include user_email field."
+        - working: true
+          agent: "testing"
+          comment: "✅ FINAL COMPREHENSIVE TEST CONFIRMED: Coach Maya working perfectly in both Italian and English. Response lengths: IT (639 chars), EN (730 chars). Multi-language AI chat system fully functional."
 
 frontend:
   - task: "Gamification UI - Profilo Visualization"
