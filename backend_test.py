@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-NutriKids AI Backend Testing Suite - MVP READY CHECK
-Comprehensive testing of all critical flows before launch
+NutriKids AI - Test Completo Finale
+Test end-to-end di TUTTE le funzionalità prima del deployment finale
 """
 
 import requests
@@ -10,14 +10,43 @@ import base64
 import time
 from datetime import datetime, timedelta
 import uuid
-import sys
+import os
 
 # Configuration
-BASE_URL = "https://nutriplay-2.preview.emergentagent.com/api"
-TEST_USER_EMAIL = "test.parent@nutrikids.com"
-TEST_USER_PASSWORD = "testpass123"
-TEST_ADMIN_EMAIL = "admin@nutrikids.com"
-TEST_ADMIN_PASSWORD = "admin123"
+BACKEND_URL = "https://nutriplay-2.preview.emergentagent.com/api"
+ADMIN_EMAIL = "admin@nutrikids.com"
+ADMIN_PASSWORD = "Rossonero1898!"
+
+# Test data - using realistic data as requested
+TEST_USERS = [
+    {
+        "email": "marco.rossi@gmail.com",
+        "password": "MarcoRossi123!",
+        "name": "Marco Rossi"
+    },
+    {
+        "email": "giulia.bianchi@gmail.com", 
+        "password": "GiuliaBianchi456!",
+        "name": "Giulia Bianchi"
+    },
+    {
+        "email": "francesco.verdi@gmail.com",
+        "password": "FrancescoVerdi789!",
+        "name": "Francesco Verdi"
+    }
+]
+
+# Global variables for test state
+admin_token = None
+user_tokens = {}
+referral_codes = {}
+children_ids = {}
+test_results = {
+    "total_tests": 0,
+    "passed_tests": 0,
+    "failed_tests": 0,
+    "test_details": []
+}
 
 class NutriKidsBackendTester:
     def __init__(self):
