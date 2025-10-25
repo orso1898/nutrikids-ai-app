@@ -363,6 +363,21 @@ const styles = StyleSheet.create({
     color: '#555',
     lineHeight: 24,
   },
+  warningBox: {
+    backgroundColor: '#fef3c7',
+    padding: 12,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 8,
+  },
+  warningText: {
+    fontSize: 13,
+    color: '#92400e',
+    lineHeight: 20,
+    marginLeft: 8,
+    flex: 1,
+  },
   statsSection: {
     backgroundColor: '#fff',
     padding: 20,
