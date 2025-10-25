@@ -216,6 +216,28 @@ export default function Register() {
                   </TouchableOpacity>
                 </View>
 
+                {/* Codice Referral (Opzionale) */}
+                <View style={styles.inputContainer}>
+                  <Ionicons name="gift" size={20} color="#eab308" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Codice invito (opzionale) - Ottieni Premium gratis! 🎁"
+                    value={referralCode}
+                    onChangeText={(text) => setReferralCode(text.toUpperCase())}
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                    maxLength={8}
+                  />
+                  {referralCode.length > 0 && (
+                    <Ionicons name="checkmark-circle" size={20} color="#10b981" style={styles.eyeIcon} />
+                  )}
+                </View>
+                {referralCode.length > 0 && (
+                  <Text style={styles.referralHint}>
+                    🎉 Con questo codice, aiuterai un amico a ottenere Premium gratis!
+                  </Text>
+                )}
+
                 <TouchableOpacity 
                   style={[styles.registerButton, loading && styles.registerButtonDisabled]}
                   onPress={handleRegister}
