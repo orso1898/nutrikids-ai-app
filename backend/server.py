@@ -1838,18 +1838,33 @@ async def get_referral_code(user_email: str):
             await db.referrals.insert_one(referral)
         
         # Calcola statistiche
-        successful_count = len(referral.get("successful_invites", []))
-        pending_count = referral.get("invites_count", 0) - successful_count
-        next_reward_at = 3 - (successful_count % 3)
-        can_claim = successful_count >= 3 and (successful_count // 3) > referral.get("rewards_claimed", 0)
+        successful_count = len(referral.get("successful_invites", []))  # Invitati che sono diventati Premium
+        pending_count = len(referral.get("pending_invites", []))  # Invitati registrati ma non ancora Premium
+        total_invites = successful_count + pending_count
+        
+        rewards_claimed = referral.get("rewards_claimed", 0)
+        rewards_year_start = referral.get("rewards_year_start")
+        
+        # Check se anno è passato (reset)
+        if rewards_year_start and (datetime.utcnow() - rewards_year_start).days >= 365:
+            rewards_claimed = 0  # Reset per display
+        
+        # Calcola prossimo premio
+        next_reward_at = 3 - (successful_count % 3) if successful_count % 3 != 0 else 3
+        
+        # Max 3 premi all'anno
+        max_rewards_per_year = 3
+        remaining_rewards = max(0, max_rewards_per_year - rewards_claimed)
+        can_claim = successful_count >= 3 and (successful_count // 3) > rewards_claimed and remaining_rewards > 0
         
         return {
             "referral_code": referral["referral_code"],
-            "invites_count": referral.get("invites_count", 0),
-            "successful_invites": successful_count,
-            "pending_invites": pending_count,
+            "invites_count": total_invites,
+            "successful_invites": successful_count,  # Quanti sono diventati Premium
+            "pending_invites": pending_count,  # Quanti sono registrati ma non Premium
             "next_reward_at": next_reward_at,
-            "total_rewards": referral.get("rewards_claimed", 0),
+            "total_rewards": rewards_claimed,
+            "remaining_rewards_this_year": remaining_rewards,
             "can_claim_reward": can_claim,
             "share_link": f"https://nutriplay-2.preview.emergentagent.com/register?ref={referral['referral_code']}"
         }
