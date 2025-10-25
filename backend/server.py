@@ -1570,17 +1570,106 @@ async def stripe_webhook(request: Request):
                 # Update user to Premium
                 if payment_status == "paid":
                     user_email = transaction["user_email"]
+                    now = datetime.utcnow()
+                    
+                    # Ottieni user per vedere se è stato invitato
+                    user = await db.users.find_one({"email": user_email})
+                    
                     await db.users.update_one(
                         {"email": user_email},
                         {
                             "$set": {
                                 "is_premium": True,
                                 "premium_plan": transaction["plan_type"],
-                                "premium_since": datetime.utcnow(),
-                                "updated_at": datetime.utcnow()
+                                "premium_since": now,
+                                "premium_start_date": now,
+                                "updated_at": now
                             }
                         }
                     )
+                    
+                    # GESTIONE REFERRAL: Se questo utente è stato invitato, dai premio al referrer
+                    referred_by_code = user.get("referred_by")
+                    if referred_by_code:
+                        referrer = await db.referrals.find_one({"referral_code": referred_by_code})
+                        
+                        if referrer:
+                            referrer_email = referrer["user_email"]
+                            
+                            # Sposta da pending_invites a successful_invites
+                            await db.referrals.update_one(
+                                {"referral_code": referred_by_code},
+                                {
+                                    "$pull": {"pending_invites": user_email},
+                                    "$push": {"successful_invites": user_email}
+                                }
+                            )
+                            
+                            # Ricarica referrer aggiornato
+                            referrer = await db.referrals.find_one({"referral_code": referred_by_code})
+                            successful_count = len(referrer.get("successful_invites", []))
+                            rewards_claimed = referrer.get("rewards_claimed", 0)
+                            rewards_year_start = referrer.get("rewards_year_start")
+                            
+                            # Check se anno è passato (reset contatore)
+                            if rewards_year_start and (now - rewards_year_start).days >= 365:
+                                # Reset annuale
+                                await db.referrals.update_one(
+                                    {"referral_code": referred_by_code},
+                                    {
+                                        "$set": {
+                                            "rewards_claimed": 0,
+                                            "rewards_year_start": now
+                                        }
+                                    }
+                                )
+                                rewards_claimed = 0
+                            
+                            # Se non ha mai iniziato il periodo annuale, inizialo ora
+                            if not rewards_year_start:
+                                await db.referrals.update_one(
+                                    {"referral_code": referred_by_code},
+                                    {"$set": {"rewards_year_start": now}}
+                                )
+                            
+                            # Controlla se può ricevere premio (ogni 3 inviti Premium, max 3 premi/anno)
+                            if successful_count >= 3 and (successful_count // 3) > rewards_claimed and rewards_claimed < 3:
+                                # Assegna 1 mese Premium al referrer
+                                referrer_user = await db.users.find_one({"email": referrer_email})
+                                
+                                if referrer_user:
+                                    # Calcola nuova data fine Premium
+                                    current_premium_end = referrer_user.get("premium_end_date")
+                                    if current_premium_end and current_premium_end > now:
+                                        # Estendi Premium esistente
+                                        new_premium_end = current_premium_end + timedelta(days=30)
+                                    else:
+                                        # Attiva nuovo Premium
+                                        new_premium_end = now + timedelta(days=30)
+                                    
+                                    await db.users.update_one(
+                                        {"email": referrer_email},
+                                        {
+                                            "$set": {
+                                                "is_premium": True,
+                                                "premium_start_date": now if not current_premium_end else referrer_user.get("premium_start_date"),
+                                                "premium_end_date": new_premium_end
+                                            }
+                                        }
+                                    )
+                                    
+                                    # Incrementa rewards_claimed
+                                    await db.referrals.update_one(
+                                        {"referral_code": referred_by_code},
+                                        {
+                                            "$inc": {"rewards_claimed": 1},
+                                            "$set": {"last_reward_at": now}
+                                        }
+                                    )
+                                    
+                                    logging.info(f"🎉 Referral reward: {referrer_email} earned 1 month Premium from {user_email} becoming Premium!")
+                    
+                    logging.info(f"User {user_email} upgraded to Premium via Stripe payment")
         
         return {"status": "success"}
     
