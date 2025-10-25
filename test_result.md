@@ -345,6 +345,12 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "POST /api/register endpoint working correctly. Successfully creates users with hashed passwords, proper validation, and returns correct user data. Handles duplicate email registration appropriately with 400 status."
+        - working: false
+          agent: "testing"
+          comment: "⚠️ REGISTRATION TIMEOUT: Test completo finale ha rivelato alcuni timeout casuali durante la registrazione utenti. Possibile lentezza nelle query referral o hash password."
+        - working: "NA"
+          agent: "main"
+          comment: "⚡ PERFORMANCE OPTIMIZATION: Aggiunti indici MongoDB per velocizzare tutte le query: 1) referrals.referral_code (unique), 2) referrals.user_email, 3) users.email (unique), 4) users.referred_by, 5) children.parent_email, 6) diary (user_email + timestamp), 7) meal_plans (user_email + week_start_date). Gli indici vengono creati automaticamente all'avvio del server. Dovrebbe risolvere i timeout casuali durante registrazione. Necessita ri-testing."
 
   - task: "User Login API"
     implemented: true
