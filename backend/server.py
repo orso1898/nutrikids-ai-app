@@ -1036,8 +1036,15 @@ async def create_meal_plan(plan: WeeklyPlanCreate):
         updated = await db.meal_plans.find_one({"_id": existing["_id"]})
         return WeeklyPlan(**updated)
     else:
-        # Create new plan
-        plan_obj = WeeklyPlan(**plan.dict())
+        # Create new plan - gestione corretta dei campi Optional
+        plan_data = plan.dict()
+        
+        # Sostituisci None con MealPlanDay di default per ogni giorno
+        for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
+            if plan_data.get(day) is None:
+                plan_data[day] = MealPlanDay().dict()
+        
+        plan_obj = WeeklyPlan(**plan_data)
         await db.meal_plans.insert_one(plan_obj.dict())
         return plan_obj
 
