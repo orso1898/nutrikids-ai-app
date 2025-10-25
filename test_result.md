@@ -502,7 +502,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "MVP READY CHECK - COMPREHENSIVE BACKEND TESTING - COMPLETED"
+    - "BUG FIX: Meal Plan Creation + Registration Performance"
+    - "Meal Plan Generation"
+    - "User Registration API"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
