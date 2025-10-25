@@ -254,21 +254,21 @@ def test_3_free_trial():
     user2 = TEST_USERS[1]
     
     # Test 3.1: Start Free Trial
-    headers = {"Authorization": f"Bearer {user_tokens.get(user2['email'])}"}
-    response = make_request("POST", "/start-free-trial", headers=headers)
+    trial_data = {"user_email": user2["email"]}
+    response = make_request("POST", "/start-free-trial", trial_data)
     if response and response.status_code == 200:
-        trial_data = response.json()
-        is_premium = trial_data.get("is_premium", False)
-        trial_used = trial_data.get("trial_used", False)
-        premium_end_date = trial_data.get("premium_end_date")
+        trial_response = response.json()
+        status = trial_response.get("status")
+        message = trial_response.get("message")
+        trial_end_date = trial_response.get("trial_end_date")
         
-        log_test("Start Free Trial", True, f"Premium: {is_premium}, Trial used: {trial_used}, End date: {premium_end_date}")
+        log_test("Start Free Trial", True, f"Status: {status}, End date: {trial_end_date}")
     else:
         error_msg = response.json().get("detail", "Unknown error") if response else "No response"
         log_test("Start Free Trial", False, error=error_msg)
     
     # Test 3.2: Try to start trial again (should fail)
-    response = make_request("POST", "/start-free-trial", headers=headers)
+    response = make_request("POST", "/start-free-trial", trial_data)
     if response and response.status_code == 400:
         log_test("Prevent Double Trial", True, "Correctly prevented second trial usage")
     else:
