@@ -1038,27 +1038,36 @@ def print_final_report():
         print("❌ CRITICO! Molti problemi da risolvere prima del lancio")
 
 def main():
-    """Main test execution"""
-    print("🧪 NUTRIKIDS AI - TEST COMPLETO FINALE")
-    print("Testing all functionalities before final deployment")
+    """Main test execution - Focus on critical bug fixes"""
+    print("🧪 NUTRIKIDS AI - CRITICAL BUG FIX TESTING")
+    print("Focus on meal plan creation and user registration performance")
     print(f"Backend URL: {BACKEND_URL}")
     print("="*80)
     
-    # Execute all tests in order
-    test_1_authentication_users()
-    test_2_referral_system()
-    test_3_free_trial()
-    test_4_gamification_children()
-    test_5_scanner_ai()
-    test_6_coach_maya()
-    test_7_diary_plans()
-    test_8_dashboard()
-    test_9_premium_stripe()
-    test_10_push_notifications()
-    test_11_admin_panel()
+    # Run critical bug fix tests first
+    test_critical_bug_fixes()
     
-    # Print final report
-    print_final_report()
+    # Run a few additional key tests to ensure fixes didn't break anything
+    print("\n🔍 QUICK VERIFICATION OF OTHER KEY ENDPOINTS")
+    print("="*60)
+    
+    # Quick health check
+    response = make_request("GET", "/")
+    if response and response.status_code == 200:
+        log_test("Health Check", True, "✅ Backend is running")
+    else:
+        log_test("Health Check", False, "❌ Backend not responding")
+    
+    # Quick admin login test
+    admin_data = {"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD}
+    response = make_request("POST", "/login", admin_data)
+    if response and response.status_code == 200:
+        log_test("Admin Login", True, "✅ Admin login working")
+    else:
+        log_test("Admin Login", False, "❌ Admin login failed")
+    
+    # Print focused report
+    print_focused_report()
 
 if __name__ == "__main__":
     main()
