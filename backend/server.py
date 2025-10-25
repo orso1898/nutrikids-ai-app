@@ -2098,7 +2098,30 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_event():
-    """Avvia lo scheduler notifiche all'avvio del server"""
+    """Avvia lo scheduler notifiche all'avvio del server e crea indici DB"""
+    # Crea indici per migliorare le performance
+    try:
+        # Indici per referral system (velocizza le query)
+        await db.referrals.create_index("referral_code", unique=True)
+        await db.referrals.create_index("user_email")
+        
+        # Indici per users
+        await db.users.create_index("email", unique=True)
+        await db.users.create_index("referred_by")
+        
+        # Indici per children
+        await db.children.create_index("parent_email")
+        
+        # Indici per diary
+        await db.diary.create_index([("user_email", 1), ("timestamp", -1)])
+        
+        # Indici per meal_plans
+        await db.meal_plans.create_index([("user_email", 1), ("week_start_date", 1)])
+        
+        logger.info("✅ Indici MongoDB creati con successo")
+    except Exception as e:
+        logger.warning(f"⚠️ Errore creazione indici (potrebbero già esistere): {str(e)}")
+    
     start_scheduler()
     logger.info("🚀 Server avviato con scheduler notifiche attivo")
 
