@@ -1866,7 +1866,7 @@ async def get_referral_code(user_email: str):
             "total_rewards": rewards_claimed,
             "remaining_rewards_this_year": remaining_rewards,
             "can_claim_reward": can_claim,
-            "share_link": f"https://nutriplay-2.preview.emergentagent.com/register?ref={referral['referral_code']}"
+            "share_link": f"https://smart-foodscan.preview.emergentagent.com/register?ref={referral['referral_code']}"
         }
     
     except Exception as e:

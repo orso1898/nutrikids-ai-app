@@ -660,7 +660,7 @@ index 505c1e4..e69de29 100644
 ----------------+from datetime import datetime
 ----------------+
 ----------------+# Backend URL
-----------------+BACKEND_URL = "https://nutriplay-2.preview.emergentagent.com/api"
+----------------+BACKEND_URL = "https://smart-foodscan.preview.emergentagent.com/api"
 ----------------+
 ----------------+def test_user_registration():
 ----------------+    """Test POST /api/register - User Registration"""
