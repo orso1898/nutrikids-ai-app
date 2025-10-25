@@ -285,8 +285,8 @@ test_plan:
     working: true
     file: "backend/server.py"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
@@ -294,6 +294,12 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "✅ MEAL PLAN GENERATION FULLY TESTED AND WORKING: All 3 test cases passed. ✅ POST /api/meal-plan creates weekly meal plans successfully with all 7 days (monday-sunday). ✅ GET /api/meal-plan/{user_email}/{date} retrieves existing plans correctly. ✅ Empty plan handling working (returns default empty plan for non-existent weeks). ✅ Response format correct with all required fields (id, user_email, week_start_date, daily meals). Sistema meal plan completamente funzionale."
+        - working: false
+          agent: "testing"
+          comment: "❌ MEAL PLAN CREATION ERROR 500: Test completo finale ha rivelato errore 500 durante la creazione di nuovi meal plans."
+        - working: "NA"
+          agent: "main"
+          comment: "🔧 BUG FIX: Risolto errore 500 nella creazione meal plans. Problema: WeeklyPlanCreate ha campi Optional (monday, tuesday, etc.) ma WeeklyPlan li richiede con default_factory. Soluzione: aggiunto controllo che sostituisce None con MealPlanDay() di default per ogni giorno prima di creare il WeeklyPlan. Ora gestione corretta dei campi Optional. Necessita ri-testing."
 
   - task: "Dashboard Statistics"
     implemented: true
