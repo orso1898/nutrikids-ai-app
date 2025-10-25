@@ -96,6 +96,238 @@ def make_request(method, endpoint, data=None, headers=None, expected_status=200)
         print(f"Request error for {method} {endpoint}: {str(e)}")
         return None
 
+def test_critical_bug_fixes():
+    """🧪 CRITICAL BUG FIX TESTING - Focus on meal plan creation and registration performance"""
+    print("\n" + "="*80)
+    print("🚀 CRITICAL BUG FIX TESTING - NUTRIKIDS AI")
+    print("="*80)
+    print("Testing 2 critical bug fixes:")
+    print("1. Meal Plan Creation Error 500 → Fixed")
+    print("2. Registration Timeout → Performance optimization with MongoDB indices")
+    print("="*80)
+    
+    # Test 1: MEAL PLAN CREATION BUG FIX
+    print("\n🧪 TEST 1: MEAL PLAN CREATION BUG FIX")
+    print("-" * 60)
+    
+    test_user_email = f"mealplan_bugfix_{int(time.time())}@test.com"
+    
+    # Test 1.1: Create meal plan with minimal fields (empty days)
+    print("\n1.1 Testing meal plan with minimal/empty fields...")
+    start_time = time.time()
+    
+    minimal_plan = {
+        "user_email": test_user_email,
+        "week_start_date": "2024-01-15",
+        "num_people": 2
+        # No daily meal data - should use defaults without 500 error
+    }
+    
+    response = make_request("POST", "/meal-plan", minimal_plan)
+    response_time = time.time() - start_time
+    
+    if response and response.status_code == 200:
+        data = response.json()
+        days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        all_days_present = all(day in data for day in days)
+        
+        if all_days_present:
+            log_test("Meal Plan - Minimal Fields (Bug Fix)", True, 
+                    f"✅ Created successfully with all 7 days. Response time: {response_time:.3f}s")
+        else:
+            log_test("Meal Plan - Minimal Fields (Bug Fix)", False, 
+                    f"❌ Missing days in response: {[d for d in days if d not in data]}")
+    else:
+        error_msg = response.json().get("detail", "Unknown error") if response else "No response"
+        log_test("Meal Plan - Minimal Fields (Bug Fix)", False, 
+                f"❌ HTTP {response.status_code if response else 'N/A'}: {error_msg}")
+    
+    # Test 1.2: Create meal plan with some populated, some empty days
+    print("\n1.2 Testing meal plan with mixed populated/empty days...")
+    start_time = time.time()
+    
+    mixed_plan = {
+        "user_email": test_user_email,
+        "week_start_date": "2024-01-22",
+        "num_people": 3,
+        "monday": {
+            "breakfast": "Cereali con latte",
+            "lunch": "Pasta al pomodoro",
+            "dinner": "Pollo arrosto",
+            "snack": "Frutta"
+        },
+        "wednesday": {
+            "breakfast": "Toast",
+            "lunch": "Risotto",
+            "dinner": "",
+            "snack": "Yogurt"
+        }
+        # Other days should get default empty values
+    }
+    
+    response = make_request("POST", "/meal-plan", mixed_plan)
+    response_time = time.time() - start_time
+    
+    if response and response.status_code == 200:
+        data = response.json()
+        monday_ok = data.get('monday', {}).get('breakfast') == "Cereali con latte"
+        wednesday_ok = data.get('wednesday', {}).get('lunch') == "Risotto"
+        
+        if monday_ok and wednesday_ok:
+            log_test("Meal Plan - Mixed Data (Bug Fix)", True, 
+                    f"✅ Created with mixed data. Response time: {response_time:.3f}s")
+        else:
+            log_test("Meal Plan - Mixed Data (Bug Fix)", False, 
+                    "❌ Data mismatch in populated days")
+    else:
+        error_msg = response.json().get("detail", "Unknown error") if response else "No response"
+        log_test("Meal Plan - Mixed Data (Bug Fix)", False, 
+                f"❌ HTTP {response.status_code if response else 'N/A'}: {error_msg}")
+    
+    # Test 1.3: Multiple meal plan creations to verify consistency
+    print("\n1.3 Testing multiple meal plan creations for consistency...")
+    success_count = 0
+    total_attempts = 4
+    response_times = []
+    
+    for i in range(total_attempts):
+        start_time = time.time()
+        
+        test_plan = {
+            "user_email": test_user_email,
+            "week_start_date": f"2024-02-{5 + i:02d}",
+            "num_people": 2 + i,
+            "monday": {
+                "breakfast": f"Test breakfast {i+1}",
+                "lunch": f"Test lunch {i+1}",
+                "dinner": "",
+                "snack": ""
+            } if i % 2 == 0 else None  # Mix of populated and None days
+        }
+        
+        response = make_request("POST", "/meal-plan", test_plan)
+        response_time = time.time() - start_time
+        response_times.append(response_time)
+        
+        if response and response.status_code == 200:
+            success_count += 1
+        
+        time.sleep(0.2)  # Small delay between requests
+    
+    avg_time = sum(response_times) / len(response_times)
+    success_rate = (success_count / total_attempts) * 100
+    
+    if success_count == total_attempts:
+        log_test("Meal Plan - Multiple Creations", True, 
+                f"✅ {success_count}/{total_attempts} successful. Avg time: {avg_time:.3f}s")
+    else:
+        log_test("Meal Plan - Multiple Creations", False, 
+                f"❌ Only {success_count}/{total_attempts} successful. Success rate: {success_rate:.1f}%")
+    
+    # Test 2: USER REGISTRATION PERFORMANCE FIX
+    print("\n🧪 TEST 2: USER REGISTRATION PERFORMANCE FIX")
+    print("-" * 60)
+    
+    # Get referral code for testing
+    referral_code = None
+    try:
+        response = make_request("GET", f"/referral/code/{ADMIN_EMAIL}")
+        if response and response.status_code == 200:
+            referral_code = response.json().get('referral_code')
+            print(f"✅ Got referral code for testing: {referral_code}")
+    except:
+        print("⚠️  Could not get referral code, testing without it")
+    
+    # Test 2.1: Sequential user registrations to test performance
+    print("\n2.1 Testing sequential user registrations (performance test)...")
+    
+    registration_times = []
+    registration_results = []
+    
+    for i in range(1, 6):  # Test 5 sequential registrations
+        unique_email = f"perftest_{int(time.time())}_{i}@test.com"
+        start_time = time.time()
+        
+        registration_data = {
+            "email": unique_email,
+            "password": "Test123!",
+            "name": f"Performance Test User {i}"
+        }
+        
+        # Add referral code to some registrations to test referral lookup performance
+        if referral_code and i % 2 == 0:
+            registration_data["referral_code"] = referral_code
+        
+        response = make_request("POST", "/register", registration_data)
+        response_time = time.time() - start_time
+        registration_times.append(response_time)
+        
+        success = response and response.status_code == 201
+        registration_results.append(success)
+        
+        ref_note = " (with referral)" if referral_code and i % 2 == 0 else ""
+        status = "✅" if success else "❌"
+        print(f"   Registration {i}: {status} {response_time:.3f}s{ref_note}")
+        
+        if not success and response:
+            error_msg = response.json().get("detail", "Unknown error")
+            print(f"      Error: {error_msg}")
+        
+        time.sleep(0.3)  # Small delay between registrations
+    
+    # Analyze performance results
+    successful_registrations = sum(registration_results)
+    avg_time = sum(registration_times) / len(registration_times)
+    max_time = max(registration_times)
+    min_time = min(registration_times)
+    
+    print(f"\n📊 REGISTRATION PERFORMANCE ANALYSIS:")
+    print(f"   Successful: {successful_registrations}/5")
+    print(f"   Average time: {avg_time:.3f}s")
+    print(f"   Fastest: {min_time:.3f}s")
+    print(f"   Slowest: {max_time:.3f}s")
+    
+    # Check for timeouts (threshold: 10 seconds)
+    timeout_threshold = 10.0
+    timeouts = [t for t in registration_times if t > timeout_threshold]
+    
+    if not timeouts and successful_registrations >= 4:
+        log_test("Registration Performance Fix", True, 
+                f"✅ No timeouts detected. {successful_registrations}/5 successful. Avg: {avg_time:.3f}s")
+    elif timeouts:
+        log_test("Registration Performance Fix", False, 
+                f"❌ {len(timeouts)} registrations took over {timeout_threshold}s")
+    else:
+        log_test("Registration Performance Fix", False, 
+                f"❌ Only {successful_registrations}/5 registrations successful")
+    
+    # Test 2.2: Registration with referral code (specific test)
+    if referral_code:
+        print("\n2.2 Testing registration with referral code (MongoDB index test)...")
+        start_time = time.time()
+        
+        referral_test_data = {
+            "email": f"referral_test_{int(time.time())}@test.com",
+            "password": "Test123!",
+            "name": "Referral Test User",
+            "referral_code": referral_code
+        }
+        
+        response = make_request("POST", "/register", referral_test_data)
+        response_time = time.time() - start_time
+        
+        if response and response.status_code == 201:
+            log_test("Registration with Referral (Index Test)", True, 
+                    f"✅ Registration with referral successful. Time: {response_time:.3f}s")
+        else:
+            error_msg = response.json().get("detail", "Unknown error") if response else "No response"
+            log_test("Registration with Referral (Index Test)", False, 
+                    f"❌ Registration failed: {error_msg}")
+    
+    print("\n" + "="*80)
+    print("🏁 CRITICAL BUG FIX TESTING COMPLETED")
+    print("="*80)
+
 def test_1_authentication_users():
     """1. AUTENTICAZIONE & UTENTI"""
     print("\n" + "="*60)
