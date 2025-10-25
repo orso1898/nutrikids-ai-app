@@ -943,6 +943,56 @@ def test_11_admin_panel():
         error_msg = response.json().get("detail", "Unknown error") if response else "No response"
         log_test("Get Specific Config Value", False, error=error_msg)
 
+def print_focused_report():
+    """Print focused report for critical bug fix testing"""
+    print("\n" + "="*80)
+    print("📋 CRITICAL BUG FIX TEST REPORT - NUTRIKIDS AI")
+    print("="*80)
+    
+    total = test_results["total_tests"]
+    passed = test_results["passed_tests"]
+    failed = test_results["failed_tests"]
+    success_rate = (passed / total * 100) if total > 0 else 0
+    
+    print(f"📊 TEST RESULTS:")
+    print(f"   Total Tests: {total}")
+    print(f"   ✅ Passed: {passed}")
+    print(f"   ❌ Failed: {failed}")
+    print(f"   📈 Success Rate: {success_rate:.1f}%")
+    
+    print(f"\n🎯 CRITICAL BUG FIX STATUS:")
+    
+    # Check meal plan fix
+    meal_plan_tests = [t for t in test_results["test_details"] if "meal plan" in t["test"].lower()]
+    meal_plan_success = all("✅" in t["status"] for t in meal_plan_tests)
+    
+    # Check registration performance fix
+    registration_tests = [t for t in test_results["test_details"] if "registration" in t["test"].lower() and "performance" in t["test"].lower()]
+    registration_success = all("✅" in t["status"] for t in registration_tests)
+    
+    print(f"   🍽️  Meal Plan Creation Fix: {'✅ WORKING' if meal_plan_success else '❌ ISSUES DETECTED'}")
+    print(f"   ⚡ Registration Performance Fix: {'✅ WORKING' if registration_success else '❌ ISSUES DETECTED'}")
+    
+    if failed > 0:
+        print(f"\n❌ FAILED TESTS:")
+        for result in test_results["test_details"]:
+            if "❌" in result["status"]:
+                print(f"   - {result['test']}")
+                if result["error"]:
+                    print(f"     Error: {result['error']}")
+    
+    print(f"\n🏁 CONCLUSION:")
+    if success_rate >= 90:
+        print("   🎉 EXCELLENT! Critical bug fixes are working perfectly")
+    elif success_rate >= 80:
+        print("   ✅ GOOD! Bug fixes working with minor issues")
+    elif success_rate >= 70:
+        print("   ⚠️  ACCEPTABLE! Some issues remain")
+    else:
+        print("   ❌ CRITICAL! Bug fixes need more work")
+    
+    return success_rate
+
 def print_final_report():
     """Print final test report"""
     print("\n" + "="*80)
