@@ -1788,7 +1788,7 @@ async def get_referral_code(user_email: str):
             "next_reward_at": next_reward_at,
             "total_rewards": referral.get("rewards_claimed", 0),
             "can_claim_reward": can_claim,
-            "share_link": f"https://nutrikids.ai/register?ref={referral['referral_code']}"
+            "share_link": f"https://nutriplay-2.preview.emergentagent.com/register?ref={referral['referral_code']}"
         }
     
     except Exception as e:
