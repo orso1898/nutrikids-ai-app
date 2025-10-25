@@ -80,7 +80,8 @@ export default function Register() {
       const response = await axios.post(`${BACKEND_URL}/api/register`, {
         email: email,
         password: password,
-        name: name.trim() || null
+        name: name.trim() || null,
+        referral_code: referralCode.trim() || null
       });
       
       console.log('✅ Registration successful:', response.data);
