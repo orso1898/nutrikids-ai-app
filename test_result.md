@@ -378,11 +378,11 @@ test_plan:
 
   - task: "Photo Analysis API"
     implemented: true
-    working: true
+    working: false
     file: "backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: true
           agent: "testing"
@@ -393,6 +393,9 @@ test_plan:
         - working: true
           agent: "testing"
           comment: "🧪 GPT-4o VISION TESTING COMPLETATO CON SUCCESSO: Tutti i 6 test del sistema foto analisi sono passati (100% successo). ✅ Endpoint POST /api/analyze-photo funziona perfettamente con mock response realistico. ✅ Response format corretto con tutti i campi richiesti: foods_detected (5 items), nutritional_info (calories, proteins, carbs, fats, fiber), suggestions (250 chars), health_score (8/10), allergens_detected (2 allergens). ✅ Sistema allergeni funzionante: warning generato correttamente per glutine/lattosio. ✅ Rate limiting: premium users hanno accesso illimitato. ✅ Validazione: user inesistente (404), immagine invalida (500). ✅ Response time < 10s (0.04s). Sistema GPT-4o Vision upgrade completamente testato e funzionante. Note: Attualmente usa mock response per testing a causa di problemi temporanei con LLM proxy."
+        - working: false
+          agent: "testing"
+          comment: "❌ PHOTO ANALYSIS TIMEOUT: Final comprehensive test revealed timeout issues with photo analysis endpoint. Possible LLM proxy connectivity issues or API key problems. Scanner limits test also failed due to no response. Needs investigation of Gemini 2.0 Flash Vision integration."
 
   - task: "Gamification Backend - Award Points Endpoint"
     implemented: true
