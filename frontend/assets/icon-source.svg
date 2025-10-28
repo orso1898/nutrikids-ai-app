@@ -1,0 +1,58 @@
+<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient teal -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y100%">
+      <stop offset="0%" style="stop-color:#00C9A7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A389;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="1024" height="1024" rx="180" fill="url(#bgGradient)"/>
+  
+  <!-- White plate circle -->
+  <circle cx="512" cy="512" r="340" fill="#FFFFFF" filter="url(#shadow)"/>
+  
+  <!-- Heart shape for health -->
+  <path d="M 512 380 
+           C 462 330, 382 340, 352 400
+           C 322 460, 362 540, 512 660
+           C 662 540, 702 460, 672 400
+           C 642 340, 562 330, 512 380 Z" 
+        fill="#00C9A7"/>
+  
+  <!-- Fork (left side) -->
+  <g stroke="#00C9A7" stroke-width="16" stroke-linecap="round" fill="none">
+    <!-- Fork handle -->
+    <line x1="400" y1="550" x2="385" y2="630"/>
+    <!-- Fork prongs -->
+    <line x1="380" y1="500" x2="390" y2="550"/>
+    <line x1="400" y1="500" x2="400" y2="550"/>
+    <line x1="420" y1="500" x2="410" y2="550"/>
+  </g>
+  
+  <!-- Spoon (right side) -->
+  <g fill="#00C9A7" stroke="#00C9A7" stroke-width="16" stroke-linecap="round">
+    <ellipse cx="630" cy="520" rx="25" ry="30"/>
+    <line x1="630" y1="550" x2="640" y2="630" stroke="none" fill="none"/>
+    <rect x="625" y="550" width="10" height="80" rx="5"/>
+  </g>
+  
+  <!-- Small sparkles for AI/tech feel -->
+  <circle cx="420" cy="420" r="8" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="620" cy="410" r="6" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="520" cy="340" r="7" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="450" cy="610" r="6" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="580" cy="620" r="5" fill="#FFFFFF" opacity="0.6"/>
+</svg>
