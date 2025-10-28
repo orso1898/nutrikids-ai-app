@@ -106,6 +106,9 @@ export default function Home() {
   return (
     <LinearGradient colors={['#f0fdf4', '#dcfce7']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
+        {/* Offline Banner */}
+        <OfflineBanner />
+        
         <Animated.View 
           entering={FadeInUp.duration(600).springify()}
           style={styles.header}
