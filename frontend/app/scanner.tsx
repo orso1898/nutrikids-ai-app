@@ -46,6 +46,7 @@ export default function Scanner() {
   const router = useRouter();
   const { userEmail } = useAuth();
   const { t } = useLanguage();
+  const { isOnline } = useOffline();
 
   // Fetch usage limits on mount
   useEffect(() => {
