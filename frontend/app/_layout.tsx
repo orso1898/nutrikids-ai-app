@@ -139,7 +139,8 @@ export default function RootLayout() {
             />
           </Stack>
         </AuthProvider>
-      </LanguageProvider>
-    </SafeAreaProvider>
+      </OfflineProvider>
+    </LanguageProvider>
+  </SafeAreaProvider>
   );
 }
