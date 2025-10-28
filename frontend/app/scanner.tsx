@@ -140,18 +140,76 @@ export default function Scanner() {
 
   const analyzePhoto = async () => {
     if (!photoBase64) {
-      window.alert('Nessuna foto da analizzare');
+      Alert.alert('Errore', 'Nessuna foto da analizzare');
       return;
     }
 
     setAnalyzing(true);
     try {
+      // Se offline, usa fallback AI
+      if (!isOnline) {
+        console.log('📡 Modalità offline: utilizzo AI fallback');
+        
+        // Get child allergies from cache
+        const children = await cacheManager.getChildrenProfiles() || [];
+        const allAllergies = children.flatMap((child: any) => child.allergies || []);
+        
+        // Usa analisi offline
+        const offlineResult = analyzePhotoOffline(allAllergies);
+        
+        setResult(offlineResult as any);
+        
+        // Salva in cache
+        await cacheManager.cacheScannerResult(offlineResult);
+        
+        Alert.alert(
+          '📡 Modalità Offline',
+          'Analisi effettuata con dati salvati localmente. Per un\'analisi precisa riconnettiti a internet.'
+        );
+        
+        setAnalyzing(false);
+        return;
+      }
+
+      // Modalità online: chiamata API normale
       const response = await axios.post(`${BACKEND_URL}/api/analyze-photo`, {
         image_base64: photoBase64,
         user_email: userEmail
       });
 
       setResult(response.data);
+      
+      // Salva risultato in cache
+      await cacheManager.cacheScannerResult(response.data);
+      
+      // Award points to children for using scanner
+      await awardPointsToChildren();
+      
+      // Refresh usage
+      await fetchUsage();
+    } catch (error: any) {
+      console.error('Error analyzing photo:', error);
+      
+      // Se errore di rete, prova con cache
+      if (error.code === 'ERR_NETWORK' || error.message.includes('Network')) {
+        console.log('Errore rete, provo con cache...');
+        const cachedResults = await cacheManager.getScannerResults();
+        if (cachedResults && cachedResults.length > 0) {
+          setResult(cachedResults[0]);
+          Alert.alert(
+            '⚠️ Connessione Limitata', 
+            'Mostro l\'ultimo risultato salvato. Riconnettiti per nuove analisi.'
+          );
+        } else {
+          Alert.alert('Errore', 'Impossibile analizzare la foto. Verifica la connessione.');
+        }
+      } else {
+        Alert.alert('Errore', error.response?.data?.detail || 'Errore durante l\'analisi');
+      }
+    } finally {
+      setAnalyzing(false);
+    }
+  };
       
       // Award points to all children for using scanner
       await awardPointsToChildren();
