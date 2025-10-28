@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { cacheManager } from '../utils/cacheManager';
 import axios from 'axios';
 
@@ -25,6 +25,16 @@ export const OfflineProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   // Monitor connessione di rete
   useEffect(() => {
+    // Su web, assumiamo sempre online (NetInfo non affidabile su browser)
+    if (Platform.OS === 'web') {
+      console.log('🌐 Running on web, assuming online');
+      setIsOnline(true);
+      loadLastSyncTime();
+      updateQueueLength();
+      return;
+    }
+
+    // Su mobile, usa NetInfo
     const unsubscribe = NetInfo.addEventListener((state: NetInfoState) => {
       const online = state.isConnected === true && state.isInternetReachable === true;
       setIsOnline(online);
