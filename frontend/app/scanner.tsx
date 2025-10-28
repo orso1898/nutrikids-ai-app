@@ -210,16 +210,6 @@ export default function Scanner() {
       setAnalyzing(false);
     }
   };
-      
-      // Award points to all children for using scanner
-      await awardPointsToChildren();
-    } catch (error) {
-      console.error('Error analyzing photo:', error);
-      window.alert('Errore durante l\'analisi. Riprova.');
-    } finally {
-      setAnalyzing(false);
-    }
-  };
 
   const saveToDiario = async () => {
     if (!result || !photoBase64) return;
