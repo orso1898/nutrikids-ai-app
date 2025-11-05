@@ -589,6 +589,57 @@ async def login(credentials: UserLogin):
         token=access_token
     )
 
+@api_router.post("/bootstrap-admin")
+async def bootstrap_admin():
+    """Crea l'account admin se non esiste (da usare solo una volta in produzione)"""
+    # Check if admin already exists
+    existing_admin = await db.users.find_one({"email": "admin@nutrikids.com"})
+    
+    if existing_admin:
+        return {"message": "Admin account already exists"}
+    
+    # Create admin account
+    hashed_password = pwd_context.hash("Rossonero1898!")
+    
+    admin_user = {
+        "email": "admin@nutrikids.com",
+        "name": "Admin",
+        "hashed_password": hashed_password,
+        "created_at": datetime.utcnow().isoformat(),
+        "is_premium": True,
+        "is_trial": False,
+        "trial_used": False,
+        "premium_start_date": datetime.utcnow().isoformat(),
+        "subscription_type": "lifetime"
+    }
+    
+    await db.users.insert_one(admin_user)
+    
+    # Create default app config if not exists
+    config_exists = await db.app_config.find_one({"id": "app_config"})
+    if not config_exists:
+        default_config = {
+            "id": "app_config",
+            "emergent_llm_key": os.environ.get("EMERGENT_LLM_KEY", ""),
+            "stripe_secret_key": os.environ.get("STRIPE_SECRET_KEY", ""),
+            "stripe_publishable_key": os.environ.get("STRIPE_PUBLISHABLE_KEY", ""),
+            "premium_monthly_price": 6.99,
+            "premium_yearly_price": 59.99,
+            "free_scans_daily_limit": 3,
+            "free_coach_messages_daily_limit": 5,
+            "premium_scans_daily_limit": -1,
+            "premium_coach_messages_daily_limit": -1
+        }
+        await db.app_config.insert_one(default_config)
+    
+    return {
+        "message": "Admin account created successfully",
+        "email": "admin@nutrikids.com",
+        "password": "Rossonero1898!",
+        "note": "Please login and change the password immediately"
+    }
+
+
 @api_router.post("/forgot-password")
 async def forgot_password(request: ForgotPasswordRequest):
     # Find user
