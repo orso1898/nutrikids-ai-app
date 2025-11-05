@@ -1,0 +1,35 @@
+🧪 Starting NutriKids AI Backend Tests
+🔗 Testing backend at: https://smart-foodscan.preview.emergentagent.com/api
+============================================================
+✅ PASS Health Check: Backend is running correctly
+✅ PASS Coach Maya AI: AI responded correctly in Italian
+✅ PASS Create Diary Entry: Entry created with ID: 61bb060c-1360-4d17-9986-6d35107cb97b
+✅ PASS Get Diary Entries: Retrieved 1 entries
+✅ PASS Delete Diary Entry: Entry 61bb060c-1360-4d17-9986-6d35107cb97b deleted successfully
+✅ PASS Create Child: Child created with ID: b3787fbc-6ab4-4287-8ca9-2eabea2ec0b7
+✅ PASS Get Children: Retrieved 1 children
+✅ PASS Delete Child: Child b3787fbc-6ab4-4287-8ca9-2eabea2ec0b7 deleted successfully
+
+=== Testing Error Cases ===
+✅ PASS Error Handling - Diary 404: Correctly returns 404 for non-existent entry
+✅ PASS Error Handling - Child 404: Correctly returns 404 for non-existent child
+
+============================================================
+📊 TEST SUMMARY
+============================================================
+Total Tests: 10
+Passed: 10
+Failed: 0
+Success Rate: 100.0%
+
+✅ PASSED TESTS:
+  • Health Check: Backend is running correctly
+  • Coach Maya AI: AI responded correctly in Italian
+  • Create Diary Entry: Entry created with ID: 61bb060c-1360-4d17-9986-6d35107cb97b
+  • Get Diary Entries: Retrieved 1 entries
+  • Delete Diary Entry: Entry 61bb060c-1360-4d17-9986-6d35107cb97b deleted successfully
+  • Create Child: Child created with ID: b3787fbc-6ab4-4287-8ca9-2eabea2ec0b7
+  • Get Children: Retrieved 1 children
+  • Delete Child: Child b3787fbc-6ab4-4287-8ca9-2eabea2ec0b7 deleted successfully
+  • Error Handling - Diary 404: Correctly returns 404 for non-existent entry
+  • Error Handling - Child 404: Correctly returns 404 for non-existent child

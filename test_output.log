@@ -1,0 +1,41 @@
+🧪 Starting NutriKids AI Backend Tests
+🔗 Testing backend at: https://smart-foodscan.preview.emergentagent.com/api
+============================================================
+✅ PASS Health Check: Backend is running correctly
+✅ PASS Coach Maya AI: AI responded correctly in Italian
+❌ FAIL Create Diary Entry: HTTP 500
+   Details: {'response': 'Internal Server Error'}
+❌ FAIL Get Diary Entries: HTTP 500
+   Details: {'response': 'Internal Server Error'}
+❌ FAIL Delete Diary Entry: No entry ID provided for deletion
+❌ FAIL Create Child: HTTP 500
+   Details: {'response': 'Internal Server Error'}
+❌ FAIL Get Children: HTTP 500
+   Details: {'response': 'Internal Server Error'}
+❌ FAIL Delete Child: No child ID provided for deletion
+
+=== Testing Error Cases ===
+❌ FAIL Error Handling - Diary 404: Expected 404, got 502
+❌ FAIL Error Handling - Child 404: Expected 404, got 502
+
+============================================================
+📊 TEST SUMMARY
+============================================================
+Total Tests: 10
+Passed: 2
+Failed: 8
+Success Rate: 20.0%
+
+❌ FAILED TESTS:
+  • Create Diary Entry: HTTP 500
+  • Get Diary Entries: HTTP 500
+  • Delete Diary Entry: No entry ID provided for deletion
+  • Create Child: HTTP 500
+  • Get Children: HTTP 500
+  • Delete Child: No child ID provided for deletion
+  • Error Handling - Diary 404: Expected 404, got 502
+  • Error Handling - Child 404: Expected 404, got 502
+
+✅ PASSED TESTS:
+  • Health Check: Backend is running correctly
+  • Coach Maya AI: AI responded correctly in Italian
