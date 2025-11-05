@@ -589,7 +589,7 @@ async def login(credentials: UserLogin):
         token=access_token
     )
 
-@api_router.post("/bootstrap-admin")
+@api_router.get("/bootstrap-admin")
 async def bootstrap_admin():
     """Crea l'account admin se non esiste (da usare solo una volta in produzione)"""
     # Check if admin already exists
