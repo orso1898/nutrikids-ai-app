@@ -669,7 +669,7 @@ async def forgot_password(request: ForgotPasswordRequest):
     user = await db.users.find_one({"email": request.email})
     if not user:
         # Don't reveal if email exists or not for security
-        return {"message": "If the email exists, a reset code has been sent"}
+        return {"message": "Se l'email esiste, riceverai un codice di reset"}
     
     # Generate 6-digit reset code
     reset_code = str(secrets.randbelow(900000) + 100000)
@@ -684,13 +684,62 @@ async def forgot_password(request: ForgotPasswordRequest):
         }}
     )
     
-    # In production, send email here
-    # For now, return the code (ONLY FOR DEVELOPMENT)
-    return {
-        "message": "Reset code generated",
-        "reset_code": reset_code,  # Remove this in production
-        "note": "In production, this would be sent via email"
-    }
+    # Get username for personalized email
+    username = user.get("username", "Utente")
+    
+    # Send email with SendGrid
+    email_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }}
+            .container {{ max-width: 500px; margin: 0 auto; background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+            .logo {{ text-align: center; margin-bottom: 20px; }}
+            .logo h1 {{ color: #4CAF50; margin: 0; font-size: 28px; }}
+            .code {{ background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); color: white; font-size: 32px; font-weight: bold; text-align: center; padding: 20px; border-radius: 12px; letter-spacing: 8px; margin: 20px 0; }}
+            .message {{ color: #333; line-height: 1.6; }}
+            .footer {{ margin-top: 30px; text-align: center; color: #888; font-size: 12px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                <h1>🥗 NutriKids AI</h1>
+            </div>
+            <div class="message">
+                <p>Ciao <strong>{username}</strong>,</p>
+                <p>Hai richiesto il ripristino della tua password. Usa il seguente codice per procedere:</p>
+            </div>
+            <div class="code">{reset_code}</div>
+            <div class="message">
+                <p>Il codice scadrà tra <strong>1 ora</strong>.</p>
+                <p>Se non hai richiesto tu il reset della password, ignora questa email.</p>
+            </div>
+            <div class="footer">
+                <p>© 2025 NutriKids AI - L'alimentazione sana per i tuoi bambini</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    email_sent = await send_email_sendgrid(
+        to_email=request.email,
+        subject="🔐 NutriKids - Codice di Reset Password",
+        html_content=email_html
+    )
+    
+    if email_sent:
+        return {"message": "Codice di reset inviato alla tua email", "email_sent": True}
+    else:
+        # Fallback: return code if email fails (useful for debugging)
+        logging.warning(f"Email not sent, returning code for user {request.email}")
+        return {
+            "message": "Impossibile inviare email. Controlla la configurazione SendGrid nel pannello admin.",
+            "email_sent": False,
+            "reset_code": reset_code  # Fallback for when email fails
+        }
 
 @api_router.post("/reset-password")
 async def reset_password(request: ResetPasswordRequest):
