@@ -57,6 +57,39 @@ async def get_api_key_from_config(key_name: str = "emergent_llm_key") -> str:
 # Stripe Key
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
+# SendGrid Email Helper
+async def send_email_sendgrid(to_email: str, subject: str, html_content: str) -> bool:
+    """Invia email usando SendGrid API"""
+    try:
+        # Get SendGrid API key from config
+        config = await db.app_config.find_one({"id": "app_config"})
+        sendgrid_key = config.get("sendgrid_api_key") if config else None
+        
+        if not sendgrid_key:
+            logging.error("SendGrid API key not configured")
+            return False
+        
+        message = Mail(
+            from_email=Email("noreply@nutrikids.app", "NutriKids AI"),
+            to_emails=To(to_email),
+            subject=subject,
+            html_content=Content("text/html", html_content)
+        )
+        
+        sg = SendGridAPIClient(sendgrid_key)
+        response = sg.send(message)
+        
+        if response.status_code in [200, 201, 202]:
+            logging.info(f"Email sent successfully to {to_email}")
+            return True
+        else:
+            logging.error(f"SendGrid error: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        logging.error(f"SendGrid exception: {str(e)}")
+        return False
+
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
