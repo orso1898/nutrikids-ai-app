@@ -61,9 +61,9 @@ async def send_email_brevo(to_email: str, subject: str, html_content: str) -> bo
     """Invia email usando Brevo API"""
     import requests
     try:
-        # Get Brevo API key from config
+        # Get Brevo API key from config (check both new and old field names for compatibility)
         config = await db.app_config.find_one({"id": "app_config"})
-        brevo_key = config.get("brevo_api_key") if config else None
+        brevo_key = config.get("brevo_api_key") or config.get("sendgrid_api_key") if config else None
         
         if not brevo_key:
             logging.error("Brevo API key not configured")
