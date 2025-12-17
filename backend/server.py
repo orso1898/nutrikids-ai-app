@@ -70,7 +70,7 @@ async def send_email_sendgrid(to_email: str, subject: str, html_content: str) ->
             return False
         
         message = Mail(
-            from_email=Email("noreply@nutrikids.app", "NutriKids AI"),
+            from_email=Email("orso1898@gmail.com", "NutriKids AI"),
             to_emails=To(to_email),
             subject=subject,
             html_content=Content("text/html", html_content)
