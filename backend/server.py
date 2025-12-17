@@ -56,38 +56,44 @@ async def get_api_key_from_config(key_name: str = "emergent_llm_key") -> str:
 # Stripe Key
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
-# Resend Email Helper
-async def send_email_resend(to_email: str, subject: str, html_content: str) -> bool:
-    """Invia email usando Resend API"""
+# Brevo Email Helper
+async def send_email_brevo(to_email: str, subject: str, html_content: str) -> bool:
+    """Invia email usando Brevo API"""
+    import requests
     try:
-        # Get Resend API key from config
+        # Get Brevo API key from config
         config = await db.app_config.find_one({"id": "app_config"})
-        resend_key = config.get("resend_api_key") if config else None
+        brevo_key = config.get("brevo_api_key") if config else None
         
-        if not resend_key:
-            logging.error("Resend API key not configured")
+        if not brevo_key:
+            logging.error("Brevo API key not configured")
             return False
         
-        resend.api_key = resend_key
-        
-        params = {
-            "from": "NutriKids AI <onboarding@resend.dev>",
-            "to": [to_email],
-            "subject": subject,
-            "html": html_content
+        url = 'https://api.brevo.com/v3/smtp/email'
+        headers = {
+            'accept': 'application/json',
+            'api-key': brevo_key,
+            'content-type': 'application/json'
         }
         
-        response = resend.Emails.send(params)
+        data = {
+            'sender': {'name': 'NutriKids AI', 'email': 'orso1898@gmail.com'},
+            'to': [{'email': to_email}],
+            'subject': subject,
+            'htmlContent': html_content
+        }
         
-        if response and response.get("id"):
-            logging.info(f"Email sent successfully to {to_email}, id: {response.get('id')}")
+        response = requests.post(url, headers=headers, json=data)
+        
+        if response.status_code in [200, 201]:
+            logging.info(f"Email sent successfully to {to_email}")
             return True
         else:
-            logging.error(f"Resend error: {response}")
+            logging.error(f"Brevo error: {response.status_code} - {response.text}")
             return False
             
     except Exception as e:
-        logging.error(f"Resend exception: {str(e)}")
+        logging.error(f"Brevo exception: {str(e)}")
         return False
 
 # Password hashing
