@@ -18,7 +18,7 @@ interface AppConfig {
   // API Keys servizi esterni
   stripe_publishable_key: string;
   stripe_secret_key: string;
-  sendgrid_api_key: string;
+  resend_api_key: string;
   // Limiti FREE
   max_free_scans_daily: number;
   max_free_coach_messages_daily: number;
