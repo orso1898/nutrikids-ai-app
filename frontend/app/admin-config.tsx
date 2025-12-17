@@ -289,12 +289,12 @@ export default function AdminConfig() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>SendGrid API Key</Text>
+              <Text style={styles.inputLabel}>Resend API Key</Text>
               <TextInput
                 style={styles.input}
-                value={config.sendgrid_api_key || ''}
-                onChangeText={(value) => updateField('sendgrid_api_key', value)}
-                placeholder="SG...."
+                value={config.resend_api_key || ''}
+                onChangeText={(value) => updateField('resend_api_key', value)}
+                placeholder="re_..."
                 placeholderTextColor="rgba(255,255,255,0.5)"
                 secureTextEntry
               />
