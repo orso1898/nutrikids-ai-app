@@ -730,7 +730,7 @@ async def forgot_password(request: ForgotPasswordRequest):
     </html>
     """
     
-    email_sent = await send_email_resend(
+    email_sent = await send_email_brevo(
         to_email=request.email,
         subject="🔐 NutriKids - Codice di Reset Password",
         html_content=email_html
@@ -742,7 +742,7 @@ async def forgot_password(request: ForgotPasswordRequest):
         # Fallback: return code if email fails (useful for debugging)
         logging.warning(f"Email not sent, returning code for user {request.email}")
         return {
-            "message": "Impossibile inviare email. Controlla la configurazione Resend nel pannello admin.",
+            "message": "Impossibile inviare email. Controlla la configurazione Brevo nel pannello admin.",
             "email_sent": False,
             "reset_code": reset_code  # Fallback for when email fails
         }
