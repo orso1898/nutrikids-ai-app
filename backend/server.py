@@ -467,7 +467,7 @@ class AppConfig(BaseModel):
     # API Keys per servizi esterni
     stripe_publishable_key: str = ""
     stripe_secret_key: str = ""
-    resend_api_key: str = ""  # Per invio email reset password
+    brevo_api_key: str = ""  # Per invio email reset password
     # Limiti per utenti FREE
     max_free_scans_daily: int = 3
     max_free_coach_messages_daily: int = 8
