@@ -289,12 +289,12 @@ export default function AdminConfig() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Resend API Key</Text>
+              <Text style={styles.inputLabel}>Brevo API Key</Text>
               <TextInput
                 style={styles.input}
-                value={config.resend_api_key || ''}
-                onChangeText={(value) => updateField('resend_api_key', value)}
-                placeholder="re_..."
+                value={config.brevo_api_key || ''}
+                onChangeText={(value) => updateField('brevo_api_key', value)}
+                placeholder="xkeysib-..."
                 placeholderTextColor="rgba(255,255,255,0.5)"
                 secureTextEntry
               />
