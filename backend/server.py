@@ -56,37 +56,38 @@ async def get_api_key_from_config(key_name: str = "emergent_llm_key") -> str:
 # Stripe Key
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
-# SendGrid Email Helper
-async def send_email_sendgrid(to_email: str, subject: str, html_content: str) -> bool:
-    """Invia email usando SendGrid API"""
+# Resend Email Helper
+async def send_email_resend(to_email: str, subject: str, html_content: str) -> bool:
+    """Invia email usando Resend API"""
     try:
-        # Get SendGrid API key from config
+        # Get Resend API key from config
         config = await db.app_config.find_one({"id": "app_config"})
-        sendgrid_key = config.get("sendgrid_api_key") if config else None
+        resend_key = config.get("resend_api_key") if config else None
         
-        if not sendgrid_key:
-            logging.error("SendGrid API key not configured")
+        if not resend_key:
+            logging.error("Resend API key not configured")
             return False
         
-        message = Mail(
-            from_email=Email("orso1898@gmail.com", "NutriKids AI"),
-            to_emails=To(to_email),
-            subject=subject,
-            html_content=Content("text/html", html_content)
-        )
+        resend.api_key = resend_key
         
-        sg = SendGridAPIClient(sendgrid_key)
-        response = sg.send(message)
+        params = {
+            "from": "NutriKids AI <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content
+        }
         
-        if response.status_code in [200, 201, 202]:
-            logging.info(f"Email sent successfully to {to_email}")
+        response = resend.Emails.send(params)
+        
+        if response and response.get("id"):
+            logging.info(f"Email sent successfully to {to_email}, id: {response.get('id')}")
             return True
         else:
-            logging.error(f"SendGrid error: {response.status_code}")
+            logging.error(f"Resend error: {response}")
             return False
             
     except Exception as e:
-        logging.error(f"SendGrid exception: {str(e)}")
+        logging.error(f"Resend exception: {str(e)}")
         return False
 
 # Password hashing
