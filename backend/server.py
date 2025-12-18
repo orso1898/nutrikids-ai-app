@@ -2235,18 +2235,18 @@ if FRONTEND_DIST.exists():
     async def favicon():
         return FileResponse(str(FRONTEND_DIST / "favicon.ico"))
     
-    @api_router.get("/favicon.ico")
+    @app.get("/api/favicon.ico")
     async def api_favicon():
         return FileResponse(str(FRONTEND_DIST / "favicon.ico"))
     
     # Serve frontend via /api/app/ for production (Emergent routes only /api/* to backend)
-    @api_router.get("/app")
-    @api_router.get("/app/")
+    @app.get("/api/app")
+    @app.get("/api/app/")
     async def serve_frontend_root_via_api():
         """Serve frontend index via API route for production"""
         return FileResponse(str(FRONTEND_DIST / "index.html"), media_type="text/html")
     
-    @api_router.get("/app/{path:path}")
+    @app.get("/api/app/{path:path}")
     async def serve_frontend_via_api(path: str):
         """Serve frontend pages via API route for production"""
         # Try to serve the specific HTML file
