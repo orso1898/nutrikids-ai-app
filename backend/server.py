@@ -1,7 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, status, Depends, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, HTMLResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -2218,66 +2216,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Serve frontend static files
-import os
-FRONTEND_DIST = Path(__file__).parent.parent / "frontend" / "dist"
-
-if FRONTEND_DIST.exists():
-    # Serve static assets
-    app.mount("/_expo", StaticFiles(directory=str(FRONTEND_DIST / "_expo")), name="expo_static")
-    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
-    # Also mount under /api/ for production
-    app.mount("/api/_expo", StaticFiles(directory=str(FRONTEND_DIST / "_expo")), name="api_expo_static")
-    app.mount("/api/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="api_assets")
-    
-    @app.get("/favicon.ico")
-    async def favicon():
-        return FileResponse(str(FRONTEND_DIST / "favicon.ico"))
-    
-    @app.get("/api/favicon.ico")
-    async def api_favicon():
-        return FileResponse(str(FRONTEND_DIST / "favicon.ico"))
-    
-    # Serve frontend via /api/app/ for production (Emergent routes only /api/* to backend)
-    @app.get("/api/app")
-    @app.get("/api/app/")
-    async def serve_frontend_root_via_api():
-        """Serve frontend index via API route for production"""
-        return FileResponse(str(FRONTEND_DIST / "index.html"), media_type="text/html")
-    
-    @app.get("/api/app/{path:path}")
-    async def serve_frontend_via_api(path: str):
-        """Serve frontend pages via API route for production"""
-        # Try to serve the specific HTML file
-        html_file = FRONTEND_DIST / f"{path}.html"
-        if html_file.exists():
-            return FileResponse(str(html_file), media_type="text/html")
-        
-        # Try index.html for SPA routing
-        return FileResponse(str(FRONTEND_DIST / "index.html"), media_type="text/html")
-    
-    @app.get("/{path:path}")
-    async def serve_frontend(path: str):
-        """Serve frontend pages"""
-        # Skip API routes
-        if path.startswith("api/"):
-            raise HTTPException(status_code=404, detail="Not Found")
-        
-        # Try to serve the specific HTML file
-        html_file = FRONTEND_DIST / f"{path}.html" if path else FRONTEND_DIST / "index.html"
-        if not path:
-            html_file = FRONTEND_DIST / "index.html"
-        elif html_file.exists():
-            pass
-        else:
-            # Try index.html for SPA routing
-            html_file = FRONTEND_DIST / "index.html"
-        
-        if html_file.exists():
-            return FileResponse(str(html_file), media_type="text/html")
-        
-        raise HTTPException(status_code=404, detail="Page not found")
 
 # Configure logging
 logging.basicConfig(

@@ -125,6 +125,18 @@ export default function RootLayout() {
                 animation: 'slide_from_right',
               }}
             />
+            <Stack.Screen 
+              name="info-app" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen 
+              name="aiuto-supporto" 
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
           </Stack>
         </AuthProvider>
       </OfflineProvider>
