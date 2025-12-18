@@ -2219,6 +2219,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve frontend static files
+import os
+FRONTEND_DIST = Path(__file__).parent.parent / "frontend" / "dist"
+
+if FRONTEND_DIST.exists():
+    # Serve static assets
+    app.mount("/_expo", StaticFiles(directory=str(FRONTEND_DIST / "_expo")), name="expo_static")
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
+    
+    @app.get("/favicon.ico")
+    async def favicon():
+        return FileResponse(str(FRONTEND_DIST / "favicon.ico"))
+    
+    @app.get("/{path:path}")
+    async def serve_frontend(path: str):
+        """Serve frontend pages"""
+        # Skip API routes
+        if path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        
+        # Try to serve the specific HTML file
+        html_file = FRONTEND_DIST / f"{path}.html" if path else FRONTEND_DIST / "index.html"
+        if not path:
+            html_file = FRONTEND_DIST / "index.html"
+        elif html_file.exists():
+            pass
+        else:
+            # Try index.html for SPA routing
+            html_file = FRONTEND_DIST / "index.html"
+        
+        if html_file.exists():
+            return FileResponse(str(html_file), media_type="text/html")
+        
+        raise HTTPException(status_code=404, detail="Page not found")
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
