@@ -25,18 +25,16 @@ export default function ForgotPassword() {
         email: email.trim().toLowerCase()
       });
 
-      // Show reset code (DEVELOPMENT ONLY)
-      const resetCode = response.data.reset_code;
-      
+      // Email sent successfully
       Alert.alert(
-        '✅ Codice Inviato',
-        `Codice di reset: ${resetCode}\n\n(In produzione sarà inviato via email)`,
+        '✅ Email Inviata!',
+        'Controlla la tua casella email (anche lo spam). Inserisci il codice ricevuto nella prossima schermata.',
         [
           {
             text: 'OK',
             onPress: () => router.push({
               pathname: '/reset-password',
-              params: { email: email.trim().toLowerCase(), code: resetCode }
+              params: { email: email.trim().toLowerCase() }
             })
           }
         ]
