@@ -48,54 +48,80 @@ export default function ForgotPassword() {
         </TouchableOpacity>
 
         <View style={styles.content}>
-          {/* Icon */}
-          <View style={styles.iconContainer}>
-            <Ionicons name="key" size={80} color="#fff" />
-          </View>
+          {success ? (
+            <>
+              {/* Success State */}
+              <View style={styles.iconContainer}>
+                <Ionicons name="checkmark-circle" size={80} color="#fff" />
+              </View>
+              <Text style={styles.title}>Email Inviata! ✅</Text>
+              <Text style={styles.subtitle}>
+                Controlla la tua casella email (anche lo spam).{'\n'}Clicca il bottone qui sotto per inserire il codice.
+              </Text>
+              
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => router.push({
+                  pathname: '/reset-password',
+                  params: { email: email.trim().toLowerCase() }
+                })}
+              >
+                <Ionicons name="arrow-forward" size={20} color="#fff" style={styles.buttonIcon} />
+                <Text style={styles.submitButtonText}>Inserisci Codice</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              {/* Icon */}
+              <View style={styles.iconContainer}>
+                <Ionicons name="key" size={80} color="#fff" />
+              </View>
 
-          {/* Title */}
-          <Text style={styles.title}>Password Dimenticata?</Text>
-          <Text style={styles.subtitle}>
-            Inserisci la tua email e ti invieremo un codice per resettare la password
-          </Text>
+              {/* Title */}
+              <Text style={styles.title}>Password Dimenticata?</Text>
+              <Text style={styles.subtitle}>
+                Inserisci la tua email e ti invieremo un codice per resettare la password
+              </Text>
 
-          {/* Email Input */}
-          <View style={styles.inputContainer}>
-            <Ionicons name="mail" size={20} color="#059669" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="#94a3b8"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
+              {/* Email Input */}
+              <View style={styles.inputContainer}>
+                <Ionicons name="mail" size={20} color="#059669" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  placeholderTextColor="#94a3b8"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
 
-          {/* Submit Button */}
-          <TouchableOpacity
-            style={[styles.submitButton, loading && styles.submitButtonDisabled]}
-            onPress={handleForgotPassword}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <>
-                <Ionicons name="send" size={20} color="#fff" style={styles.buttonIcon} />
-                <Text style={styles.submitButtonText}>Invia Codice</Text>
-              </>
-            )}
-          </TouchableOpacity>
+              {/* Submit Button */}
+              <TouchableOpacity
+                style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+                onPress={handleForgotPassword}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <>
+                    <Ionicons name="send" size={20} color="#fff" style={styles.buttonIcon} />
+                    <Text style={styles.submitButtonText}>Invia Codice</Text>
+                  </>
+                )}
+              </TouchableOpacity>
 
-          {/* Back to Login */}
-          <TouchableOpacity style={styles.backToLogin} onPress={() => router.back()}>
-            <Text style={styles.backToLoginText}>
-              Ricordi la password? <Text style={styles.backToLoginLink}>Accedi</Text>
-            </Text>
-          </TouchableOpacity>
+              {/* Back to Login */}
+              <TouchableOpacity style={styles.backToLogin} onPress={() => router.back()}>
+                <Text style={styles.backToLoginText}>
+                  Ricordi la password? <Text style={styles.backToLoginLink}>Accedi</Text>
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
