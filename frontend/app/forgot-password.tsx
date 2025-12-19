@@ -27,10 +27,15 @@ export default function ForgotPassword() {
 
       // Email sent successfully - redirect to reset password page
       setLoading(false);
-      router.replace({
-        pathname: '/reset-password',
-        params: { email: email.trim().toLowerCase() }
-      });
+      const userEmail = email.trim().toLowerCase();
+      if (Platform.OS === 'web') {
+        window.location.href = `/reset-password?email=${encodeURIComponent(userEmail)}`;
+      } else {
+        router.replace({
+          pathname: '/reset-password',
+          params: { email: userEmail }
+        });
+      }
     } catch (error: any) {
       console.error('Forgot password error:', error);
       setLoading(false);
