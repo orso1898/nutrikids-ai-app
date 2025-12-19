@@ -12,6 +12,7 @@ export default function ForgotPassword() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
