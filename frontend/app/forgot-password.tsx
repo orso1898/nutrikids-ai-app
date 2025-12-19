@@ -21,23 +21,23 @@ export default function ForgotPassword() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/forgot-password`, {
+      await axios.post(`${BACKEND_URL}/api/forgot-password`, {
         email: email.trim().toLowerCase()
       });
 
       // Email sent successfully - redirect to reset password page
-      router.push({
+      setLoading(false);
+      router.replace({
         pathname: '/reset-password',
         params: { email: email.trim().toLowerCase() }
       });
     } catch (error: any) {
       console.error('Forgot password error:', error);
+      setLoading(false);
       Alert.alert(
         'Errore',
         error.response?.data?.detail || 'Impossibile inviare il codice di reset. Riprova.'
       );
-    } finally {
-      setLoading(false);
     }
   };
 
