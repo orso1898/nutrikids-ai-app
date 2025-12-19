@@ -53,16 +53,9 @@ export default function ResetPassword() {
         new_password: newPassword
       });
 
-      Alert.alert(
-        '✅ Password Resettata',
-        'La tua password è stata modificata con successo!',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/login')
-          }
-        ]
-      );
+      // Password reset successful - redirect to login
+      setLoading(false);
+      router.replace('/login');
     } catch (error: any) {
       console.error('Reset password error:', error);
       Alert.alert(
