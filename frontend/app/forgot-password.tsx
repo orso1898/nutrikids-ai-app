@@ -25,20 +25,11 @@ export default function ForgotPassword() {
         email: email.trim().toLowerCase()
       });
 
-      // Email sent successfully
-      Alert.alert(
-        '✅ Email Inviata!',
-        'Controlla la tua casella email (anche lo spam). Inserisci il codice ricevuto nella prossima schermata.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.push({
-              pathname: '/reset-password',
-              params: { email: email.trim().toLowerCase() }
-            })
-          }
-        ]
-      );
+      // Email sent successfully - redirect to reset password page
+      router.push({
+        pathname: '/reset-password',
+        params: { email: email.trim().toLowerCase() }
+      });
     } catch (error: any) {
       console.error('Forgot password error:', error);
       Alert.alert(
