@@ -77,7 +77,19 @@ export default function Profilo() {
 
   useEffect(() => {
     loadChildren();
+    loadPremiumStatus();
   }, []);
+
+  const loadPremiumStatus = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/user/${userEmail}`);
+      if (response.data) {
+        setIsPremium(response.data.subscription_tier === 'premium' || response.data.is_premium === true);
+      }
+    } catch (error) {
+      console.log('Error loading premium status:', error);
+    }
+  };
 
   const loadChildren = async () => {
     try {
