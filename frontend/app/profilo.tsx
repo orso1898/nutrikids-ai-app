@@ -319,6 +319,12 @@ export default function Profilo() {
               <Ionicons name="person" size={48} color="#10b981" />
             </View>
             <Text style={styles.profileEmail}>{userEmail}</Text>
+            {isPremium && (
+              <View style={[styles.adminBadge, { backgroundColor: '#f59e0b' }]}>
+                <Ionicons name="star" size={16} color="#fff" />
+                <Text style={styles.adminText}>Premium 👑</Text>
+              </View>
+            )}
             {isAdmin && (
               <View style={styles.adminBadge}>
                 <Ionicons name="shield-checkmark" size={16} color="#fff" />
