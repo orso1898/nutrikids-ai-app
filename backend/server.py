@@ -603,6 +603,21 @@ async def register(user: UserRegister):
         logging.error(f"Registration error: {str(e)}")
         raise HTTPException(status_code=500, detail="Errore durante la registrazione. Riprova.")
 
+@api_router.get("/user/{email}")
+async def get_user_info(email: str):
+    """Get user info including premium status"""
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "email": user.get("email"),
+        "username": user.get("username"),
+        "subscription_tier": user.get("subscription_tier", "free"),
+        "is_premium": user.get("is_premium", False) or user.get("subscription_tier") == "premium",
+        "is_admin": user.get("is_admin", False)
+    }
+
 @api_router.post("/login", response_model=UserResponse)
 async def login(credentials: UserLogin):
     # Find user
