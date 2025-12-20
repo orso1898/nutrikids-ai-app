@@ -1521,6 +1521,7 @@ async def change_admin_password(
     }
 
 # ========== STRIPE PAYMENT ENDPOINTS ==========
+import stripe
 
 @api_router.post("/checkout/create-session")
 async def create_checkout_session(request: Request, checkout_request: CreateCheckoutRequest, user_email: str = Header(..., alias="X-User-Email")):
@@ -1534,14 +1535,13 @@ async def create_checkout_session(request: Request, checkout_request: CreateChec
     
     # Get prices from admin config in database (server-side only - prevent price manipulation)
     try:
-        config = await db.config.find_one({})
-        print(f"DEBUG: Config found: {config}")
+        config = await db.app_config.find_one({"id": "app_config"})
     except Exception as e:
-        print(f"DEBUG: Error fetching config: {e}")
+        logging.error(f"Error fetching config: {e}")
         config = None
     
     if not config:
-        raise HTTPException(status_code=500, detail="App configuration not found")
+        raise HTTPException(status_code=500, detail="App configuration not found. Please set up admin config.")
     
     # Get amount based on plan type
     if checkout_request.plan_type == "monthly":
@@ -1549,58 +1549,74 @@ async def create_checkout_session(request: Request, checkout_request: CreateChec
     else:  # yearly
         amount = float(config.get("premium_yearly_price", 99.99))
     
+    # Convert to cents for Stripe
+    amount_cents = int(amount * 100)
     currency = "eur"
     
     # Build success and cancel URLs using frontend origin
-    origin_url = checkout_request.origin_url
-    success_url = f"{origin_url}/premium?session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin_url}/premium"
+    origin_url = checkout_request.origin_url.rstrip('/')
+    success_url = f"{origin_url}/premium?session_id={{CHECKOUT_SESSION_ID}}&success=true"
+    cancel_url = f"{origin_url}/premium?canceled=true"
     
-    # Initialize Stripe Checkout
-    host_url = str(request.base_url)
-    webhook_url = f"{host_url}api/webhook/stripe"
+    # Get Stripe API key from database admin config
+    stripe_key = config.get("stripe_secret_key", "")
     
-    # Ottieni Stripe API key dal database admin
-    stripe_key = await get_api_key_from_config("stripe_secret_key")
+    if not stripe_key:
+        raise HTTPException(status_code=500, detail="Stripe API key not configured. Please add it in admin settings.")
     
-    stripe_checkout = StripeCheckout(api_key=stripe_key, webhook_url=webhook_url)
+    # Configure Stripe
+    stripe.api_key = stripe_key
     
-    # Create checkout session request
-    checkout_session_request = CheckoutSessionRequest(
-        amount=amount,
-        currency=currency,
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata={
-            "user_email": user_email,
-            "plan_type": checkout_request.plan_type,
-            "source": "nutrikids_app"
+    try:
+        # Create Stripe Checkout Session
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': currency,
+                    'product_data': {
+                        'name': f'NutriKids Premium - {checkout_request.plan_type.capitalize()}',
+                        'description': 'Accesso completo a tutte le funzionalità premium di NutriKids AI',
+                    },
+                    'unit_amount': amount_cents,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=success_url,
+            cancel_url=cancel_url,
+            customer_email=user_email,
+            metadata={
+                'user_email': user_email,
+                'plan_type': checkout_request.plan_type,
+                'source': 'nutrikids_app'
+            }
+        )
+        
+        # Create payment transaction record in database
+        payment_transaction = PaymentTransaction(
+            user_email=user_email,
+            session_id=checkout_session.id,
+            amount=amount,
+            currency=currency,
+            plan_type=checkout_request.plan_type,
+            payment_status="pending",
+            metadata={
+                "user_email": user_email,
+                "plan_type": checkout_request.plan_type
+            }
+        )
+        
+        await db.payment_transactions.insert_one(payment_transaction.dict())
+        
+        return {
+            "url": checkout_session.url,
+            "session_id": checkout_session.id
         }
-    )
-    
-    # Create checkout session with Stripe
-    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_session_request)
-    
-    # Create payment transaction record in database BEFORE redirecting
-    payment_transaction = PaymentTransaction(
-        user_email=user_email,
-        session_id=session.session_id,
-        amount=amount,
-        currency=currency,
-        plan_type=checkout_request.plan_type,
-        payment_status="pending",
-        metadata={
-            "user_email": user_email,
-            "plan_type": checkout_request.plan_type
-        }
-    )
-    
-    await db.payment_transactions.insert_one(payment_transaction.dict())
-    
-    return {
-        "url": session.url,
-        "session_id": session.session_id
-    }
+        
+    except stripe.error.StripeError as e:
+        logging.error(f"Stripe error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
 
 @api_router.get("/checkout/status/{session_id}")
 async def get_checkout_status(request: Request, session_id: str):
