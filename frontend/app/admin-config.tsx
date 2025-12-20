@@ -234,7 +234,6 @@ export default function AdminConfig() {
                 value={config.emergent_llm_key}
                 onChangeText={(value) => updateField('emergent_llm_key', value)}
                 placeholder="sk-emergent-..."
-                secureTextEntry
               />
               
               <Text style={styles.label}>Modello Chat (Coach Maya)</Text>
@@ -270,7 +269,6 @@ export default function AdminConfig() {
                 onChangeText={(value) => updateField('stripe_publishable_key', value)}
                 placeholder="pk_live_..."
                 placeholderTextColor="rgba(255,255,255,0.5)"
-                secureTextEntry
               />
               <Text style={styles.helpText}>Chiave pubblica per pagamenti Stripe (frontend)</Text>
             </View>
@@ -283,7 +281,6 @@ export default function AdminConfig() {
                 onChangeText={(value) => updateField('stripe_secret_key', value)}
                 placeholder="sk_live_..."
                 placeholderTextColor="rgba(255,255,255,0.5)"
-                secureTextEntry
               />
               <Text style={styles.helpText}>Chiave segreta per pagamenti Stripe (backend)</Text>
             </View>
@@ -296,7 +293,6 @@ export default function AdminConfig() {
                 onChangeText={(value) => updateField('brevo_api_key', value)}
                 placeholder="xkeysib-..."
                 placeholderTextColor="rgba(255,255,255,0.5)"
-                secureTextEntry
               />
               <Text style={styles.helpText}>Per invio email di recupero password</Text>
             </View>
