@@ -272,28 +272,28 @@ export default function Scanner() {
           contentContainerStyle={styles.scrollContent}
         >
           {!photoUri ? (
-            <Animated.View 
-              entering={FadeIn.duration(600)}
+            <View 
+             
               style={styles.emptyState}
             >
-              <Animated.View entering={ZoomIn.delay(200).springify()}>
+              <View>
                 <Ionicons name="camera" size={80} color="#fff" />
-              </Animated.View>
+              </View>
               <Animated.Text 
-                entering={FadeInDown.delay(400).springify()}
+               
                 style={styles.emptyTitle}
               >
                 {t('scanner.subtitle')}
               </Animated.Text>
               <Animated.Text 
-                entering={FadeInDown.delay(500).springify()}
+               
                 style={styles.emptySubtitle}
               >
                 {t('scanner.description')}
               </Animated.Text>
 
-              <Animated.View 
-                entering={FadeInUp.delay(600).springify()}
+              <View 
+               
                 style={styles.buttonsContainer}
               >
                 <TouchableOpacity style={styles.primaryButton} onPress={takePicture}>
@@ -305,46 +305,46 @@ export default function Scanner() {
                   <Ionicons name="images" size={24} color="#10b981" />
                   <Text style={styles.secondaryButtonText}>{t('scanner.fromGallery')}</Text>
                 </TouchableOpacity>
-              </Animated.View>
-            </Animated.View>
+              </View>
+            </View>
           ) : (
             <View style={styles.analysisContainer}>
-              <Animated.View 
-                entering={FadeIn.duration(500)}
+              <View 
+               
                 style={styles.photoCard}
               >
                 <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" />
-              </Animated.View>
+              </View>
 
               {!result && !analyzing && (
-                <Animated.View entering={SlideInRight.springify()}>
+                <View>
                   <TouchableOpacity style={styles.analyzeButton} onPress={analyzePhoto}>
                     <Ionicons name="analytics" size={24} color="#fff" />
                     <Text style={styles.analyzeButtonText}>Analizza con AI</Text>
                   </TouchableOpacity>
-                </Animated.View>
+                </View>
               )}
 
               {analyzing && (
-                <Animated.View 
-                  entering={FadeIn}
-                  exiting={FadeOut}
+                <View 
+                 
+                 
                   style={styles.loadingCard}
                 >
                   <ActivityIndicator size="large" color="#10b981" />
                   <Text style={styles.loadingText}>Analisi in corso con GPT-4o Vision...</Text>
-                </Animated.View>
+                </View>
               )}
 
               {result && (
-                <Animated.View 
-                  entering={FadeInDown.duration(600).springify()}
+                <View 
+                 
                   style={styles.resultsContainer}
                 >
                   {/* Allergen Warning - PRIORITY ALERT */}
                   {result.allergen_warning && (
-                    <Animated.View 
-                      entering={ZoomIn.springify()}
+                    <View 
+                     
                       style={styles.allergenAlert}
                     >
                       <View style={styles.allergenAlertHeader}>
@@ -362,11 +362,11 @@ export default function Scanner() {
                           ))}
                         </View>
                       )}
-                    </Animated.View>
+                    </View>
                   )}
 
-                  <Animated.View 
-                    entering={ZoomIn.delay(100).springify()}
+                  <View 
+                   
                     style={styles.scoreCard}
                   >
                     <View style={styles.scoreCircle}>
@@ -374,10 +374,10 @@ export default function Scanner() {
                       <Text style={styles.scoreLabel}>/10</Text>
                     </View>
                     <Text style={styles.scoreTitle}>Punteggio Salute</Text>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View 
-                    entering={FadeInDown.delay(200).springify()}
+                  <View 
+                   
                     style={styles.card}
                   >
                     <View style={styles.cardHeader}>
@@ -386,20 +386,20 @@ export default function Scanner() {
                     </View>
                     <View style={styles.foodsList}>
                       {result.foods_detected.map((food, index) => (
-                        <Animated.View 
+                        <View 
                           key={index} 
-                          entering={FadeInDown.delay(300 + index * 100).springify()}
+                         
                           style={styles.foodItem}
                         >
                           <Ionicons name="checkmark-circle" size={16} color="#10b981" />
                           <Text style={styles.foodText}>{food}</Text>
-                        </Animated.View>
+                        </View>
                       ))}
                     </View>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View 
-                    entering={FadeInDown.delay(400).springify()}
+                  <View 
+                   
                     style={styles.card}
                   >
                     <View style={styles.cardHeader}>
@@ -428,10 +428,10 @@ export default function Scanner() {
                         <Text style={styles.nutritionLabel}>Fibre</Text>
                       </View>
                     </View>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View 
-                    entering={FadeInDown.delay(600).springify()}
+                  <View 
+                   
                     style={styles.card}
                   >
                     <View style={styles.cardHeader}>
@@ -439,9 +439,9 @@ export default function Scanner() {
                       <Text style={styles.cardTitle}>Suggerimenti di Coach Maya</Text>
                     </View>
                     <Text style={styles.suggestionsText}>{result.suggestions}</Text>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View entering={FadeInUp.delay(700).springify()} style={styles.actionButtons}>
+                  <View style={styles.actionButtons}>
                     <TouchableOpacity style={styles.saveButton} onPress={saveToDiario}>
                       <Ionicons name="bookmark" size={20} color="#fff" />
                       <Text style={styles.saveButtonText}>Salva nel Diario</Text>
@@ -451,8 +451,8 @@ export default function Scanner() {
                       <Ionicons name="share-social" size={20} color="#fff" />
                       <Text style={styles.shareButtonText}>{t('scanner.shareButton')}</Text>
                     </TouchableOpacity>
-                  </Animated.View>
-                </Animated.View>
+                  </View>
+                </View>
               )}
             </View>
           )}
