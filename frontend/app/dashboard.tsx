@@ -92,7 +92,7 @@ export default function Dashboard() {
                 <Ionicons name="camera" size={28} color="#f59e0b" />
               </View>
               <Text style={styles.statNumber}>{stats?.total_scans_7days || 0}</Text>
-              <Text style={styles.statLabel}>Scansioni AI</Text>
+              <Text style={styles.statLabel}>{t('dashboard.aiScans')}</Text>
             </View>
           </View>
 
