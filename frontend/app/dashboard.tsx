@@ -110,7 +110,7 @@ export default function Dashboard() {
                 <Ionicons name="heart" size={28} color="#ec4899" />
               </View>
               <Text style={styles.statNumber}>{stats?.avg_health_score || 0}</Text>
-              <Text style={styles.statLabel}>Punteggio Medio</Text>
+              <Text style={styles.statLabel}>{t('dashboard.avgScore')}</Text>
             </View>
           </View>
 
