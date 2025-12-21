@@ -638,6 +638,7 @@ export const translations = {
       nextReward: 'Next reward in',
       invites: 'invites',
       claimReward: 'Claim Reward!',
+      note: '⚠️ Reward arrives only when your friend becomes Premium (pays subscription). Max 3 rewards per year (= 3 free months).',
       shareMessage: '🎉 Join NutriKids AI! Use my code {code} to start your nutrition journey! 🥗'
     }
   },
