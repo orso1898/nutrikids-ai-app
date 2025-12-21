@@ -372,7 +372,21 @@ export const translations = {
       emailPlaceholder: 'Your email',
       passwordPlaceholder: 'Password',
       loginButton: 'Sign In',
-      invalidEmail: 'Enter a valid email'
+      invalidEmail: 'Enter a valid email',
+      forgotPassword: 'Forgot password?',
+      noAccount: 'Don\'t have an account?',
+      register: 'Register'
+    },
+
+    // Register
+    register: {
+      haveAccount: 'Already have an account?',
+      loginLink: 'Sign In'
+    },
+
+    // Common
+    common: {
+      understood: 'Got It!'
     },
 
     // Home
