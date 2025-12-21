@@ -184,10 +184,7 @@ export default function InvitaAmiciScreen() {
           </View>
           <View style={[styles.step, styles.warningBox]}>
             <Ionicons name="information-circle" size={20} color="#f59e0b" />
-            <Text style={styles.warningText}>
-              ⚠️ Il premio arriva solo quando l'amico diventa Premium (paga abbonamento).{'\n'}
-              Max 3 premi all'anno (= 3 mesi gratis).
-            </Text>
+            <Text style={styles.warningText}>{t('referral.note')}</Text>
           </View>
         </View>
 
