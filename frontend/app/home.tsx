@@ -72,23 +72,6 @@ export default function Home() {
   const router = useRouter();
   const { userEmail, isAdmin } = useAuth();
   const { t } = useLanguage();
-  const scale = useSharedValue(1);
-
-  useEffect(() => {
-    // Subtle pulse animation for profile button
-    scale.value = withRepeat(
-      withSequence(
-        withSpring(1.05, { damping: 8 }),
-        withSpring(1, { damping: 8 })
-      ),
-      -1,
-      false
-    );
-  }, []);
-
-  const animatedProfileStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
 
   const handleCardPress = (route: string) => {
     router.push(route as any);
