@@ -218,7 +218,11 @@ export const translations = {
       title: 'Dashboard',
       subtitle: 'Statistiche e andamento',
       comingSoon: 'Disponibile a breve',
-      description: 'Qui troverai grafici e statistiche sull\'alimentazione'
+      description: 'Qui troverai grafici e statistiche sull\'alimentazione',
+      mealsLogged: 'Pasti Registrati',
+      aiScans: 'Scansioni AI',
+      coachChats: 'Chat Coach Maya',
+      avgScore: 'Punteggio Medio'
     },
 
     // Plans
