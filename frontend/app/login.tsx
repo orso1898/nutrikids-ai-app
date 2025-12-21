@@ -172,7 +172,7 @@ export default function Login() {
               </View>
 
               <View style={styles.registerContainer}>
-                <Text style={styles.registerText}>Non hai un account? </Text>
+                <Text style={styles.registerText}>{t('login.noAccount')} </Text>
                 <TouchableOpacity onPress={() => router.push('/register')}>
                   <Text style={styles.registerLink}>Registrati</Text>
                 </TouchableOpacity>
