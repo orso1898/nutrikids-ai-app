@@ -48,7 +48,21 @@ export const translations = {
       emailPlaceholder: 'La tua email',
       passwordPlaceholder: 'Password',
       loginButton: 'Accedi',
-      invalidEmail: 'Inserisci un\'email valida'
+      invalidEmail: 'Inserisci un\'email valida',
+      forgotPassword: 'Password dimenticata?',
+      noAccount: 'Non hai un account?',
+      register: 'Registrati'
+    },
+
+    // Register
+    register: {
+      haveAccount: 'Hai già un account?',
+      loginLink: 'Accedi'
+    },
+
+    // Common
+    common: {
+      understood: 'Ho Capito!'
     },
 
     // Home
