@@ -541,7 +541,11 @@ export const translations = {
       title: 'Dashboard',
       subtitle: 'Statistics and trends',
       comingSoon: 'Coming Soon',
-      description: 'Here you\'ll find charts and nutrition statistics'
+      description: 'Here you\'ll find charts and nutrition statistics',
+      mealsLogged: 'Meals Logged',
+      aiScans: 'AI Scans',
+      coachChats: 'Coach Maya Chats',
+      avgScore: 'Average Score'
     },
 
     // Plans
