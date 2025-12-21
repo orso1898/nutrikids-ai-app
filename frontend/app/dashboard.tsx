@@ -84,7 +84,7 @@ export default function Dashboard() {
                 <Ionicons name="restaurant" size={28} color="#10b981" />
               </View>
               <Text style={styles.statNumber}>{stats?.total_meals_7days || 0}</Text>
-              <Text style={styles.statLabel}>Pasti Registrati</Text>
+              <Text style={styles.statLabel}>{t('dashboard.mealsLogged')}</Text>
             </View>
 
             <View style={styles.statCard}>
