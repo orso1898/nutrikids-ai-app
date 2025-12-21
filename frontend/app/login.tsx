@@ -161,7 +161,7 @@ export default function Login() {
                 style={styles.forgotPasswordContainer}
                 onPress={() => router.push('/forgot-password')}
               >
-                <Text style={styles.forgotPasswordText}>Password dimenticata?</Text>
+                <Text style={styles.forgotPasswordText}>{t('login.forgotPassword')}</Text>
               </TouchableOpacity>
 
               <View style={styles.hintContainer}>
