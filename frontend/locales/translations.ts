@@ -319,6 +319,7 @@ export const translations = {
       nextReward: 'Prossimo premio tra',
       invites: 'inviti',
       claimReward: 'Rivendica Premio!',
+      note: '⚠️ Il premio arriva solo quando l\'amico diventa Premium (paga abbonamento). Max 3 premi all\'anno (= 3 mesi gratis).',
       shareMessage: '🎉 Unisciti a NutriKids AI! Usa il mio codice {code} per iniziare il tuo percorso nutrizionale! 🥗'
     }
   },
