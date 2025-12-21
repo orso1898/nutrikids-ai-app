@@ -29,8 +29,8 @@ export default function WelcomePremium() {
           showsVerticalScrollIndicator={false}
         >
           {/* Confetti/Celebration Icon */}
-          <Animated.View 
-            entering={ZoomIn.delay(200).duration(600)}
+          <View 
+           
             style={styles.celebrationContainer}
           >
             <View style={styles.crownContainer}>
@@ -41,35 +41,35 @@ export default function WelcomePremium() {
               <Text style={styles.confettiEmoji}>✨</Text>
               <Text style={styles.confettiEmoji}>🎊</Text>
             </View>
-          </Animated.View>
+          </View>
 
           {/* Title */}
-          <Animated.View entering={FadeInDown.delay(400).duration(600)}>
+          <View>
             <Text style={styles.title}>Congratulazioni!</Text>
             <Text style={styles.subtitle}>Sei ufficialmente Premium! 🌟</Text>
-          </Animated.View>
+          </View>
 
           {/* Message */}
-          <Animated.View 
-            entering={FadeInDown.delay(600).duration(600)}
+          <View 
+           
             style={styles.messageContainer}
           >
             <Text style={styles.message}>
               Grazie per aver scelto NutriKids Premium!{'\n'}
               Da questo momento hai accesso a tutte le funzionalità sbloccate.
             </Text>
-          </Animated.View>
+          </View>
 
           {/* Features List */}
-          <Animated.View 
-            entering={FadeInUp.delay(800).duration(600)}
+          <View 
+           
             style={styles.featuresContainer}
           >
             <Text style={styles.featuresTitle}>🚀 Ora puoi:</Text>
             {premiumFeatures.map((feature, index) => (
-              <Animated.View 
+              <View 
                 key={index}
-                entering={FadeInUp.delay(900 + index * 100).duration(400)}
+               
                 style={styles.featureItem}
               >
                 <View style={styles.featureIcon}>
@@ -80,13 +80,13 @@ export default function WelcomePremium() {
                   <Text style={styles.featureDescription}>{feature.description}</Text>
                 </View>
                 <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-              </Animated.View>
+              </View>
             ))}
-          </Animated.View>
+          </View>
 
           {/* CTA Button */}
-          <Animated.View 
-            entering={FadeInUp.delay(1500).duration(600)}
+          <View 
+           
             style={styles.ctaContainer}
           >
             <TouchableOpacity
@@ -104,7 +104,7 @@ export default function WelcomePremium() {
               <Ionicons name="camera" size={20} color="#fff" />
               <Text style={styles.secondaryButtonText}>Prova lo Scanner</Text>
             </TouchableOpacity>
-          </Animated.View>
+          </View>
 
         </ScrollView>
       </SafeAreaView>
