@@ -690,7 +690,21 @@ export const translations = {
       emailPlaceholder: 'Tu correo electrónico',
       passwordPlaceholder: 'Contraseña',
       loginButton: 'Iniciar Sesión',
-      invalidEmail: 'Introduce un correo válido'
+      invalidEmail: 'Introduce un correo válido',
+      forgotPassword: '¿Olvidaste tu contraseña?',
+      noAccount: '¿No tienes cuenta?',
+      register: 'Regístrate'
+    },
+
+    // Register
+    register: {
+      haveAccount: '¿Ya tienes cuenta?',
+      loginLink: 'Inicia Sesión'
+    },
+
+    // Common
+    common: {
+      understood: '¡Entendido!'
     },
 
     // Home
