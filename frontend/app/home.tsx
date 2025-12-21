@@ -84,7 +84,7 @@ export default function Home() {
         <OfflineBanner />
         
         <View 
-          entering={FadeInUp.duration(600).springify()}
+         
           style={styles.header}
         >
           <View style={styles.headerContent}>
@@ -113,7 +113,7 @@ export default function Home() {
         </View>
 
         <View 
-          entering={FadeInDown.delay(200).duration(600).springify()}
+         
           style={styles.titleContainer}
         >
           <Text style={styles.title}>{t('home.title')}</Text>
@@ -128,7 +128,7 @@ export default function Home() {
           {cards.map((card, index) => (
             <View
               key={card.id}
-              entering={FadeInDown.delay(300 + index * 100).duration(600).springify()}
+             
               style={styles.card}
             >
               <TouchableOpacity
