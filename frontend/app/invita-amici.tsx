@@ -174,13 +174,13 @@ export default function InvitaAmiciScreen() {
         <View style={styles.howItWorksSection}>
           <Text style={styles.sectionTitle}>{t('referral.howItWorks')}</Text>
           <View style={styles.step}>
-            <Text style={styles.stepText}>1️⃣ Condividi il tuo codice con gli amici</Text>
+            <Text style={styles.stepText}>{t('referral.step1')}</Text>
           </View>
           <View style={styles.step}>
-            <Text style={styles.stepText}>2️⃣ Gli amici si registrano con il tuo codice</Text>
+            <Text style={styles.stepText}>{t('referral.step2')}</Text>
           </View>
           <View style={styles.step}>
-            <Text style={styles.stepText}>3️⃣ Quando 3 amici diventano Premium → 1 mese gratis per te!</Text>
+            <Text style={styles.stepText}>{t('referral.step3')}</Text>
           </View>
           <View style={[styles.step, styles.warningBox]}>
             <Ionicons name="information-circle" size={20} color="#f59e0b" />
