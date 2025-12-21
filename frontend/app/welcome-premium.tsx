@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Animated, { FadeInDown, FadeInUp, ZoomIn } from 'react-native-reanimated';
 
 export default function WelcomePremium() {
   const router = useRouter();
