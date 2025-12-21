@@ -102,7 +102,7 @@ export default function Home() {
               </View>
             )}
           </View>
-          <View style={animatedProfileStyle}>
+          <View>
             <TouchableOpacity 
               style={styles.profileButton}
               onPress={() => router.push('/profilo')}
