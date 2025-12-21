@@ -864,7 +864,11 @@ export const translations = {
       title: 'Panel',
       subtitle: 'Estadísticas y tendencias',
       comingSoon: 'Próximamente',
-      description: 'Aquí encontrarás gráficos y estadísticas nutricionales'
+      description: 'Aquí encontrarás gráficos y estadísticas nutricionales',
+      mealsLogged: 'Comidas Registradas',
+      aiScans: 'Escaneos IA',
+      coachChats: 'Chats Coach Maya',
+      avgScore: 'Puntuación Media'
     },
 
     // Plans
