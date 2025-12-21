@@ -83,7 +83,7 @@ export default function Home() {
         {/* Offline Banner */}
         <OfflineBanner />
         
-        <Animated.View 
+        <View 
           entering={FadeInUp.duration(600).springify()}
           style={styles.header}
         >
@@ -102,23 +102,23 @@ export default function Home() {
               </View>
             )}
           </View>
-          <Animated.View style={animatedProfileStyle}>
+          <View style={animatedProfileStyle}>
             <TouchableOpacity 
               style={styles.profileButton}
               onPress={() => router.push('/profilo')}
             >
               <Ionicons name="person-circle" size={40} color="#10b981" />
             </TouchableOpacity>
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
 
-        <Animated.View 
+        <View 
           entering={FadeInDown.delay(200).duration(600).springify()}
           style={styles.titleContainer}
         >
           <Text style={styles.title}>{t('home.title')}</Text>
           <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-        </Animated.View>
+        </View>
 
         <ScrollView 
           style={styles.scrollView}
@@ -126,7 +126,7 @@ export default function Home() {
           contentContainerStyle={styles.cardsContainer}
         >
           {cards.map((card, index) => (
-            <Animated.View
+            <View
               key={card.id}
               entering={FadeInDown.delay(300 + index * 100).duration(600).springify()}
               style={styles.card}
@@ -146,7 +146,7 @@ export default function Home() {
                   <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
                 </LinearGradient>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
           ))}
         </ScrollView>
       </SafeAreaView>
