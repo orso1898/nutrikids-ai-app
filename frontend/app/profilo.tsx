@@ -638,7 +638,7 @@ export default function Profilo() {
                 style={styles.closeInfoButton}
                 onPress={() => setInfoModalVisible(false)}
               >
-                <Text style={styles.closeInfoButtonText}>Ho Capito! 🎉</Text>
+                <Text style={styles.closeInfoButtonText}>{t('common.understood')} 🎉</Text>
               </TouchableOpacity>
             </View>
           </View>
