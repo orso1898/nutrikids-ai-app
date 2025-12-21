@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Share, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Share, Alert, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,14 +11,6 @@ import { cacheManager } from '../utils/cacheManager';
 import { analyzePhotoOffline } from '../utils/offlineAI';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
-import Animated, {
-  FadeIn,
-  FadeOut,
-  FadeInDown,
-  FadeInUp,
-  SlideInRight,
-  ZoomIn,
-} from 'react-native-reanimated';
 
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
