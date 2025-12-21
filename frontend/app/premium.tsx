@@ -144,12 +144,9 @@ export default function Premium() {
         const response = await axios.get(`${BACKEND_URL}/api/checkout/status/${sessionId}`);
         
         if (response.data.payment_status === 'paid') {
-          Alert.alert(
-            '✅ Pagamento Completato!', 
-            'Benvenuto in NutriKids Premium! Il tuo account è stato aggiornato.',
-            [{ text: 'OK', onPress: () => router.replace('/home') }]
-          );
+          // Redirect to welcome premium page
           setProcessingPayment(false);
+          router.replace('/welcome-premium');
         } else if (response.data.status === 'expired') {
           Alert.alert('Pagamento Scaduto', 'La sessione di pagamento è scaduta. Riprova.');
           setProcessingPayment(false);
