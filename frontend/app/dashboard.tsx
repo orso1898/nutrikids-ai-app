@@ -102,7 +102,7 @@ export default function Dashboard() {
                 <Ionicons name="chatbubbles" size={28} color="#3b82f6" />
               </View>
               <Text style={styles.statNumber}>{stats?.coach_messages_7days || 0}</Text>
-              <Text style={styles.statLabel}>Chat Coach Maya</Text>
+              <Text style={styles.statLabel}>{t('dashboard.coachChats')}</Text>
             </View>
 
             <View style={styles.statCard}>
