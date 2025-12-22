@@ -278,13 +278,23 @@ export const translations = {
     // Dashboard
     dashboard: {
       title: 'Dashboard',
-      subtitle: 'Statistiche e andamento',
-      comingSoon: 'Disponibile a breve',
-      description: 'Qui troverai grafici e statistiche sull\'alimentazione',
+      subtitle: 'I tuoi progressi',
+      week: 'Settimana',
       mealsLogged: 'Pasti Registrati',
       aiScans: 'Scansioni AI',
       coachChats: 'Chat Coach Maya',
-      avgScore: 'Punteggio Medio'
+      avgScore: 'Punteggio Medio',
+      nutritionalHealth: 'Salute Nutrizionale',
+      mealDistribution: 'Distribuzione Pasti',
+      yourChildren: 'I Tuoi Bambini',
+      noChildrenProfile: 'Nessun profilo bambino creato',
+      childRegistered: 'bambino registrato',
+      childrenRegistered: 'bambini registrati',
+      startTracking: 'Inizia a Tracciare!',
+      startTrackingDesc: 'Registra i pasti nel Diario o usa lo Scanner per vedere le statistiche qui.',
+      scoreExcellent: '🎉 Ottimo!',
+      scoreGood: '👍 Buono',
+      scoreKeepGoing: '💪 Continua così'
     },
 
     // Plans
