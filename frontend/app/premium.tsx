@@ -203,7 +203,7 @@ export default function Premium() {
             <View style={styles.loadingCard}>
               <ActivityIndicator size="large" color="#fff" />
               <Text style={styles.loadingText}>
-                {processingPayment ? 'Elaborazione pagamento...' : 'Caricamento prezzi...'}
+                {processingPayment ? t('loading') : t('loading')}
               </Text>
             </View>
           ) : (
