@@ -642,10 +642,43 @@ export const translations = {
 
     // Plans
     plans: {
-      title: 'Nutrition Plans',
+      title: 'Weekly Plan',
       subtitle: 'Personalized weekly plans',
       comingSoon: 'Coming Soon',
-      description: 'Personalized nutrition plans for your children'
+      description: 'Personalized nutrition plans for your children',
+      daily: 'Daily',
+      weekly: 'Weekly',
+      infoTitle: 'Personalized Portions',
+      infoText: 'The shopping list will be automatically calculated based on the children profiles you have created (age and number). Go to Profile to manage your children.',
+      days: {
+        monday: 'Monday',
+        tuesday: 'Tuesday',
+        wednesday: 'Wednesday',
+        thursday: 'Thursday',
+        friday: 'Friday',
+        saturday: 'Saturday',
+        sunday: 'Sunday',
+        mon: 'Mon',
+        tue: 'Tue',
+        wed: 'Wed',
+        thu: 'Thu',
+        fri: 'Fri',
+        sat: 'Sat',
+        sun: 'Sun'
+      },
+      meals: {
+        breakfast: 'Breakfast',
+        lunch: 'Lunch',
+        dinner: 'Dinner',
+        snack: 'Snack'
+      },
+      savePlan: 'Save Plan',
+      generateList: 'Generate Shopping List with AI 🤖',
+      shoppingList: 'Shopping List',
+      savedSuccess: 'Plan saved successfully! ✅',
+      saveError: 'Error saving plan',
+      listGenerated: 'Shopping list generated based on children profiles! 🛒👶',
+      listError: 'Error generating list'
     },
 
     // Settings
