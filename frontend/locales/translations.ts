@@ -521,6 +521,9 @@ export const translations = {
       featuresTitle: 'Everything you get:',
       startFreeTrial: 'Start Free Trial',
       disclaimer: '7-day free trial. Cancel anytime.',
+      or: 'or',
+      subscribeNow: 'Subscribe now',
+      securePayment: 'Secure payment with Stripe',
       features: {
         coachUnlimited: 'Unlimited Coach Maya',
         scannerUnlimited: 'Unlimited Scanner',
