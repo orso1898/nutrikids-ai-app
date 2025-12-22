@@ -320,7 +320,7 @@ export default function Scanner() {
                 <View>
                   <TouchableOpacity style={styles.analyzeButton} onPress={analyzePhoto}>
                     <Ionicons name="analytics" size={24} color="#fff" />
-                    <Text style={styles.analyzeButtonText}>Analizza con AI</Text>
+                    <Text style={styles.analyzeButtonText}>{t('scanner.analyzeButton')}</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -332,7 +332,7 @@ export default function Scanner() {
                   style={styles.loadingCard}
                 >
                   <ActivityIndicator size="large" color="#10b981" />
-                  <Text style={styles.loadingText}>Analisi in corso con GPT-4o Vision...</Text>
+                  <Text style={styles.loadingText}>{t('scanner.analyzingDetail')}</Text>
                 </View>
               )}
 
