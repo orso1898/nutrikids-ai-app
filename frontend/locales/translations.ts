@@ -227,10 +227,43 @@ export const translations = {
 
     // Plans
     plans: {
-      title: 'Piani Nutrizionali',
+      title: 'Piano Settimanale',
       subtitle: 'Piani settimanali personalizzati',
       comingSoon: 'Disponibile a breve',
-      description: 'Piani nutrizionali personalizzati per i tuoi bambini'
+      description: 'Piani nutrizionali personalizzati per i tuoi bambini',
+      daily: 'Giornaliero',
+      weekly: 'Settimanale',
+      infoTitle: 'Porzioni Personalizzate',
+      infoText: 'La lista della spesa sarà calcolata automaticamente in base ai profili bambini che hai creato (età e numero). Vai su Profilo per gestire i tuoi bambini.',
+      days: {
+        monday: 'Lunedì',
+        tuesday: 'Martedì',
+        wednesday: 'Mercoledì',
+        thursday: 'Giovedì',
+        friday: 'Venerdì',
+        saturday: 'Sabato',
+        sunday: 'Domenica',
+        mon: 'Lun',
+        tue: 'Mar',
+        wed: 'Mer',
+        thu: 'Gio',
+        fri: 'Ven',
+        sat: 'Sab',
+        sun: 'Dom'
+      },
+      meals: {
+        breakfast: 'Colazione',
+        lunch: 'Pranzo',
+        dinner: 'Cena',
+        snack: 'Snack'
+      },
+      savePlan: 'Salva Piano',
+      generateList: 'Genera Lista della Spesa con AI 🤖',
+      shoppingList: 'Lista della Spesa',
+      savedSuccess: 'Piano salvato con successo! ✅',
+      saveError: 'Errore nel salvataggio',
+      listGenerated: 'Lista della spesa generata basata sui profili bambini! 🛒👶',
+      listError: 'Errore nella generazione'
     },
 
     // Settings
