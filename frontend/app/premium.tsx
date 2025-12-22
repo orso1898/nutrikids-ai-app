@@ -267,10 +267,10 @@ export default function Premium() {
                   style={styles.subscribeGradient}
                 >
                   <Text style={styles.subscribeButtonText}>
-                    💳 Iscriviti a Premium
+                    💳 {t('premium.subscribeButton')}
                   </Text>
                   <Text style={styles.subscribeButtonSubtext}>
-                    Pagamento sicuro con Stripe
+                    {t('premium.securePayment')}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
