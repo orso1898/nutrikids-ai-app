@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 # Configuration from frontend .env
-BASE_URL = "https://nutriapp-deploy-1.preview.emergentagent.com/api"
+BASE_URL = "https://nutrition-coach-54.preview.emergentagent.com/api"
 
 # Test credentials as specified in review request
 TEST_EMAIL = "orso1898@gmail.com"
@@ -341,7 +341,7 @@ def test_stripe_payments():
     # 2. POST /api/checkout/create-session - Create checkout session
     checkout_data = {
         "plan_type": "monthly",
-        "origin_url": "https://nutriapp-deploy-1.preview.emergentagent.com"
+        "origin_url": "https://nutrition-coach-54.preview.emergentagent.com"
     }
     headers = {"X-User-Email": TEST_EMAIL}
     

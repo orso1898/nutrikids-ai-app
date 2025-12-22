@@ -1,121 +1,166 @@
 <analysis>
-The AI engineer systematically evolved the NutriKids AI application through several key phases. Initially, work focused on enhancing gamification, incorporating points, levels, and badges, along with a Test/Demo mode for quick verification. This included UI updates in  and integration into  and . An onboarding slide was also added to introduce gamification. Subsequently, UX/UI was refined with a scalable dropdown for language selection and advanced animations for progress bars and buttons. A major task involved integrating a full Stripe payment system for Premium subscriptions, including dynamic pricing fetched from the admin panel and crucial bug fixes related to database interaction and navigation. The final phase began an Audit Completo, addressing core stability. This involved comprehensive backend testing, implementing password recovery, and robust error handling. The most recent discussion centered on enhancing food recognition with a hybrid LogMeal + GPT-4o system, and then on the process of saving and continuing work.
+**original_problem_statement**: The user initially needed to fix a critical production deployment failure where the application was inaccessible. After discovering this was a misunderstanding of the platform's capabilities (production URL is API-only, frontend is via Expo Go/preview), the focus shifted to implementing a fully functional password reset feature. This involved migrating from a non-functional SendGrid integration (due to exceeded credits) to Brevo. Subsequently, the user requested to fix the Stripe payment flow, which was failing, and then to add several UI/UX improvements, including a post-payment success screen and a Premium badge on the user's profile. Finally, the user reported issues with app crashes on Expo Go and incomplete translations when changing languages, which also needed to be resolved.
+
+**User's preferred language**: Italian
+
+**what currently exists?**
+The NutriKids AI application is a full-stack Expo/React Native and FastAPI/MongoDB application. The app is fully functional in the local development/preview environment, accessible via a web preview link and the Expo Go mobile app. Core features like user registration/login, AI food scanning, an AI nutritional coach, meal planning, and user profile management are implemented and working. The password reset functionality is now fully operational using Brevo. The Stripe payment integration for premium subscriptions is fixed and testable with test credentials. The UI has been enhanced with a Premium badge on user profiles and a Congratulations page after a successful purchase. Multi-language support has been improved by removing hardcoded text from several screens.
+
+**Last working item**:
+-   Last item agent was working: The agent finished a comprehensive internationalization (i18n) fix. The user reported that changing the app's language left many UI elements untranslated (hardcoded in Italian). The agent identified hardcoded strings in , , , and , added the corresponding translation keys to , and replaced the hardcoded text with calls to the translation function .
+-   Status: USER VERIFICATION PENDING
+-   Agent Testing Done: Y
+-   Which testing method agent to use? manual testing by user
+-   User Testing Done: N
+
+**All Pending/In progress Issue list**:
+-   There are no outstanding high-priority issues. The primary focus is now on new features and preparing for publication.
+
+**In progress Task List**:
+-   There are no tasks currently in progress.
+
+**Upcoming and Future Tasks**
+-   **Upcoming Tasks (High Priority - P0/P1)**:
+    -   **(P0) Prepare for App Store / Google Play Publication**: The user has requested to publish the app. The next step is to create the  file for GitHub Actions to enable automated builds, as suggested by Emergent support. The agent will then need to guide the user through creating developer accounts (Google Play, Apple) and exporting the code to a GitHub repository.
+    -   **(P1) User-guided Manual Testing**: The user should conduct a full manual test of all app features (registration, login, password reset, scanning, coach, meal plans, premium purchase) with friends/family using Expo Go, as per the agent's recommendation.
+    -   **(P1) Complete Offline Mode Implementation**: The foundational architecture for offline mode exists but is not fully integrated across all necessary screens (, , ). This was a request from a previous session that was postponed.
+    -   **(P1) Finalize and Integrate App Icon**: The  needs to be converted to the required PNG formats and configured in .
+
+-   **Future Tasks (Lower Priority - P2)**:
+    -   Replace Stripe Test Keys with Live Keys in the admin panel after the app is published and ready for real transactions.
+    -   Frontend UI for Usage Limits: Implement the UI to show users their remaining free scans/messages.
+    -   Implement Email Automation for welcome emails, weekly reports, etc. (The Brevo integration can be extended for this).
+
+**Completed work in this session**
+-   **Production Deployment Issue Resolution**: Clarified that the production URL () is API-only, and the frontend should be tested via the web preview URL or Expo Go. This resolved the Not Found error confusion.
+-   **Password Reset Implementation**:
+    -   Diagnosed SendGrid failure (Maximum credits exceeded).
+    -   Migrated the email service from SendGrid to **Brevo**.
+    -   Implemented the full password reset flow: request email, receive code, submit new password.
+    -   Fixed the frontend flow to correctly redirect the user from the forgot password screen to the reset password screen, and finally back to login.
+-   **Stripe Payment Integration Fix**:
+    -   Diagnosed and fixed a  by replacing a faulty  library with the official  Python library.
+    -   Corrected the API key issue by guiding the user to use the  key instead of the merchant key ().
+    -   Fixed a bug where the backend was reading from the wrong database collection for the Stripe key.
+    -   Fixed incorrect pricing by updating the price values in the database to match the frontend UI.
+-   **UI/UX Enhancements**:
+    -   Added a **Premium 👑 badge** to the  screen, which appears after a user subscribes. This involved creating a new backend endpoint () to fetch user status.
+    -   Created a new **Welcome Premium page** () that appears after a successful payment, congratulating the user and listing the unlocked features.
+    -   Made API keys in the admin panel visible (removed ) for easier debugging by the user.
+-   **Bug Fixes**:
+    -   Resolved an app crash on Expo Go by removing complex  animations from , , and .
+    -   Fixed widespread internationalization (i18n) issues by replacing hardcoded Italian text with translation keys in , , , and .
+
+**Earlier issues found/mentioned but not fixed**
+-   **Issue 1: Messy Offline Integration in Scanner**
+    -   **Debug checklist**: The offline logic in  was implemented hastily in a previous session. It's complex and could be refactored into custom hooks for better maintainability and stability.
+    -   **Why to solve this issue and what will be achieved with this?**: Refactoring would simplify the component, reduce potential bugs, and make it easier to implement the offline mode consistently across other screens.
+    -   **Should Test frontend/backend/both after fix**: Frontend.
+    -   **Is recurring issue?**: N
+
+**Known issue recurrence from previous fork**
+-   None. The critical production deployment failure was a new issue in this session, which was ultimately diagnosed as a misunderstanding of the platform's behavior rather than a recurring code bug.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+-   **Frontend**: Expo, React Native, Expo Router, Axios
+-   **Backend**: FastAPI, Python
+-   **Database**: MongoDB (local for dev, Atlas for production)
+-   **Authentication**: JWT, bcrypt
+-   **Payments**: Stripe (via official Python library)
+-   **Email**: Brevo (via direct HTTP API call)
+-   **Internationalization (i18n)**: Using a context and a JSON object () for multi-language support.
+
+**key DB schema**
+-   **users**:
+    -    (unique, indexed)
+    -    (unique, indexed)
+    -   
+    -    (boolean, added)
+    -    (string, e.g., 'monthly', 'yearly', added)
+    -    (string, e.g., 'active', 'canceled')
+-   **app_config**:
+    -   uid=0(root) gid=0(root) groups=0(root): app_config
+    -   
+    -   
+    -   
+    -   
+
+**changes in tech stack**
+-   **Email Service**: Migrated from **SendGrid** to **Brevo** due to expired free credits on SendGrid.
+-   **Stripe Integration**: Refactored from the  library to the official  Python library for better reliability and error handling.
+
+**All files of reference**
+-   ****: Heavily modified. Added Brevo integration, refactored Stripe checkout endpoint, added  endpoint.
+-   ****: Heavily modified. Added many new translation keys for login, register, dashboard, and referral pages to fix hardcoded text.
+-   ****: Modified to fix the redirection flow after requesting a password reset.
+-   ****: Modified to redirect to the login page after a successful password reset.
+-   ****: Modified to redirect to the new  page upon successful payment.
+-   ****: Modified multiple times to change the email service provider field (SendGrid -> Resend -> Brevo) and to make keys visible.
+-   ****: Modified to fetch user premium status and display a Premium badge.
+-   ****: New file created to show a congratulations screen after purchase.
+-   ****, ****: Modified to remove  animations to fix crashes on Expo Go.
+-   ****, ****, ****, ****: Modified to use translation keys instead of hardcoded Italian text.
+-   ****: Modified to remove  to attempt a deployment fix (this was part of a debugging path).
+
+**Areas that need refactoring**
+-   : The offline logic is still complex and could benefit from being extracted into custom hooks.
+-   : The file is becoming very large. Logic could be split into multiple files/routers (e.g., , , ).
+
+**key api endpoints**
+-    (POST): Sends a password reset email using Brevo.
+-    (POST): Resets the user's password with a valid token.
+-    (POST): Creates a Stripe checkout session.
+-    (GET, new): Fetches user details, including premium status.
+
+**Critical Info for New Agent**
+-   **Production vs. Preview Environment**: This is the most critical point. The production URL () is **API-only**. The user-facing web application is only available on the **preview URL** (). The native mobile app works via **Expo Go**. Do not try to debug the web frontend on the production URL.
+-   **Publication Workflow**: The user wants to publish the app. The next step is to prepare for build automation using GitHub Actions, as Emergent support does not provide a web frontend for Expo apps on their deployment platform.
+-   **API Keys**: All API keys (Brevo, Stripe) are managed via the in-app Admin Panel and are stored in the  collection in the MongoDB database. The app is currently using Stripe **test** keys.
+
+**documents created in this job**
+-    (new screen).
+
+**Last 10 User Messages and any pending user messages**
+1.  **User**: Asks how to let other people test the app. (Incomplete)
+2.  **Agent**: Explains options: Expo Go with QR code, web preview link, or TestFlight/Beta after build. Recommends Expo Go.
+3.  **User**: Asks how to scan a QR code when using the phone. (Incomplete)
+4.  **Agent**: Explains methods: enter URL manually, use two devices, or scan from a screenshot.
+5.  **User**: Shares a screenshot of an error in Expo Go related to . (Incomplete)
+6.  **Agent**: Fixes the  crash by simplifying animations.
+7.  **User**: Shares another screenshot showing parts of the app are not translated when the language is changed. (Incomplete)
+8.  **Agent**: Acknowledges the issue and begins fixing hardcoded text, starting with  and .
+9.  **User**: Acknowledges the agent's work and says Ricaricato... continui? (Reloaded... continue?). (Complete)
+10. **Agent**: Confirms and continues fixing hardcoded text in other files like  and , and then informs the user the fixes are done and asks them to test.
+
+**Project Health Check:**
+-   **Broken**: The production URL  does not serve a frontend. This is now understood to be the expected behavior of the platform for Expo apps, not a bug.
+-   **Mocked**: N/A.
+
+**3rd Party Integrations**
+-   **Emergent LLM Key**: Used for AI food analysis (Gemini).
+-   **Stripe (Payments)**: Requires User API Key. Currently configured with **test keys**.
+-   **Brevo (Email)**: Requires User API Key. Used for password reset emails.
+-   **MongoDB Atlas (Database)**: Requires User-provided connection string for production data.
+
+**Testing status**
+-   **Testing agent used after significant changes**: YES,  was used after major feature implementations.
+-   **Troubleshoot agent used after agent stuck in loop**: YES, used to investigate the production deployment issue.
+-   **Test files created**:  was updated.
+-   **Known regressions**: None. The  crash was a regression introduced by recent changes, but it has been fixed.
+
+**Credentials to test flow:**
+-   **Admin User**:  / 
+-   **Test User**:  / 
+-   **Brevo API Key**: 
+-   **Stripe Test Secret Key**:  (The one currently in the DB)
+-   **Stripe Test Card**: , any future date, any 3-digit CVC.
+
+**What agent forgot to execute**
+-   **Complete Offline Mode**: This task from the previous fork was never addressed due to more urgent issues.
+-   **Finalize App Icon**: The  was never converted to PNGs and integrated into .
+-   **Frontend UI for Usage Limits**: The UI for showing remaining free scans/messages was not implemented.
+
 </analysis>
-
-<product_requirements>
-The NutriKids AI app provides nutritional guidance for children, featuring:
-- **Onboarding**: Animated slides, multi-language greetings, now including a gamification intro.
-- **Authentication**: Email/password registration/login, JWT-based admin access, and recently, forgot password and reset password functionalities.
-- **Internationalization**: Support for Italian, English, and Spanish, now with a scalable dropdown selector.
-- **Home Screen**: Cards for Scanner, Coach Maya, Piani, Diario, Dashboard, Premium, with improved UI and transitions.
-- **Design**: Teal color scheme, gradients, thumb-friendly UI.
-- **Scanner**: AI dish recognition, allergen detection with visual alerts, and now integrated with gamification points and usage limits.
-- **Coach Maya**: AI chatbot for nutritional advice, integrated with usage limits.
-- **Diario (Diary)**: Daily meal tracking, photo display, nutritional info, Aggiungi Pasto modal, and integrated gamification points.
-- **Premium**: Dynamic pricing from admin, subscription paywall, now with full Stripe payment integration (6.99 monthly, 59.99 yearly).
-- **Piani (Plans)**: Weekly/daily meal planner, AI-generated shopping lists based on child profiles and allergies.
-- **Dashboard**: Real-time user statistics.
-- **Profile**: Child management (add/edit/delete), logout, app reset. Child profiles now display gamification stats (points, level, badges) and avatar selection. A Test/Demo mode for gamification was added.
-- **Admin Functionality**: Admin Dashboard and Configuration Panel to manage API keys, pricing, and usage limits (Free/Premium).
-</product_requirements>
-
-<key_technical_concepts>
-- **Expo/React Native**: Cross-platform mobile development.
-- **Expo Router**: File-based navigation.
-- **FastAPI**: Python backend with MongoDB.
-- ** & **: For secure authentication.
-- ****: For AI (LLM & vision) services.
-- ****: Multi-language support.
-- ****: Local data persistence.
-- ****: UI animations.
-- **Stripe API**: Payment processing.
-- ****: Dropdown UI.
-</key_technical_concepts>
-
-<code_architecture>
-
-
--   ****:
-    -   **Summary**: Main FastAPI backend.
-    -   **Changes**:
-        -   **Gamification**:  model updated with , , , .  and  models added.
-        -   **Authentication**: Endpoints for  and  were confirmed as already existing and complete.  model updated with , , , , .
-        -   **Premium**: Stripe integration added, including  (now dynamic), ,  models, and  endpoints. Prices are now fetched dynamically from . Fixed database collection issue ( to ).
-        -   **Error Handling**: Global exception handler added.  and  endpoints updated with robust  for LiteLLM proxy token errors and limit checks.
-        -   **Usage Limits**:  helper for  and . Integrated into  and . New endpoint  for current usage status.
-        -   **Pydantic Models**: Added , , , .
--   ****:
-    -   **Summary**: Root layout.
-    -   **Changes**: Configured global Stack navigator for transitions.
--   ****:
-    -   **Summary**: Onboarding screen.
-    -   **Changes**: Added a new fifth slide specifically explaining gamification.
--   ****:
-    -   **Summary**: User login screen.
-    -   **Changes**: Added Password dimenticata? link navigating to .
--   ****: (NEW FILE)
-    -   **Summary**: Screen for initiating password recovery.
-    -   **Changes**: Created.
--   ****: (NEW FILE)
-    -   **Summary**: Screen for resetting password with a code.
-    -   **Changes**: Created.
--   ****:
-    -   **Summary**: Language selection screen.
-    -   **Changes**: Replaced language buttons with a dropdown  for better scalability, using .
--   ****:
-    -   **Summary**: User profile, child management.
-    -   **Changes**:
-        -   **Gamification UI**: Updated  interface to include . Display of , ,  (e.g., Prima Centuria, Livello 5) in child cards. Avatar emoji replaces initial letter.
-        -   **Layout Fix**: Reworked child card layout to prevent gamification stats from overlapping with edit/delete buttons, moving buttons to a top-right column.
-        -   **Informative Modal**: Added a How it Works info modal for gamification, accessible via a '?' icon in the header.
-        -   **Celebration Modal**: Integrated a level-up celebratory animation ( and ).
-        -   **Test Mode**: Added  state, , ,  functions, and a Test button on child cards to open a modal for manually adding points, triggering level-ups, or resetting.
-        -   **Animations**: Integrated  and  for fluid progress bar animations.
--   ****:
-    -   **Summary**: Daily meal tracking.
-    -   **Changes**:  function updated to handle point assignment and trigger the  if a level change occurs.
--   ****:
-    -   **Summary**: Dish scanning.
-    -   **Changes**:  function integrated to assign points after a successful scan.
--   ****:
-    -   **Summary**: Premium subscription paywall.
-    -   **Changes**: Reworked UI to display selectable pricing cards (monthly/yearly), fetching dynamic prices from the backend. Integrated Stripe checkout flow via  for redirect,  for polling payment status. Changed  to  for reliable navigation after Stripe redirect.
--   ****: (NEW FILE)
-    -   **Summary**: Reusable animated button component.
-    -   **Changes**: Created with a bounce animation on press using .
--   ****:
-    -   **Summary**: Centralized translation dictionary.
-    -   **Changes**: Added translations for the new gamification onboarding slide ().
-</code_architecture>
-
-<pending_tasks>
-- Complete the implementation of the Forgot Password and Reset Password functionalities (frontend is done, backend endpoints were confirmed to exist).
-- Implement the logic to enforce the configured usage limits in the frontend for Free vs. Premium users.
-- Integrate Stripe payments: Currently, it redirects to Stripe, but further status polling and success/error handling within the app need to be refined.
-- Integrate the hybrid LogMeal API + GPT-4o vision system for food recognition.
-- Conduct comprehensive frontend flow testing.
-- Further refine AI prompts for shopping list generation for edge cases, if necessary.
-- Integrate Analytics/tracking users (for understanding what works).
-- Implement Push Notifications, Email automation, Streak system.
-- Add Privacy Policy & Terms of Service, GDPR compliance.
-- Finalize API keys for production.
-</pending_tasks>
-
-<current_work>
-Immediately before this summary request, the AI engineer was engaged in discussions about the app's potential for growth, drawing comparisons to Cal.ai, and the user's strong desire for the app to be perfecta. This led to a comprehensive audit of the application, identifying areas for improvement across UI/UX, viral growth, monetization enforcement, retention, and production readiness.
-
-The AI engineer proposed a multi-phase Piano Perfezione and the user agreed to start with **FASE 1: CORE PERFETTO**.
-
-Within FASE 1, the following has been completed:
-1.  **Testing Automatico Completo**: A full backend test was run, with 27/34 tests passing (79.4% success), and all 5 new high-priority endpoints (gamification, Stripe, meal plans, dashboard) functioning.
-2.  **Password Recovery**: Frontend screens (, ) and a link in  were added. Backend endpoints for this functionality were confirmed to already exist.
-3.  **Error Handling Robusto**: A global exception handler was added to the backend (), and robust  blocks were integrated into critical endpoints like  and  to handle LiteLLM proxy token errors.
-4.  **Bug Fixes**: Addressed a critical authentication error during shopping list generation and fixed a navigation issue where the Premium screen wouldn't go back after Stripe redirect (changed  to ).
-5.  **Limiti Free vs Premium**: The  model in  was updated to track  and . Helper functions () were created and integrated into the  and  endpoints to enforce these limits. A new endpoint  was created to fetch current usage status.
-
-The conversation then shifted to improving the core food recognition system, where a hybrid LogMeal API + GPT-4o Vision system was recommended by the AI and accepted by the user. The last action was a discussion about how to save the project (forking, GitHub push) as the user expressed confusion about the Fork button.
-</current_work>
-
-<optional_next_step>
-Implement the hybrid LogMeal API + GPT-4o Vision system for improved food recognition.
-</optional_next_step>

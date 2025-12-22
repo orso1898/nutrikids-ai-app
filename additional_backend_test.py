@@ -11,7 +11,7 @@ import uuid
 from datetime import datetime
 
 # Backend URL
-BACKEND_URL = "https://nutriapp-deploy-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://nutrition-coach-54.preview.emergentagent.com/api"
 
 def test_user_registration():
     """Test POST /api/register - User Registration"""
