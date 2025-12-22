@@ -308,7 +308,7 @@ export default function Premium() {
             )}
           </TouchableOpacity>
           
-          <Text style={styles.orText}>oppure</Text>
+          <Text style={styles.orText}>{t('premium.or')}</Text>
           
           <TouchableOpacity 
             style={styles.subscribeButton} 
@@ -318,7 +318,7 @@ export default function Premium() {
             {processingPayment ? (
               <ActivityIndicator color="#00897B" />
             ) : (
-              <Text style={styles.subscribeButtonText}>Abbonati subito ({selectedPlan === 'monthly' ? '€' + monthlyPrice.toFixed(2) + '/mese' : '€' + yearlyPrice.toFixed(2) + '/anno'})</Text>
+              <Text style={styles.subscribeButtonText}>{t('premium.subscribeNow')} ({selectedPlan === 'monthly' ? '€' + monthlyPrice.toFixed(2) + t('premium.perMonth') : '€' + yearlyPrice.toFixed(2) + t('premium.perYear')})</Text>
             )}
           </TouchableOpacity>
 
