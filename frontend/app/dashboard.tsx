@@ -180,7 +180,7 @@ export default function Dashboard() {
                 onPress={() => router.push('/profilo')}
               >
                 <Ionicons name="add-circle" size={20} color="#3b82f6" />
-                <Text style={styles.addChildButtonText}>Aggiungi Bambino</Text>
+                <Text style={styles.addChildButtonText}>{t('profile.addChild')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -189,9 +189,9 @@ export default function Dashboard() {
           {stats && stats.total_meals_7days === 0 && (
             <View style={styles.emptyCard}>
               <Ionicons name="analytics-outline" size={64} color="rgba(255,255,255,0.3)" />
-              <Text style={styles.emptyTitle}>Inizia a Tracciare!</Text>
+              <Text style={styles.emptyTitle}>{t('dashboard.startTracking')}</Text>
               <Text style={styles.emptyText}>
-                Registra i pasti nel Diario o usa lo Scanner per vedere le statistiche qui.
+                {t('dashboard.startTrackingDesc')}
               </Text>
             </View>
           )}
