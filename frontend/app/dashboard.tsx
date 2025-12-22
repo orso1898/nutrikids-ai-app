@@ -121,7 +121,7 @@ export default function Dashboard() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Ionicons name="fitness" size={20} color="#10b981" />
-                <Text style={styles.cardTitle}>Salute Nutrizionale</Text>
+                <Text style={styles.cardTitle}>{t('dashboard.nutritionalHealth')}</Text>
               </View>
               <View style={styles.healthScoreContainer}>
                 <View style={styles.progressBarBackground}>
@@ -133,7 +133,7 @@ export default function Dashboard() {
                   />
                 </View>
                 <Text style={styles.healthScoreText}>
-                  {stats.avg_health_score >= 7 ? '🎉 Ottimo!' : stats.avg_health_score >= 5 ? '👍 Buono' : '💪 Continua così'}
+                  {stats.avg_health_score >= 7 ? t('dashboard.scoreExcellent') : stats.avg_health_score >= 5 ? t('dashboard.scoreGood') : t('dashboard.scoreKeepGoing')}
                 </Text>
               </View>
             </View>
@@ -144,7 +144,7 @@ export default function Dashboard() {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Ionicons name="pie-chart" size={20} color="#f59e0b" />
-                <Text style={styles.cardTitle}>Distribuzione Pasti</Text>
+                <Text style={styles.cardTitle}>{t('dashboard.mealDistribution')}</Text>
               </View>
               <View style={styles.chartContainer}>
                 {mealTypesArray.map(([type, count]) => (
@@ -169,10 +169,10 @@ export default function Dashboard() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Ionicons name="people" size={20} color="#3b82f6" />
-              <Text style={styles.cardTitle}>I Tuoi Bambini</Text>
+              <Text style={styles.cardTitle}>{t('dashboard.yourChildren')}</Text>
             </View>
             <Text style={styles.childrenText}>
-              {stats?.children_count === 0 ? 'Nessun profilo bambino creato' : `${stats?.children_count} ${stats?.children_count === 1 ? 'bambino registrato' : 'bambini registrati'}`}
+              {stats?.children_count === 0 ? t('dashboard.noChildrenProfile') : `${stats?.children_count} ${stats?.children_count === 1 ? t('dashboard.childRegistered') : t('dashboard.childrenRegistered')}`}
             </Text>
             {stats?.children_count === 0 && (
               <TouchableOpacity 
