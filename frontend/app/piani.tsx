@@ -154,7 +154,7 @@ export default function Piani() {
             style={styles.input}
             value={dayPlan?.breakfast || ''}
             onChangeText={(value) => updateMeal(dayName, 'breakfast', value)}
-            placeholder="Colazione"
+            placeholder={t('plans.meals.breakfast')}
             placeholderTextColor="rgba(0,0,0,0.4)"
           />
         </View>
@@ -165,7 +165,7 @@ export default function Piani() {
             style={styles.input}
             value={dayPlan?.lunch || ''}
             onChangeText={(value) => updateMeal(dayName, 'lunch', value)}
-            placeholder="Pranzo"
+            placeholder={t('plans.meals.lunch')}
             placeholderTextColor="rgba(0,0,0,0.4)"
           />
         </View>
@@ -176,7 +176,7 @@ export default function Piani() {
             style={styles.input}
             value={dayPlan?.dinner || ''}
             onChangeText={(value) => updateMeal(dayName, 'dinner', value)}
-            placeholder="Cena"
+            placeholder={t('plans.meals.dinner')}
             placeholderTextColor="rgba(0,0,0,0.4)"
           />
         </View>
@@ -187,7 +187,7 @@ export default function Piani() {
             style={styles.input}
             value={dayPlan?.snack || ''}
             onChangeText={(value) => updateMeal(dayName, 'snack', value)}
-            placeholder="Snack"
+            placeholder={t('plans.meals.snack')}
             placeholderTextColor="rgba(0,0,0,0.4)"
           />
         </View>
