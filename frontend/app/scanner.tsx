@@ -349,7 +349,7 @@ export default function Scanner() {
                     >
                       <View style={styles.allergenAlertHeader}>
                         <Ionicons name="warning" size={32} color="#fff" />
-                        <Text style={styles.allergenAlertTitle}>ATTENZIONE ALLERGIA!</Text>
+                        <Text style={styles.allergenAlertTitle}>{t('scanner.allergenWarning')}</Text>
                       </View>
                       <Text style={styles.allergenAlertText}>{result.allergen_warning}</Text>
                       {result.allergens_detected && result.allergens_detected.length > 0 && (
@@ -373,7 +373,7 @@ export default function Scanner() {
                       <Text style={styles.scoreNumber}>{result.health_score}</Text>
                       <Text style={styles.scoreLabel}>/10</Text>
                     </View>
-                    <Text style={styles.scoreTitle}>Punteggio Salute</Text>
+                    <Text style={styles.scoreTitle}>{t('scanner.healthScore')}</Text>
                   </View>
 
                   <View 
@@ -382,7 +382,7 @@ export default function Scanner() {
                   >
                     <View style={styles.cardHeader}>
                       <Ionicons name="restaurant" size={20} color="#10b981" />
-                      <Text style={styles.cardTitle}>Alimenti Riconosciuti</Text>
+                      <Text style={styles.cardTitle}>{t('scanner.foodsDetected')}</Text>
                     </View>
                     <View style={styles.foodsList}>
                       {result.foods_detected.map((food, index) => (
@@ -404,28 +404,28 @@ export default function Scanner() {
                   >
                     <View style={styles.cardHeader}>
                       <Ionicons name="nutrition" size={20} color="#10b981" />
-                      <Text style={styles.cardTitle}>Valori Nutrizionali</Text>
+                      <Text style={styles.cardTitle}>{t('scanner.nutritionalInfo')}</Text>
                     </View>
                     <View style={styles.nutritionGrid}>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{result.nutritional_info.calories}</Text>
-                        <Text style={styles.nutritionLabel}>Calorie</Text>
+                        <Text style={styles.nutritionLabel}>{t('scanner.calories')}</Text>
                       </View>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{result.nutritional_info.proteins}g</Text>
-                        <Text style={styles.nutritionLabel}>Proteine</Text>
+                        <Text style={styles.nutritionLabel}>{t('scanner.proteins')}</Text>
                       </View>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{result.nutritional_info.carbs}g</Text>
-                        <Text style={styles.nutritionLabel}>Carboidrati</Text>
+                        <Text style={styles.nutritionLabel}>{t('scanner.carbs')}</Text>
                       </View>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{result.nutritional_info.fats}g</Text>
-                        <Text style={styles.nutritionLabel}>Grassi</Text>
+                        <Text style={styles.nutritionLabel}>{t('scanner.fats')}</Text>
                       </View>
                       <View style={styles.nutritionItem}>
                         <Text style={styles.nutritionValue}>{result.nutritional_info.fiber}g</Text>
-                        <Text style={styles.nutritionLabel}>Fibre</Text>
+                        <Text style={styles.nutritionLabel}>{t('scanner.fiber')}</Text>
                       </View>
                     </View>
                   </View>
@@ -436,7 +436,7 @@ export default function Scanner() {
                   >
                     <View style={styles.cardHeader}>
                       <Ionicons name="bulb" size={20} color="#10b981" />
-                      <Text style={styles.cardTitle}>Suggerimenti di Coach Maya</Text>
+                      <Text style={styles.cardTitle}>{t('scanner.suggestions')}</Text>
                     </View>
                     <Text style={styles.suggestionsText}>{result.suggestions}</Text>
                   </View>
@@ -444,7 +444,7 @@ export default function Scanner() {
                   <View style={styles.actionButtons}>
                     <TouchableOpacity style={styles.saveButton} onPress={saveToDiario}>
                       <Ionicons name="bookmark" size={20} color="#fff" />
-                      <Text style={styles.saveButtonText}>Salva nel Diario</Text>
+                      <Text style={styles.saveButtonText}>{t('scanner.saveButton')}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.shareButton} onPress={shareResult}>
