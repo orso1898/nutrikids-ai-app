@@ -706,13 +706,23 @@ export const translations = {
     // Dashboard
     dashboard: {
       title: 'Dashboard',
-      subtitle: 'Statistics and trends',
-      comingSoon: 'Coming Soon',
-      description: 'Here you\'ll find charts and nutrition statistics',
+      subtitle: 'Your progress',
+      week: 'Week',
       mealsLogged: 'Meals Logged',
       aiScans: 'AI Scans',
       coachChats: 'Coach Maya Chats',
-      avgScore: 'Average Score'
+      avgScore: 'Average Score',
+      nutritionalHealth: 'Nutritional Health',
+      mealDistribution: 'Meal Distribution',
+      yourChildren: 'Your Children',
+      noChildrenProfile: 'No children profile created',
+      childRegistered: 'child registered',
+      childrenRegistered: 'children registered',
+      startTracking: 'Start Tracking!',
+      startTrackingDesc: 'Log meals in Diary or use Scanner to see statistics here.',
+      scoreExcellent: '🎉 Excellent!',
+      scoreGood: '👍 Good',
+      scoreKeepGoing: '💪 Keep going'
     },
 
     // Plans
