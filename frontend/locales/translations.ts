@@ -939,6 +939,9 @@ export const translations = {
       featuresTitle: 'Todo lo que obtienes:',
       startFreeTrial: 'Comenzar Prueba Gratuita',
       disclaimer: '7 días de prueba gratuita. Cancela en cualquier momento.',
+      or: 'o',
+      subscribeNow: 'Suscríbete ahora',
+      securePayment: 'Pago seguro con Stripe',
       features: {
         coachUnlimited: 'Coach Maya Ilimitado',
         scannerUnlimited: 'Escáner Ilimitado',
