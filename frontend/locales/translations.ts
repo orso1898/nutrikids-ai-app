@@ -1134,13 +1134,23 @@ export const translations = {
     // Dashboard
     dashboard: {
       title: 'Panel',
-      subtitle: 'Estadísticas y tendencias',
-      comingSoon: 'Próximamente',
-      description: 'Aquí encontrarás gráficos y estadísticas nutricionales',
+      subtitle: 'Tu progreso',
+      week: 'Semana',
       mealsLogged: 'Comidas Registradas',
       aiScans: 'Escaneos IA',
       coachChats: 'Chats Coach Maya',
-      avgScore: 'Puntuación Media'
+      avgScore: 'Puntuación Media',
+      nutritionalHealth: 'Salud Nutricional',
+      mealDistribution: 'Distribución de Comidas',
+      yourChildren: 'Tus Niños',
+      noChildrenProfile: 'No hay perfil de niño creado',
+      childRegistered: 'niño registrado',
+      childrenRegistered: 'niños registrados',
+      startTracking: '¡Comienza a Rastrear!',
+      startTrackingDesc: 'Registra comidas en el Diario o usa el Escáner para ver estadísticas aquí.',
+      scoreExcellent: '🎉 ¡Excelente!',
+      scoreGood: '👍 Bueno',
+      scoreKeepGoing: '💪 Sigue así'
     },
 
     // Plans
