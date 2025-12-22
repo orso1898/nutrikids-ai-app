@@ -201,7 +201,7 @@ export default function Piani() {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#fff" />
-            <Text style={styles.loadingText}>Caricamento...</Text>
+            <Text style={styles.loadingText}>{t('loading')}</Text>
           </View>
         </SafeAreaView>
       </LinearGradient>
@@ -215,7 +215,7 @@ export default function Piani() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Piano Settimanale</Text>
+          <Text style={styles.headerTitle}>{t('plans.title')}</Text>
         </View>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -227,7 +227,7 @@ export default function Piani() {
             >
               <Ionicons name="today" size={20} color={mode === 'daily' ? '#fff' : '#f59e0b'} />
               <Text style={[styles.modeButtonText, mode === 'daily' && styles.modeButtonTextActive]}>
-                Giornaliero
+                {t('plans.daily')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -236,7 +236,7 @@ export default function Piani() {
             >
               <Ionicons name="calendar" size={20} color={mode === 'weekly' ? '#fff' : '#f59e0b'} />
               <Text style={[styles.modeButtonText, mode === 'weekly' && styles.modeButtonTextActive]}>
-                Settimanale
+                {t('plans.weekly')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -245,10 +245,9 @@ export default function Piani() {
           <View style={styles.infoCard}>
             <Ionicons name="information-circle" size={24} color="#3b82f6" />
             <View style={styles.infoTextContainer}>
-              <Text style={styles.infoTitle}>Porzioni Personalizzate</Text>
+              <Text style={styles.infoTitle}>{t('plans.infoTitle')}</Text>
               <Text style={styles.infoText}>
-                La lista della spesa sarà calcolata automaticamente in base ai profili bambini che hai creato (età e numero). 
-                Vai su Profilo per gestire i tuoi bambini.
+                {t('plans.infoText')}
               </Text>
             </View>
           </View>
@@ -257,13 +256,13 @@ export default function Piani() {
           {mode === 'daily' && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daySelector}>
               {[
-                { key: 'monday', label: 'Lun' },
-                { key: 'tuesday', label: 'Mar' },
-                { key: 'wednesday', label: 'Mer' },
-                { key: 'thursday', label: 'Gio' },
-                { key: 'friday', label: 'Ven' },
-                { key: 'saturday', label: 'Sab' },
-                { key: 'sunday', label: 'Dom' },
+                { key: 'monday', label: t('plans.days.mon') },
+                { key: 'tuesday', label: t('plans.days.tue') },
+                { key: 'wednesday', label: t('plans.days.wed') },
+                { key: 'thursday', label: t('plans.days.thu') },
+                { key: 'friday', label: t('plans.days.fri') },
+                { key: 'saturday', label: t('plans.days.sat') },
+                { key: 'sunday', label: t('plans.days.sun') },
               ].map((day) => (
                 <TouchableOpacity
                   key={day.key}
@@ -282,31 +281,31 @@ export default function Piani() {
           {mode === 'daily' ? (
             // Single day view
             <>
-              {selectedDay === 'monday' && renderDayPlan('monday', 'Lunedì')}
-              {selectedDay === 'tuesday' && renderDayPlan('tuesday', 'Martedì')}
-              {selectedDay === 'wednesday' && renderDayPlan('wednesday', 'Mercoledì')}
-              {selectedDay === 'thursday' && renderDayPlan('thursday', 'Giovedì')}
-              {selectedDay === 'friday' && renderDayPlan('friday', 'Venerdì')}
-              {selectedDay === 'saturday' && renderDayPlan('saturday', 'Sabato')}
-              {selectedDay === 'sunday' && renderDayPlan('sunday', 'Domenica')}
+              {selectedDay === 'monday' && renderDayPlan('monday', t('plans.days.monday'))}
+              {selectedDay === 'tuesday' && renderDayPlan('tuesday', t('plans.days.tuesday'))}
+              {selectedDay === 'wednesday' && renderDayPlan('wednesday', t('plans.days.wednesday'))}
+              {selectedDay === 'thursday' && renderDayPlan('thursday', t('plans.days.thursday'))}
+              {selectedDay === 'friday' && renderDayPlan('friday', t('plans.days.friday'))}
+              {selectedDay === 'saturday' && renderDayPlan('saturday', t('plans.days.saturday'))}
+              {selectedDay === 'sunday' && renderDayPlan('sunday', t('plans.days.sunday'))}
             </>
           ) : (
             // Weekly view - all days
             <>
-              {renderDayPlan('monday', 'Lunedì')}
-              {renderDayPlan('tuesday', 'Martedì')}
-              {renderDayPlan('wednesday', 'Mercoledì')}
-              {renderDayPlan('thursday', 'Giovedì')}
-              {renderDayPlan('friday', 'Venerdì')}
-              {renderDayPlan('saturday', 'Sabato')}
-              {renderDayPlan('sunday', 'Domenica')}
+              {renderDayPlan('monday', t('plans.days.monday'))}
+              {renderDayPlan('tuesday', t('plans.days.tuesday'))}
+              {renderDayPlan('wednesday', t('plans.days.wednesday'))}
+              {renderDayPlan('thursday', t('plans.days.thursday'))}
+              {renderDayPlan('friday', t('plans.days.friday'))}
+              {renderDayPlan('saturday', t('plans.days.saturday'))}
+              {renderDayPlan('sunday', t('plans.days.sunday'))}
             </>
           )}
 
           {/* Save Button */}
           <TouchableOpacity style={styles.saveButton} onPress={savePlan}>
             <Ionicons name="save" size={20} color="#fff" />
-            <Text style={styles.saveButtonText}>Salva Piano</Text>
+            <Text style={styles.saveButtonText}>{t('plans.savePlan')}</Text>
           </TouchableOpacity>
 
           {/* Generate Shopping List */}
@@ -320,7 +319,7 @@ export default function Piani() {
             ) : (
               <>
                 <Ionicons name="cart" size={20} color="#fff" />
-                <Text style={styles.generateButtonText}>Genera Lista della Spesa con AI 🤖</Text>
+                <Text style={styles.generateButtonText}>{t('plans.generateList')}</Text>
               </>
             )}
           </TouchableOpacity>
@@ -330,7 +329,7 @@ export default function Piani() {
             <View style={styles.shoppingListCard}>
               <View style={styles.shoppingListHeader}>
                 <Ionicons name="cart" size={24} color="#10b981" />
-                <Text style={styles.shoppingListTitle}>Lista della Spesa</Text>
+                <Text style={styles.shoppingListTitle}>{t('plans.shoppingList')}</Text>
               </View>
               <Text style={styles.shoppingListText}>{plan.shopping_list}</Text>
             </View>
