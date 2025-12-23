@@ -1138,6 +1138,7 @@ export const translations = {
       title: 'Panel',
       subtitle: 'Tu progreso',
       week: 'Semana',
+      last7Days: 'Últimos 7 días',
       mealsLogged: 'Comidas Registradas',
       aiScans: 'Escaneos IA',
       coachChats: 'Chats Coach Maya',
