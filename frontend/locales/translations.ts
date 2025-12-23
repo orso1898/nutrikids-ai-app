@@ -280,6 +280,7 @@ export const translations = {
       title: 'Dashboard',
       subtitle: 'I tuoi progressi',
       week: 'Settimana',
+      last7Days: 'Ultimi 7 giorni',
       mealsLogged: 'Pasti Registrati',
       aiScans: 'Scansioni AI',
       coachChats: 'Chat Coach Maya',
