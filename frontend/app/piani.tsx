@@ -109,7 +109,7 @@ export default function Piani() {
     
     setGenerating(true);
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/meal-plan/generate-shopping-list`, null, {
+      const response = await axios.post(`${BACKEND_URL}/api/shopping-list/generate`, null, {
         params: {
           user_email: userEmail,
           week_start_date: currentWeekStart,
