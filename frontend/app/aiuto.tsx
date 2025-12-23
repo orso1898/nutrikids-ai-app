@@ -9,7 +9,7 @@ export default function Aiuto() {
   const router = useRouter();
 
   const handleEmail = () => {
-    Linking.openURL('mailto:supporto@nutrikids.ai?subject=Richiesta Supporto');
+    Linking.openURL('mailto:support@nutrikids.ai?subject=Richiesta Supporto NutriKids AI');
   };
 
   const handleWhatsApp = () => {
