@@ -85,25 +85,14 @@ export default function Aiuto() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Guide</Text>
+            <Text style={styles.sectionTitle}>Info Utili</Text>
             
-            <TouchableOpacity style={styles.guideCard}>
-              <Ionicons name="book" size={20} color="#10b981" />
-              <Text style={styles.guideTitle}>Guida Introduttiva</Text>
-              <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.guideCard}>
-              <Ionicons name="nutrition" size={20} color="#10b981" />
-              <Text style={styles.guideTitle}>Consigli Nutrizionali</Text>
-              <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.guideCard}>
-              <Ionicons name="videocam" size={20} color="#10b981" />
-              <Text style={styles.guideTitle}>Video Tutorial</Text>
-              <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
-            </TouchableOpacity>
+            <View style={styles.faqCard}>
+              <Text style={styles.faqQuestion}>📱 Tempo di Risposta</Text>
+              <Text style={styles.faqAnswer}>
+                Rispondiamo alle email entro 24-48 ore lavorative. Per domande urgenti, controlla prima le FAQ qui sopra!
+              </Text>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
