@@ -112,16 +112,44 @@ export default function Premium() {
 
       // Redirect to Stripe Checkout
       const checkoutUrl = response.data.url;
-      if (typeof window !== 'undefined') {
+      
+      if (typeof window !== 'undefined' && window.location) {
+        // Web browser
         window.location.href = checkoutUrl;
       } else {
-        await Linking.openURL(checkoutUrl);
+        // Mobile - try WebBrowser first, then Linking as fallback
+        try {
+          const result = await WebBrowser.openBrowserAsync(checkoutUrl, {
+            dismissButtonStyle: 'close',
+            presentationStyle: WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
+          });
+          
+          // If browser was dismissed, check if payment completed
+          if (result.type === 'dismiss' || result.type === 'cancel') {
+            // User closed the browser - they might have completed payment
+            // Show a message to check
+            Alert.alert(
+              'Pagamento',
+              'Se hai completato il pagamento, ricarica la pagina Premium per verificare lo stato.',
+              [{ text: 'OK' }]
+            );
+          }
+        } catch (webBrowserError) {
+          console.log('WebBrowser failed, trying Linking:', webBrowserError);
+          // Fallback to Linking
+          const canOpen = await Linking.canOpenURL(checkoutUrl);
+          if (canOpen) {
+            await Linking.openURL(checkoutUrl);
+          } else {
+            throw new Error('Impossibile aprire il browser per il pagamento');
+          }
+        }
       }
     } catch (error: any) {
       console.error('Payment error:', error);
       Alert.alert(
         'Errore Pagamento', 
-        error.response?.data?.detail || 'Impossibile avviare il pagamento. Riprova più tardi.'
+        error.message || error.response?.data?.detail || 'Impossibile avviare il pagamento. Riprova più tardi.'
       );
     } finally {
       setProcessingPayment(false);
