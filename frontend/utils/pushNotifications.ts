@@ -1,10 +1,26 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+
+// Traduzioni per le notifiche
+const notificationTranslations: Record<string, { enableNotifications: string; close: string }> = {
+  it: {
+    enableNotifications: 'Abilita le notifiche per ricevere promemoria sui pasti!',
+    close: 'Chiudi'
+  },
+  en: {
+    enableNotifications: 'Enable notifications to receive meal reminders!',
+    close: 'Close'
+  },
+  es: {
+    enableNotifications: '¡Activa las notificaciones para recibir recordatorios de comidas!',
+    close: 'Cerrar'
+  }
+};
 
 // Configurazione notifiche
 Notifications.setNotificationHandler({
