@@ -37,6 +37,9 @@ Notifications.setNotificationHandler({
 export async function registerForPushNotificationsAsync(userEmail: string, language: string = 'it') {
   let token;
 
+  // Get translations for current language
+  const t = notificationTranslations[language] || notificationTranslations.it;
+
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -56,7 +59,7 @@ export async function registerForPushNotificationsAsync(userEmail: string, langu
     }
     
     if (finalStatus !== 'granted') {
-      alert('Abilita le notifiche per ricevere promemoria sui pasti!');
+      Alert.alert(t.enableNotifications, '', [{ text: t.close }]);
       return;
     }
     
