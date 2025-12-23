@@ -71,57 +71,33 @@ export default function Info() {
             
             <TouchableOpacity 
               style={styles.linkCard}
-              onPress={() => handleOpenLink('https://nutrikids.ai/privacy')}
+              onPress={() => router.push('/privacy-policy')}
             >
               <Ionicons name="shield-checkmark" size={20} color="#10b981" />
               <Text style={styles.linkText}>Privacy Policy</Text>
-              <Ionicons name="open-outline" size={16} color="#cbd5e1" />
+              <Ionicons name="chevron-forward" size={16} color="#cbd5e1" />
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.linkCard}
-              onPress={() => handleOpenLink('https://nutrikids.ai/terms')}
+              onPress={() => router.push('/terms-of-service')}
             >
               <Ionicons name="document-text" size={20} color="#10b981" />
               <Text style={styles.linkText}>Termini di Servizio</Text>
-              <Ionicons name="open-outline" size={16} color="#cbd5e1" />
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.linkCard}
-              onPress={() => handleOpenLink('https://nutrikids.ai/licenses')}
-            >
-              <Ionicons name="code-slash" size={20} color="#10b981" />
-              <Text style={styles.linkText}>Licenze Open Source</Text>
-              <Ionicons name="open-outline" size={16} color="#cbd5e1" />
+              <Ionicons name="chevron-forward" size={16} color="#cbd5e1" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Social</Text>
+            <Text style={styles.sectionTitle}>Contatti</Text>
             
             <TouchableOpacity 
-              style={styles.socialCard}
-              onPress={() => handleOpenLink('https://instagram.com/nutrikids.ai')}
+              style={styles.linkCard}
+              onPress={() => Linking.openURL('mailto:support@nutrikids.ai')}
             >
-              <Ionicons name="logo-instagram" size={24} color="#e1306c" />
-              <Text style={styles.socialText}>@nutrikids.ai</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.socialCard}
-              onPress={() => handleOpenLink('https://facebook.com/nutrikids.ai')}
-            >
-              <Ionicons name="logo-facebook" size={24} color="#1877f2" />
-              <Text style={styles.socialText}>/nutrikids.ai</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.socialCard}
-              onPress={() => handleOpenLink('https://twitter.com/nutrikids_ai')}
-            >
-              <Ionicons name="logo-twitter" size={24} color="#1da1f2" />
-              <Text style={styles.socialText}>@nutrikids_ai</Text>
+              <Ionicons name="mail" size={20} color="#10b981" />
+              <Text style={styles.linkText}>support@nutrikids.ai</Text>
+              <Ionicons name="open-outline" size={16} color="#cbd5e1" />
             </TouchableOpacity>
           </View>
 
