@@ -1270,7 +1270,7 @@ async def get_dashboard_stats(user_email: str):
         logging.error(f"Error getting dashboard stats: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Errore nel recupero statistiche: {str(e)}")
 
-@api_router.post("/meal-plan/generate-shopping-list")
+@api_router.post("/shopping-list/generate")
 async def generate_shopping_list(user_email: str, week_start_date: str):
     """Genera la lista della spesa usando AI basata sui profili bambini"""
     # Get the meal plan
