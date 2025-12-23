@@ -17,7 +17,7 @@ export default function TermsOfServiceScreen() {
       </LinearGradient>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.lastUpdated}>Ultimo aggiornamento: Gennaio 2025</Text>
+        <Text style={styles.lastUpdated}>Ultimo aggiornamento: Dicembre 2025</Text>
 
         <Text style={styles.sectionTitle}>1. Accettazione dei Termini</Text>
         <Text style={styles.paragraph}>
