@@ -76,7 +76,7 @@ export default function Dashboard() {
           {/* Period Badge */}
           <View style={styles.periodBadge}>
             <Ionicons name="calendar" size={16} color="#0891b2" />
-            <Text style={styles.periodText}>Ultimi 7 giorni</Text>
+            <Text style={styles.periodText}>{t('dashboard.last7Days')}</Text>
           </View>
 
           {/* Quick Stats Cards */}
