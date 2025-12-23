@@ -709,6 +709,7 @@ export const translations = {
       title: 'Dashboard',
       subtitle: 'Your progress',
       week: 'Week',
+      last7Days: 'Last 7 days',
       mealsLogged: 'Meals Logged',
       aiScans: 'AI Scans',
       coachChats: 'Coach Maya Chats',
