@@ -463,11 +463,18 @@ class AppConfig(BaseModel):
     premium_monthly_price: float = 5.99
     premium_yearly_price: float = 49.99
     openai_model: str = "gpt-4o-mini"
-    vision_model: str = "gpt-4o"
+    vision_model: str = "gemini-2.0-flash"
+    # Provider AI
+    chat_provider: str = "openai"
+    vision_provider: str = "gemini"
     # API Keys per servizi esterni
     stripe_publishable_key: str = ""
     stripe_secret_key: str = ""
     brevo_api_key: str = ""  # Per invio email reset password
+    # API Keys AI per produzione (opzionali)
+    openai_api_key: str = ""
+    google_api_key: str = ""
+    anthropic_api_key: str = ""
     # Limiti per utenti FREE
     max_free_scans_daily: int = 3
     max_free_coach_messages_daily: int = 8
@@ -484,13 +491,20 @@ class AppConfigUpdate(BaseModel):
     premium_yearly_price: Optional[float] = None
     openai_model: Optional[str] = None
     vision_model: Optional[str] = None
+    chat_provider: Optional[str] = None
+    vision_provider: Optional[str] = None
     stripe_publishable_key: Optional[str] = None
     stripe_secret_key: Optional[str] = None
     brevo_api_key: Optional[str] = None
+    openai_api_key: Optional[str] = None
+    google_api_key: Optional[str] = None
+    anthropic_api_key: Optional[str] = None
     max_free_scans_daily: Optional[int] = None
     max_free_coach_messages_daily: Optional[int] = None
     max_free_children: Optional[int] = None
     max_premium_scans_daily: Optional[int] = None
+    max_premium_coach_messages_daily: Optional[int] = None
+    max_premium_children: Optional[int] = None
 
 # Push Notification Models
 class PushTokenRequest(BaseModel):
