@@ -15,10 +15,17 @@ interface AppConfig {
   premium_yearly_price: number;
   openai_model: string;
   vision_model: string;
+  // Provider AI
+  chat_provider: string;
+  vision_provider: string;
   // API Keys servizi esterni
   stripe_publishable_key: string;
   stripe_secret_key: string;
   brevo_api_key: string;
+  // API Keys AI (per produzione)
+  openai_api_key: string;
+  google_api_key: string;
+  anthropic_api_key: string;
   // Limiti FREE
   max_free_scans_daily: number;
   max_free_coach_messages_daily: number;
@@ -28,6 +35,43 @@ interface AppConfig {
   max_premium_coach_messages_daily: number;
   max_premium_children: number;
 }
+
+// Opzioni AI disponibili
+const AI_PROVIDERS = [
+  { label: 'OpenAI', value: 'openai' },
+  { label: 'Google Gemini', value: 'gemini' },
+  { label: 'Anthropic Claude', value: 'anthropic' },
+];
+
+const CHAT_MODELS = {
+  openai: [
+    { label: 'GPT-4o (Top)', value: 'gpt-4o' },
+    { label: 'GPT-4o Mini (Economico)', value: 'gpt-4o-mini' },
+    { label: 'GPT-4 Turbo', value: 'gpt-4-turbo' },
+  ],
+  gemini: [
+    { label: 'Gemini 1.5 Pro (Top)', value: 'gemini-1.5-pro' },
+    { label: 'Gemini 2.0 Flash (Economico)', value: 'gemini-2.0-flash' },
+  ],
+  anthropic: [
+    { label: 'Claude 3.5 Sonnet (Top)', value: 'claude-3-5-sonnet-20241022' },
+    { label: 'Claude 3 Haiku (Economico)', value: 'claude-3-haiku-20240307' },
+  ],
+};
+
+const VISION_MODELS = {
+  openai: [
+    { label: 'GPT-4o Vision (Top)', value: 'gpt-4o' },
+    { label: 'GPT-4o Mini Vision', value: 'gpt-4o-mini' },
+  ],
+  gemini: [
+    { label: 'Gemini 1.5 Pro Vision (Top)', value: 'gemini-1.5-pro' },
+    { label: 'Gemini 2.0 Flash Vision (Economico)', value: 'gemini-2.0-flash' },
+  ],
+  anthropic: [
+    { label: 'Claude 3.5 Sonnet Vision', value: 'claude-3-5-sonnet-20241022' },
+  ],
+};
 
 export default function AdminConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
