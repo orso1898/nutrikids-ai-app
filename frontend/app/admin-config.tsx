@@ -268,37 +268,173 @@ export default function AdminConfig() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="key" size={20} color="#fff" />
-              <Text style={styles.sectionTitle}>API Keys & Modelli</Text>
+              <Text style={styles.sectionTitle}>🤖 Configurazione AI</Text>
             </View>
 
             <View style={styles.card}>
-              <Text style={styles.label}>Emergent LLM Key</Text>
+              {/* COACH MAYA - Chat AI */}
+              <View style={styles.aiSection}>
+                <Text style={styles.aiSectionTitle}>💬 Coach Maya (Chat)</Text>
+                
+                <Text style={styles.label}>Provider</Text>
+                <View style={styles.buttonGroup}>
+                  {AI_PROVIDERS.map((provider) => (
+                    <TouchableOpacity
+                      key={provider.value}
+                      style={[
+                        styles.providerButton,
+                        (config.chat_provider || 'openai') === provider.value && styles.providerButtonActive
+                      ]}
+                      onPress={() => {
+                        updateField('chat_provider', provider.value);
+                        // Reset model when changing provider
+                        const defaultModel = CHAT_MODELS[provider.value as keyof typeof CHAT_MODELS]?.[0]?.value || '';
+                        updateField('openai_model', defaultModel);
+                      }}
+                    >
+                      <Text style={[
+                        styles.providerButtonText,
+                        (config.chat_provider || 'openai') === provider.value && styles.providerButtonTextActive
+                      ]}>{provider.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                <Text style={styles.label}>Modello</Text>
+                <View style={styles.modelList}>
+                  {CHAT_MODELS[(config.chat_provider || 'openai') as keyof typeof CHAT_MODELS]?.map((model) => (
+                    <TouchableOpacity
+                      key={model.value}
+                      style={[
+                        styles.modelButton,
+                        config.openai_model === model.value && styles.modelButtonActive
+                      ]}
+                      onPress={() => updateField('openai_model', model.value)}
+                    >
+                      <Text style={[
+                        styles.modelButtonText,
+                        config.openai_model === model.value && styles.modelButtonTextActive
+                      ]}>{model.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* SCANNER - Vision AI */}
+              <View style={[styles.aiSection, { marginTop: 24 }]}>
+                <Text style={styles.aiSectionTitle}>📸 Scanner (Vision)</Text>
+                
+                <Text style={styles.label}>Provider</Text>
+                <View style={styles.buttonGroup}>
+                  {AI_PROVIDERS.map((provider) => (
+                    <TouchableOpacity
+                      key={provider.value}
+                      style={[
+                        styles.providerButton,
+                        (config.vision_provider || 'gemini') === provider.value && styles.providerButtonActive
+                      ]}
+                      onPress={() => {
+                        updateField('vision_provider', provider.value);
+                        const defaultModel = VISION_MODELS[provider.value as keyof typeof VISION_MODELS]?.[0]?.value || '';
+                        updateField('vision_model', defaultModel);
+                      }}
+                    >
+                      <Text style={[
+                        styles.providerButtonText,
+                        (config.vision_provider || 'gemini') === provider.value && styles.providerButtonTextActive
+                      ]}>{provider.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                <Text style={styles.label}>Modello</Text>
+                <View style={styles.modelList}>
+                  {VISION_MODELS[(config.vision_provider || 'gemini') as keyof typeof VISION_MODELS]?.map((model) => (
+                    <TouchableOpacity
+                      key={model.value}
+                      style={[
+                        styles.modelButton,
+                        config.vision_model === model.value && styles.modelButtonActive
+                      ]}
+                      onPress={() => updateField('vision_model', model.value)}
+                    >
+                      <Text style={[
+                        styles.modelButtonText,
+                        config.vision_model === model.value && styles.modelButtonTextActive
+                      ]}>{model.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Current Config Summary */}
+              <View style={styles.configSummary}>
+                <Text style={styles.configSummaryTitle}>⚙️ Configurazione Attuale:</Text>
+                <Text style={styles.configSummaryText}>
+                  Coach: {config.chat_provider || 'openai'} / {config.openai_model || 'gpt-4o-mini'}
+                </Text>
+                <Text style={styles.configSummaryText}>
+                  Scanner: {config.vision_provider || 'gemini'} / {config.vision_model || 'gemini-2.0-flash'}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* API Keys */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="key" size={20} color="#fff" />
+              <Text style={styles.sectionTitle}>🔑 API Keys</Text>
+            </View>
+
+            <View style={styles.card}>
+              <Text style={styles.label}>Emergent LLM Key (Sviluppo)</Text>
               <TextInput
                 style={styles.input}
                 value={config.emergent_llm_key}
                 onChangeText={(value) => updateField('emergent_llm_key', value)}
-                placeholder="sk-emergent-..."
+                placeholder="ek-..."
+                placeholderTextColor="rgba(0,0,0,0.4)"
               />
-              
-              <Text style={styles.label}>Modello Chat (Coach Maya)</Text>
+              <Text style={styles.helpTextSmall}>Usata per sviluppo su Emergent</Text>
+
+              <Text style={[styles.label, { marginTop: 16 }]}>OpenAI API Key (Produzione)</Text>
               <TextInput
                 style={styles.input}
-                value={config.openai_model}
-                onChangeText={(value) => updateField('openai_model', value)}
-                placeholder="gpt-4o-mini"
+                value={config.openai_api_key || ''}
+                onChangeText={(value) => updateField('openai_api_key', value)}
+                placeholder="sk-..."
+                placeholderTextColor="rgba(0,0,0,0.4)"
               />
 
-              <Text style={styles.label}>Modello Vision (Scanner)</Text>
+              <Text style={styles.label}>Google AI Key (Produzione)</Text>
               <TextInput
                 style={styles.input}
-                value={config.vision_model}
-                onChangeText={(value) => updateField('vision_model', value)}
-                placeholder="gpt-4o"
+                value={config.google_api_key || ''}
+                onChangeText={(value) => updateField('google_api_key', value)}
+                placeholder="AIza..."
+                placeholderTextColor="rgba(0,0,0,0.4)"
               />
+
+              <Text style={styles.label}>Anthropic API Key (Produzione)</Text>
+              <TextInput
+                style={styles.input}
+                value={config.anthropic_api_key || ''}
+                onChangeText={(value) => updateField('anthropic_api_key', value)}
+                placeholder="sk-ant-..."
+                placeholderTextColor="rgba(0,0,0,0.4)"
+              />
+
+              <View style={styles.infoBox}>
+                <Ionicons name="information-circle" size={18} color="#3b82f6" />
+                <Text style={styles.infoText}>
+                  In produzione, se inserisci una API key specifica (OpenAI/Google/Anthropic), verrà usata quella invece di Emergent Key.
+                </Text>
+              </View>
             </View>
           </View>
 
-          {/* Stripe & SendGrid Configuration */}
+          {/* Stripe & Email Configuration */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="card" size={20} color="#fff" />
