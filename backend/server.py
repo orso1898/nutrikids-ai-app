@@ -855,14 +855,17 @@ async def coach_maya(chat_msg: ChatMessage):
         
         system_message = system_messages.get(language, system_messages['it'])
         
-        # Ottieni API key dal database admin
-        api_key = await get_api_key_from_config("emergent_llm_key")
+        # Ottieni configurazione AI dal database
+        config = await db.app_config.find_one({"id": "app_config"})
+        api_key = config.get("emergent_llm_key", "") if config else ""
+        chat_provider = config.get("chat_provider", "openai") if config else "openai"
+        chat_model = config.get("openai_model", "gpt-4o-mini") if config else "gpt-4o-mini"
         
         chat = LlmChat(
             api_key=api_key,
             session_id=chat_msg.session_id,
             system_message=system_message
-        ).with_model("openai", "gpt-4o-mini")
+        ).with_model(chat_provider, chat_model)
         
         user_message = UserMessage(text=chat_msg.message)
         response = await chat.send_message(user_message)
