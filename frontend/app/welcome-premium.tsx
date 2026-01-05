@@ -94,7 +94,7 @@ export default function WelcomePremium() {
               style={styles.ctaButton}
               onPress={() => router.replace('/home')}
             >
-              <Text style={styles.ctaButtonText}>Inizia a Esplorare</Text>
+              <Text style={styles.ctaButtonText}>{t('welcomePremium.startExploring')}</Text>
               <Ionicons name="arrow-forward" size={20} color="#059669" />
             </TouchableOpacity>
 
@@ -103,7 +103,7 @@ export default function WelcomePremium() {
               onPress={() => router.replace('/scanner')}
             >
               <Ionicons name="camera" size={20} color="#fff" />
-              <Text style={styles.secondaryButtonText}>Prova lo Scanner</Text>
+              <Text style={styles.secondaryButtonText}>{t('welcomePremium.tryScanner')}</Text>
             </TouchableOpacity>
           </View>
 
