@@ -63,11 +63,17 @@ export async function registerForPushNotificationsAsync(userEmail: string, langu
       return;
     }
     
-    token = (await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId,
-    })).data;
-    
-    console.log('Push Token:', token);
+    try {
+      // Try to get push token - may fail in development without EAS projectId
+      token = (await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+      })).data;
+      console.log('Push Token:', token);
+    } catch (tokenError) {
+      // Silently ignore in development - push notifications will work in production
+      console.log('Push notifications not configured (normal in development)');
+      return;
+    }
   } else {
     console.log('Must use physical device for Push Notifications');
   }
