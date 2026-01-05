@@ -4,18 +4,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function WelcomePremium() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [showConfetti, setShowConfetti] = useState(true);
 
   const premiumFeatures = [
-    { icon: 'camera', title: 'Scansioni Illimitate', description: 'Analizza tutti i cibi che vuoi, senza limiti giornalieri' },
-    { icon: 'chatbubbles', title: 'Coach Maya Illimitato', description: 'Chatta con la tua nutrizionista AI quando vuoi' },
-    { icon: 'restaurant', title: 'Piani Personalizzati', description: 'Genera piani alimentari settimanali su misura' },
-    { icon: 'people', title: 'Bambini Illimitati', description: 'Aggiungi tutti i profili dei tuoi figli' },
-    { icon: 'analytics', title: 'Report Dettagliati', description: 'Statistiche avanzate sulla nutrizione' },
-    { icon: 'star', title: 'Priorità Supporto', description: 'Assistenza prioritaria per ogni esigenza' },
+    { icon: 'camera', title: t('welcomePremium.feature1Title'), description: t('welcomePremium.feature1Desc') },
+    { icon: 'chatbubbles', title: t('welcomePremium.feature2Title'), description: t('welcomePremium.feature2Desc') },
+    { icon: 'restaurant', title: t('welcomePremium.feature3Title'), description: t('welcomePremium.feature3Desc') },
+    { icon: 'people', title: t('welcomePremium.feature4Title'), description: t('welcomePremium.feature4Desc') },
+    { icon: 'analytics', title: t('welcomePremium.feature5Title'), description: t('welcomePremium.feature5Desc') },
+    { icon: 'star', title: t('welcomePremium.feature6Title'), description: t('welcomePremium.feature6Desc') },
   ];
 
   return (
