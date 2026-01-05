@@ -593,6 +593,28 @@ export const translations = {
       restorePurchases: 'Restore Purchases'
     },
 
+    // Welcome Premium Page
+    welcomePremium: {
+      title: 'Congratulations!',
+      subtitle: 'You are officially Premium! 🌟',
+      message: 'Thank you for choosing NutriKids Premium!\nYou now have access to all unlocked features.',
+      nowYouCan: '🚀 Now you can:',
+      feature1Title: 'Unlimited Scans',
+      feature1Desc: 'Analyze all the food you want, no daily limits',
+      feature2Title: 'Unlimited Coach Maya',
+      feature2Desc: 'Chat with your AI nutritionist anytime',
+      feature3Title: 'Personalized Plans',
+      feature3Desc: 'Generate custom weekly meal plans',
+      feature4Title: 'Unlimited Children',
+      feature4Desc: 'Add all your children\'s profiles',
+      feature5Title: 'Detailed Reports',
+      feature5Desc: 'Advanced nutrition statistics',
+      feature6Title: 'Priority Support',
+      feature6Desc: 'Priority assistance for every need',
+      startExploring: 'Start Exploring',
+      tryScanner: 'Try the Scanner'
+    },
+
     // Scanner
     scanner: {
       title: 'AI Dish Scanner',
