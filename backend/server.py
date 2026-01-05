@@ -622,6 +622,29 @@ async def register(user: UserRegister):
         logging.error(f"Registration error: {str(e)}")
         raise HTTPException(status_code=500, detail="Errore durante la registrazione. Riprova.")
 
+@api_router.get("/user/usage")
+async def get_usage_endpoint(user_email: str):
+    """Ottiene l'utilizzo corrente dell'utente"""
+    usage = await get_user_usage(user_email)
+    
+    # Ottieni limiti dalla config
+    config = await db.app_config.find_one({"id": "app_config"})
+    
+    if usage.get("is_premium"):
+        max_scans = config.get("max_premium_scans_daily", 0) if config else 0
+        max_messages = config.get("max_premium_coach_messages_daily", 0) if config else 0
+    else:
+        max_scans = config.get("max_free_scans_daily", 3) if config else 3
+        max_messages = config.get("max_free_coach_messages_daily", 8) if config else 8
+    
+    return {
+        **usage,
+        "max_scans_daily": max_scans,
+        "max_coach_messages_daily": max_messages,
+        "scans_remaining": max_scans - usage.get("scans_used", 0) if max_scans > 0 else -1,
+        "messages_remaining": max_messages - usage.get("coach_messages_used", 0) if max_messages > 0 else -1
+    }
+
 @api_router.get("/user/{email}")
 async def get_user_info(email: str):
     """Get user info including premium status"""
