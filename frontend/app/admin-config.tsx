@@ -54,7 +54,7 @@ const CHAT_MODELS = {
     { label: 'Gemini 2.0 Flash (Economico)', value: 'gemini-2.0-flash' },
   ],
   anthropic: [
-    { label: 'Claude 3.5 Sonnet (Top)', value: 'claude-3-5-sonnet-20241022' },
+    { label: 'Claude 3.5 Sonnet (Top)', value: 'claude-3-5-sonnet-latest' },
     { label: 'Claude 3 Haiku (Economico)', value: 'claude-3-haiku-20240307' },
   ],
 };
@@ -69,7 +69,8 @@ const VISION_MODELS = {
     { label: 'Gemini 2.0 Flash Vision (Economico)', value: 'gemini-2.0-flash' },
   ],
   anthropic: [
-    { label: 'Claude 3.5 Sonnet Vision', value: 'claude-3-5-sonnet-20241022' },
+    { label: 'Claude 3.5 Sonnet Vision (Top)', value: 'claude-3-5-sonnet-latest' },
+    { label: 'Claude 3 Haiku Vision', value: 'claude-3-haiku-20240307' },
   ],
 };
 
