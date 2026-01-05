@@ -111,10 +111,12 @@ export default function Premium() {
 
       // Redirect to Stripe Checkout
       const checkoutUrl = response.data.url;
-      if (typeof window !== 'undefined') {
+      
+      // Always use Linking for mobile (Platform.OS !== 'web')
+      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.location) {
         window.location.href = checkoutUrl;
       } else {
-        // Mobile - use Linking
+        // Mobile (iOS/Android) - use Linking
         const canOpen = await Linking.canOpenURL(checkoutUrl);
         if (canOpen) {
           await Linking.openURL(checkoutUrl);
