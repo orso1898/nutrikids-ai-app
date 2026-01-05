@@ -57,9 +57,8 @@ class CacheManager {
   // Encrypt data (semplificato - in produzione usa expo-crypto più robusto)
   private async encrypt(data: string): Promise<string> {
     try {
-      // In produzione, usa AES encryption con expo-crypto
-      // Per ora, base64 encoding (placeholder)
-      return Buffer.from(data).toString('base64');
+      // Base64 encoding (React Native compatible)
+      return btoa(unescape(encodeURIComponent(data)));
     } catch (error) {
       console.error('Encryption error:', error);
       return data;
@@ -69,9 +68,10 @@ class CacheManager {
   // Decrypt data
   private async decrypt(encryptedData: string): Promise<string> {
     try {
-      return Buffer.from(encryptedData, 'base64').toString('utf-8');
+      // Base64 decoding (React Native compatible)
+      return decodeURIComponent(escape(atob(encryptedData)));
     } catch (error) {
-      console.error('Decryption error:', error);
+      // Silently return the data if decryption fails (could be unencrypted legacy data)
       return encryptedData;
     }
   }
