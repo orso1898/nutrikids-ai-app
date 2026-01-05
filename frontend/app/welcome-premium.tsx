@@ -47,8 +47,8 @@ export default function WelcomePremium() {
 
           {/* Title */}
           <View>
-            <Text style={styles.title}>Congratulazioni!</Text>
-            <Text style={styles.subtitle}>Sei ufficialmente Premium! 🌟</Text>
+            <Text style={styles.title}>{t('welcomePremium.title')}</Text>
+            <Text style={styles.subtitle}>{t('welcomePremium.subtitle')}</Text>
           </View>
 
           {/* Message */}
@@ -57,8 +57,7 @@ export default function WelcomePremium() {
             style={styles.messageContainer}
           >
             <Text style={styles.message}>
-              Grazie per aver scelto NutriKids Premium!{'\n'}
-              Da questo momento hai accesso a tutte le funzionalità sbloccate.
+              {t('welcomePremium.message')}
             </Text>
           </View>
 
@@ -67,7 +66,7 @@ export default function WelcomePremium() {
            
             style={styles.featuresContainer}
           >
-            <Text style={styles.featuresTitle}>🚀 Ora puoi:</Text>
+            <Text style={styles.featuresTitle}>{t('welcomePremium.nowYouCan')}</Text>
             {premiumFeatures.map((feature, index) => (
               <View 
                 key={index}
