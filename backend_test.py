@@ -13,7 +13,7 @@ import uuid
 import os
 
 # Configuration
-BACKEND_URL = "https://nutrition-coach-54.preview.emergentagent.com/api"
+BACKEND_URL = "https://foodcoach-android.preview.emergentagent.com/api"
 ADMIN_EMAIL = "admin@nutrikids.com"
 ADMIN_PASSWORD = "Rossonero1898!"
 
@@ -789,7 +789,7 @@ def test_9_premium_stripe():
     # Test 9.2: Create Checkout Session (Monthly)
     checkout_data = {
         "plan_type": "monthly",
-        "origin_url": "https://nutrition-coach-54.preview.emergentagent.com"
+        "origin_url": "https://foodcoach-android.preview.emergentagent.com"
     }
     headers = {"X-User-Email": user3["email"]}
     
@@ -818,7 +818,7 @@ def test_9_premium_stripe():
     # Test 9.4: Create Checkout Session (Yearly)
     checkout_data_yearly = {
         "plan_type": "yearly",
-        "origin_url": "https://nutrition-coach-54.preview.emergentagent.com"
+        "origin_url": "https://foodcoach-android.preview.emergentagent.com"
     }
     
     response = make_request("POST", "/checkout/create-session", checkout_data_yearly, headers)
