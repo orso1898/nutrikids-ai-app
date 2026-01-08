@@ -17,6 +17,7 @@
       "bundleIdentifier": "com.nutrikids.ai"
     },
     "android": {
+      "package": "com.nutrikids.ai",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#10b981"
