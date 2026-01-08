@@ -1,0 +1,65 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Permette di avviare manualmente
+
+jobs:
+  build:
+    name: Build Android
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 📦 Install dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: 🔧 Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🏗️ Build Android APK
+        working-directory: frontend
+        run: eas build --platform android --profile preview --non-interactive --local
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📤 Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrikids-android-apk
+          path: frontend/**/*.apk
+          retention-days: 30
+
+      - name: 🏗️ Build Android AAB (Play Store)
+        working-directory: frontend
+        run: eas build --platform android --profile production --non-interactive --local
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📤 Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrikids-android-aab
+          path: frontend/**/*.aab
+          retention-days: 30
