@@ -12,7 +12,7 @@ const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 export default function Premium() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { userEmail } = useAuth();
   const params = useLocalSearchParams();
   
