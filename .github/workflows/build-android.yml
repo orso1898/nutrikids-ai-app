@@ -18,8 +18,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: frontend/yarn.lock
 
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
@@ -27,9 +25,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: 🗑️ Clean lockfiles
+        working-directory: frontend
+        run: |
+          rm -f package-lock.json
+          rm -f yarn.lock
+
       - name: 📦 Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: 🔧 Setup Expo
         uses: expo/expo-github-action@v8
