@@ -1631,9 +1631,18 @@ async def create_checkout_session(request: Request, checkout_request: CreateChec
     stripe.api_key = stripe_key
     
     try:
+        # Map app language to Stripe locale
+        stripe_locales = {
+            'it': 'it',
+            'en': 'en',
+            'es': 'es'
+        }
+        stripe_locale = stripe_locales.get(checkout_request.language, 'auto')
+        
         # Create Stripe Checkout Session
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
+            locale=stripe_locale,
             line_items=[{
                 'price_data': {
                     'currency': currency,
