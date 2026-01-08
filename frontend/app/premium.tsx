@@ -100,7 +100,8 @@ export default function Premium() {
         `${BACKEND_URL}/api/checkout/create-session`,
         {
           plan_type: selectedPlan,
-          origin_url: originUrl
+          origin_url: originUrl,
+          language: language  // Pass current app language to Stripe
         },
         {
           headers: {
