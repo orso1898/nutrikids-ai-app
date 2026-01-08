@@ -415,6 +415,7 @@ class AwardPointsResponse(BaseModel):
 class CreateCheckoutRequest(BaseModel):
     plan_type: str  # 'monthly' or 'yearly'
     origin_url: str  # Frontend origin for success/cancel URLs
+    language: str = "it"  # Language for Stripe checkout (it, en, es)
 
 class PaymentTransaction(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
