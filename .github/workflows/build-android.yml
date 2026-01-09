@@ -42,28 +42,14 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 🏗️ Build Android APK
+      - name: 🏗️ Build Android APK (Preview)
         working-directory: frontend
-        run: eas build --platform android --profile preview --non-interactive --local
+        run: eas build --platform android --profile preview --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📤 Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: nutrikids-android-apk
-          path: frontend/**/*.apk
-          retention-days: 30
 
       - name: 🏗️ Build Android AAB (Play Store)
         working-directory: frontend
-        run: eas build --platform android --profile production --non-interactive --local
+        run: eas build --platform android --profile production --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📤 Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: nutrikids-android-aab
-          path: frontend/**/*.aab
-          retention-days: 30
