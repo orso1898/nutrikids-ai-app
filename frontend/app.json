@@ -58,6 +58,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "44afa2de-6af0-436a-b34b-6a0b27ac7d2f"
+      }
+    },
+    "owner": "orso1898"
   }
 }
