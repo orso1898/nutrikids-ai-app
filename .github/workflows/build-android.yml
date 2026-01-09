@@ -42,14 +42,60 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: 🔐 Generate Android Keystore
+        working-directory: frontend
+        run: |
+          mkdir -p credentials
+          keytool -genkeypair -v \
+            -keystore credentials/keystore.jks \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -alias nutrikids \
+            -storepass nutrikids123 \
+            -keypass nutrikids123 \
+            -dname "CN=NutriKids AI, OU=Mobile, O=NutriKids, L=Milan, ST=Italy, C=IT"
+
+      - name: 📝 Create credentials.json
+        working-directory: frontend
+        run: |
+          cat > credentials.json << 'EOF'
+          {
+            "android": {
+              "keystore": {
+                "keystorePath": "credentials/keystore.jks",
+                "keystorePassword": "nutrikids123",
+                "keyAlias": "nutrikids",
+                "keyPassword": "nutrikids123"
+              }
+            }
+          }
+          EOF
+
       - name: 🏗️ Build Android APK (Preview)
         working-directory: frontend
-        run: eas build --platform android --profile preview --non-interactive
+        run: eas build --platform android --profile preview --non-interactive --local
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_LOCAL_BUILD_SKIP_CLEANUP: 1
+
+      - name: 📤 Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrikids-android-apk
+          path: frontend/build-*.apk
+          retention-days: 30
 
       - name: 🏗️ Build Android AAB (Play Store)
         working-directory: frontend
-        run: eas build --platform android --profile production --non-interactive
+        run: eas build --platform android --profile production --non-interactive --local
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_LOCAL_BUILD_SKIP_CLEANUP: 1
+
+      - name: 📤 Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrikids-android-aab
+          path: frontend/build-*.aab
+          retention-days: 30
