@@ -4,7 +4,7 @@ Invia notifiche intelligenti agli utenti nei momenti giusti
 """
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import requests
 from motor.motor_asyncio import AsyncIOMotorClient
