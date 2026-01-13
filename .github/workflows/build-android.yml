@@ -35,6 +35,13 @@ jobs:
         working-directory: frontend
         run: yarn install
 
+      - name: 📝 Create .env file
+        working-directory: frontend
+        run: |
+          cat > .env << 'EOF'
+          EXPO_PUBLIC_BACKEND_URL=${{ secrets.BACKEND_URL }}
+          EOF
+
       - name: 🔧 Setup Expo
         uses: expo/expo-github-action@v8
         with:
