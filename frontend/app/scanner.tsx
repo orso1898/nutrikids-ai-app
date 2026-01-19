@@ -64,7 +64,7 @@ export default function Scanner() {
   const takePicture = async () => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) {
-      window.alert('Permesso fotocamera negato. Abilita i permessi nelle impostazioni.');
+      Alert.alert('Errore', 'Permesso fotocamera negato. Abilita i permessi nelle impostazioni.');
       return;
     }
 
@@ -82,7 +82,7 @@ export default function Scanner() {
       }
     } catch (error) {
       console.error('Error taking picture:', error);
-      window.alert('Errore durante lo scatto della foto');
+      Alert.alert('Errore', 'Errore durante lo scatto della foto');
     }
   };
 
@@ -90,7 +90,7 @@ export default function Scanner() {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        window.alert('Permesso galleria negato.');
+        Alert.alert('Errore', 'Permesso galleria negato.');
         return;
       }
 
@@ -217,10 +217,10 @@ export default function Scanner() {
         nutritional_info: result.nutritional_info
       });
 
-      window.alert('Salvato nel diario! 📝');
+      Alert.alert('Successo', 'Salvato nel diario! 📝');
     } catch (error) {
       console.error('Error saving to diary:', error);
-      window.alert('Errore durante il salvataggio');
+      Alert.alert('Errore', 'Errore durante il salvataggio');
     }
   };
 
