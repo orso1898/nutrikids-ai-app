@@ -15,7 +15,7 @@ interface Message {
   timestamp: Date;
 }
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://foodcoach-android.preview.emergentagent.com';
 
 export default function CoachMaya() {
   const { t } = useLanguage();

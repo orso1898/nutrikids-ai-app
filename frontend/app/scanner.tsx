@@ -12,7 +12,7 @@ import { analyzePhotoOffline } from '../utils/offlineAI';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://foodcoach-android.preview.emergentagent.com';
 
 interface AnalysisResult {
   foods_detected: string[];

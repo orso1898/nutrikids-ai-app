@@ -9,7 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://foodcoach-android.preview.emergentagent.com';
 
 interface Child {
   id: string;

@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://foodcoach-android.preview.emergentagent.com';
 
 interface AppConfig {
   emergent_llm_key: string;
