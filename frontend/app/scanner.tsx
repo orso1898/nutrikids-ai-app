@@ -70,7 +70,7 @@ export default function Scanner() {
 
     try {
       const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
+        allowsEditing: false,
         quality: 0.7,
         base64: true,
       });
@@ -95,7 +95,7 @@ export default function Scanner() {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
+        allowsEditing: false,
         quality: 0.7,
         base64: true,
       });
