@@ -107,7 +107,7 @@ export default function Scanner() {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      window.alert('Errore durante la selezione dell\'immagine');
+      Alert.alert('Errore', 'Errore durante la selezione dell\'immagine');
     }
   };
 
