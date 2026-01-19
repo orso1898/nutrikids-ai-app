@@ -317,9 +317,9 @@ export default function Scanner() {
               </View>
 
               {!result && !analyzing && (
-                <View>
+                <View style={{ marginTop: 20 }}>
                   <TouchableOpacity style={styles.analyzeButton} onPress={analyzePhoto}>
-                    <Ionicons name="analytics" size={24} color="#fff" />
+                    <Ionicons name="analytics" size={24} color="#10b981" />
                     <Text style={styles.analyzeButtonText}>{t('scanner.analyzeButton')}</Text>
                   </TouchableOpacity>
                 </View>
