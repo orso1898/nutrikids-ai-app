@@ -93,7 +93,9 @@ export default function Premium() {
     setProcessingPayment(true);
     try {
       // Get current origin URL (for web) or use deep linking (for mobile)
-      const originUrl = typeof window !== 'undefined' ? window.location.origin : 'nutrikids://';
+      const originUrl = Platform.OS === 'web' ? (typeof window !== 'undefined' ? window.location.origin : 'https://nutrikids.app') : 'nutrikids://payment-success';
+      
+      console.log('Starting checkout with:', { userEmail, selectedPlan, originUrl, BACKEND_URL });
       
       // Create checkout session
       const response = await axios.post(
@@ -106,7 +108,8 @@ export default function Premium() {
         {
           headers: {
             'X-User-Email': userEmail
-          }
+          },
+          timeout: 30000 // 30 second timeout
         }
       );
 
