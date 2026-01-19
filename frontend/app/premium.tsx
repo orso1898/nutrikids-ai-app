@@ -116,17 +116,36 @@ export default function Premium() {
 
       // Redirect to Stripe Checkout
       const checkoutUrl = response.data.url;
+      console.log('Opening Stripe checkout URL:', checkoutUrl);
       
-      // Always use Linking for mobile (Platform.OS !== 'web')
+      // Use WebBrowser for mobile (more reliable than Linking)
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.location) {
         window.location.href = checkoutUrl;
       } else {
-        // Mobile (iOS/Android) - use Linking
-        const canOpen = await Linking.canOpenURL(checkoutUrl);
-        if (canOpen) {
-          await Linking.openURL(checkoutUrl);
-        } else {
-          Alert.alert('Errore', 'Impossibile aprire il browser per il pagamento');
+        // Mobile (iOS/Android) - use WebBrowser
+        try {
+          const result = await WebBrowser.openBrowserAsync(checkoutUrl, {
+            dismissButtonStyle: 'close',
+            showTitle: true,
+            enableBarCollapsing: false,
+          });
+          console.log('WebBrowser result:', result);
+          
+          // After browser closes, check payment status
+          if (response.data.session_id) {
+            setTimeout(() => {
+              checkPaymentStatus(response.data.session_id);
+            }, 2000);
+          }
+        } catch (browserError) {
+          console.error('WebBrowser error:', browserError);
+          // Fallback to Linking
+          const canOpen = await Linking.canOpenURL(checkoutUrl);
+          if (canOpen) {
+            await Linking.openURL(checkoutUrl);
+          } else {
+            Alert.alert('Errore', 'Impossibile aprire il browser per il pagamento');
+          }
         }
       }
     } catch (error: any) {
