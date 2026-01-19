@@ -38,9 +38,10 @@ jobs:
       - name: 📝 Create .env file
         working-directory: frontend
         run: |
-          cat > .env << 'EOF'
-          EXPO_PUBLIC_BACKEND_URL=${{ secrets.BACKEND_URL }}
-          EOF
+          echo "EXPO_PUBLIC_BACKEND_URL=${{ secrets.BACKEND_URL }}" > .env
+          cat .env
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
 
       - name: 🔧 Setup Expo
         uses: expo/expo-github-action@v8
